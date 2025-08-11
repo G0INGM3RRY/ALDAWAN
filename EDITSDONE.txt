@@ -1,0 +1,62 @@
+``````````````````````plaintext
+````````````````````always start laragon, php artisan serve, npm run dev```````````````````````````````````````````````
+
+
+
+07/29 = made the seeder and 'users' on /resources/views/
+07/30 = made a dummy user creation form w/ successful db connection
+      = the complete profile creation/update still has no form
+      = made the connection from register, complete registration, up to dashboard of job seekers.no functionalities and elements for now
+07/31 = made the skeleton form of the complete.blade.db
+      = planned to be on steps so the screen isnt bombarded          
+      = marked the sections for easy steps implementation
+08/02 = Updated registration flow: Jobseekers are now redirected to the profile completion form (complete.blade.php) after registering, instead of the dashboard.
+      - Files: app/Http/Controllers/Auth/RegisteredUserController.php, resources/views/users/jobseekers/complete.blade.php
+      = Cleaned up dashboard logic and layout: Created a reusable dashboard layout for both jobseekers and employers.
+      - Files: resources/views/layouts/dashboard.blade.php, resources/views/dashboard.blade.php
+      = Removed unused/temporary forms from complete.blade.php to prevent accidental redirects.
+      - File: resources/views/users/jobseekers/complete.blade.php
+      = Ensured jobseeker profile completion form submits to the correct route and controller.
+      - Files: resources/views/users/jobseekers/complete.blade.php, routes/web.php
+      = Updated JobseekerProfileController@store to redirect to the dashboard with a success flash message after saving the profile.
+      - File: app/Http/Controllers/JobseekerProfileController.php
+      = Added instructions to display the flashed success message on the dashboard view.
+      - File: resources/views/dashboard.blade.php
+      = Confirmed that deleted views (like the old jobseeker index) are no longer referenced or used in the flow.
+      - File: resources/views/users/jobseekers/index.blade.php
+      = Provided guidance for future role-based dashboard routing and view separation.
+      - Files: routes/web.php, resources/views/layouts/dashboard.blade.php
+``````````````````````
+
+08/03 = moving the dashboard to jobseeker folder
+      = made the fixed error in employer redirection 
+      = noticed the wrong logic in using layouts.dashboard's profile update as it both accessed by employers and job seekers
+
+
+08/07 = created employers complete.blade
+
+
+08/08 = made an employers table
+      = routing the post of the completeblade for employers working
+      = not yet figured out how to implment and differentiate update forms to edit forms
+      = bug in routing of employer dashboard
+      = fixed duplicate controller imports in web.php that caused PHP errors
+      = cleaned up routes/web.php with better organization and comments
+      = fixed file upload handling in EmployerProfileController for company logos
+      = updated forms to use proper enctype="multipart/form-data" for file uploads
+      = streamlined UserController to remove redundant/unused methods
+      = fixed relationship name casing in EmployerProfileController (employerProfile vs EmployerProfile)
+      = improved routes organization with clear section headers
+      = consolidated employer routes to use EmployerProfileController consistently
+
+08/09 = transformed welcome.blade.php from Laravel default to professional job portal homepage
+      = replaced Tailwind-based design with Bootstrap 5 for consistency with dashboard layout
+      = created responsive navigation with ALDAWAN branding and authentication links
+      = implemented hero section with job search functionality (job title, location, search)
+      = added features section highlighting: Top Employers, Fast Hiring, Verified Jobs
+      = created job categories section with 8 popular categories and job counts
+      = simplified design by removing all icons and fancy effects for cleaner appearance
+      = changed from gradient backgrounds to simple light backgrounds
+      = removed FontAwesome dependency to reduce complexity
+      = maintained authentication flow integration (login/register/dashboard links)
+      = ensured mobile-responsive design with Bootstrap grid system
