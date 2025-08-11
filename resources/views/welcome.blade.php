@@ -46,9 +46,6 @@
                         <a class="nav-link" href="#">Find Jobs</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Companies</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="#">About</a>
                     </li>
                 </ul>
@@ -84,14 +81,11 @@
                     
                     <!-- Job Search Box -->
                     <div class="search-box">
-                        <div class="row g-3">
-                            <div class="col-md-4">
+                        <div class="row g-3 justify-content-center">
+                            <div class="col-md-6">
                                 <input type="text" class="form-control" placeholder="Job title or keywords">
                             </div>
-                            <div class="col-md-4">
-                                <input type="text" class="form-control" placeholder="Location">
-                            </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <button class="btn btn-primary w-100">Search Jobs</button>
                             </div>
                         </div>
@@ -120,16 +114,16 @@
                 <div class="col-md-4">
                     <div class="card feature-card h-100">
                         <div class="card-body text-center p-4">
-                            <h5 class="card-title">Fast Hiring</h5>
-                            <p class="card-text text-muted">Quick application process and faster response times to get you hired sooner.</p>
+                            <h5 class="card-title">Includes Informal Jobs</h5>
+                            <p class="card-text text-muted">Small jobs are allowed too.</p>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="card feature-card h-100">
                         <div class="card-body text-center p-4">
-                            <h5 class="card-title">Verified Jobs</h5>
-                            <p class="card-text text-muted">All job postings are verified and legitimate opportunities from trusted employers.</p>
+                            <h5 class="card-title">PESO Verified Jobs</h5>
+                            <p class="card-text text-muted">All job postings are verified and legitimate opportunities.</p>
                         </div>
                     </div>
                 </div>
@@ -137,67 +131,7 @@
         </div>
     </section>
 
-    <!-- Popular Categories -->
-    <section class="py-5 bg-light">
-        <div class="container">
-            <div class="row text-center mb-5">
-                <div class="col-12">
-                    <h2 class="h3 fw-bold">Popular Job Categories</h2>
-                    <p class="text-muted">Explore opportunities in your field</p>
-                </div>
-            </div>
-            <div class="row g-4">
-                <div class="col-md-3 col-sm-6">
-                    <div class="job-category">
-                        <h6 class="mb-2">Technology</h6>
-                        <small class="text-muted">1,234 jobs</small>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="job-category">
-                        <h6 class="mb-2">Healthcare</h6>
-                        <small class="text-muted">892 jobs</small>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="job-category">
-                        <h6 class="mb-2">Finance</h6>
-                        <small class="text-muted">567 jobs</small>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="job-category">
-                        <h6 class="mb-2">Education</h6>
-                        <small class="text-muted">445 jobs</small>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="job-category">
-                        <h6 class="mb-2">Marketing</h6>
-                        <small class="text-muted">789 jobs</small>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="job-category">
-                        <h6 class="mb-2">Engineering</h6>
-                        <small class="text-muted">623 jobs</small>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="job-category">
-                        <h6 class="mb-2">Design</h6>
-                        <small class="text-muted">334 jobs</small>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="job-category">
-                        <h6 class="mb-2">Sales</h6>
-                        <small class="text-muted">912 jobs</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    
 
     <!-- Call to Action -->
     <section class="py-5 bg-primary text-white">
