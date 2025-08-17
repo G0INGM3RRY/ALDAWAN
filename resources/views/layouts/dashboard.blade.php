@@ -16,7 +16,11 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
         <li class="nav-item">
-          <a class="nav-link" href="{{ route('users.complete', ['user' => Auth::id()]) }}">Update Profile</a>
+          @if(Auth::user()->role === 'employer')
+            <a class="nav-link" href="{{ route('employers.edit') }}">Update Profile</a>
+          @else
+            <a class="nav-link" href="{{ route('jobseekers.edit') }}">Update Profile</a>
+          @endif
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#">My Applications</a>

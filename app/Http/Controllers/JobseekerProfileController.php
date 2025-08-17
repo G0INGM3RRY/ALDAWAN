@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Http\Request;
 use App\Models\JobseekerProfile;
+use App\Models\User;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 
@@ -62,11 +63,13 @@ class JobseekerProfileController extends Controller
     public function edit()
     {
         $user = auth()->user();
-        return view('users.jobseekers.complete', compact('user'));
+        $profile = $user->jobseekerProfile; // Get the user's profile data
+        return view('users.jobseekers.edit', compact('user', 'profile'));
     }
 
     public function update(Request $request)
     {
+        /** @var User $user */
         $user = Auth::user(); // Get the authenticated user
 
         $data = $request->validate([

@@ -76,6 +76,13 @@ Route::prefix('employers')->middleware('auth')->group(function () {
     Route::get('/complete', [EmployerProfileController::class, 'complete'])->name('employers.complete');
     Route::get('/edit', [EmployerProfileController::class, 'edit'])->name('employers.edit');
     Route::put('/update', [EmployerProfileController::class, 'update'])->name('employers.update');
+    Route::get('/create', [EmployerProfileController::class, 'create'])->name('employers.create');
+    Route::get('/jobs', [EmployerProfileController::class, 'index'])->name('employers.jobs.index');
+    Route::get('/jobs/create', [EmployerProfileController::class, 'createJob'])->name('employers.jobs.create');
+    Route::post('/jobs', [EmployerProfileController::class, 'storeJob'])->name('employers.jobs.store');
+    Route::get('/jobs/{job}/edit', [EmployerProfileController::class, 'editJob'])->name('employers.jobs.edit');
+    Route::put('/jobs/{job}', [EmployerProfileController::class, 'updateJob'])->name('employers.jobs.update');
+    Route::delete('/jobs/{job}', [EmployerProfileController::class, 'deleteJob'])->name('employers.jobs.delete');
 });
 
 /*
@@ -88,6 +95,7 @@ Route::prefix('jobseekers')->middleware('auth')->group(function () {
     Route::get('/', [UserController::class, 'index'])->name('jobseekers.index');
     Route::get('/edit', [JobseekerProfileController::class, 'edit'])->name('jobseekers.edit');
     Route::put('/update', [JobseekerProfileController::class, 'update'])->name('jobseekers.update');
+        
 });
 
 Route::post('/jobseeker/complete', [JobseekerProfileController::class, 'store'])->middleware(['auth'])->name('jobseeker.complete');

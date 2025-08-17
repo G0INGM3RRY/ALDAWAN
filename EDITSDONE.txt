@@ -3,29 +3,32 @@
 
 
 
+
+
+------------------------------------------------------------------------------------------------------------------------
+Order
+Model + Migration first: you lock the schema, so everything else stops drifting.
+
+Routes next: sets the contract (URLs & verbs) early.
+
+Controller next: glue logic with clear inputs/outputs.
+
+Views last: UI builds on stable data and endpoints. Less rework
+
+------------------------------------------------------------------------------------------------------------------
+
 07/29 = made the seeder and 'users' on /resources/views/
+
 07/30 = made a dummy user creation form w/ successful db connection
       = the complete profile creation/update still has no form
       = made the connection from register, complete registration, up to dashboard of job seekers.no functionalities and elements for now
+
 07/31 = made the skeleton form of the complete.blade.db
       = planned to be on steps so the screen isnt bombarded          
       = marked the sections for easy steps implementation
-08/02 = Updated registration flow: Jobseekers are now redirected to the profile completion form (complete.blade.php) after registering, instead of the dashboard.
-      - Files: app/Http/Controllers/Auth/RegisteredUserController.php, resources/views/users/jobseekers/complete.blade.php
-      = Cleaned up dashboard logic and layout: Created a reusable dashboard layout for both jobseekers and employers.
-      - Files: resources/views/layouts/dashboard.blade.php, resources/views/dashboard.blade.php
-      = Removed unused/temporary forms from complete.blade.php to prevent accidental redirects.
-      - File: resources/views/users/jobseekers/complete.blade.php
-      = Ensured jobseeker profile completion form submits to the correct route and controller.
-      - Files: resources/views/users/jobseekers/complete.blade.php, routes/web.php
-      = Updated JobseekerProfileController@store to redirect to the dashboard with a success flash message after saving the profile.
-      - File: app/Http/Controllers/JobseekerProfileController.php
-      = Added instructions to display the flashed success message on the dashboard view.
-      - File: resources/views/dashboard.blade.php
-      = Confirmed that deleted views (like the old jobseeker index) are no longer referenced or used in the flow.
-      - File: resources/views/users/jobseekers/index.blade.php
-      = Provided guidance for future role-based dashboard routing and view separation.
-      - Files: routes/web.php, resources/views/layouts/dashboard.blade.php
+
+08/02 = fixed jobseeker registration flow & created reusable dashboard layout
+      = updated profile completion routing & success messages
 ``````````````````````
 
 08/03 = moving the dashboard to jobseeker folder
@@ -49,6 +52,7 @@
       = improved routes organization with clear section headers
       = consolidated employer routes to use EmployerProfileController consistently
 
+
 08/09 = transformed welcome.blade.php from Laravel default to professional job portal homepage
       = replaced Tailwind-based design with Bootstrap 5 for consistency with dashboard layout
       = created responsive navigation with ALDAWAN branding and authentication links
@@ -60,3 +64,81 @@
       = removed FontAwesome dependency to reduce complexity
       = maintained authentication flow integration (login/register/dashboard links)
       = ensured mobile-responsive design with Bootstrap grid system
+
+08/11 = transformed welcome.blade.php from Laravel default to job portal homepage
+      = replaced complex SVG/Tailwind with clean Bootstrap design
+      = removed location field from search (out of scope)
+      = updated features: "Informal Jobs" & "PESO Verified Jobs"
+      = removed "Companies" nav link and job categories section
+      = simplified search layout (6-col input + 3-col button)
+      = committed to GitHub: https://github.com/G0INGM3RRY/ALDAWAN
+      = fixed employer dashboard "Update Profile" routing issue (was using /complete instead of /edit)
+      = made dashboard navigation dynamic based on user role (employers vs jobseekers)
+      = fixed jobseeker edit form pre-filling data (controller now passes profile data)
+      = added value="{{ old('field', $profile->field ?? '') }}" to all form inputs in edit.blade.php
+      = updated select dropdowns and checkboxes to show previously saved values
+      = added Job relationship to User model (commented/incomplete - no Job model created yet)
+
+08/13 = created job_listings table & seeder with sample data
+      = fixed migration conflicts (removed duplicate jobs table migration)
+      = seeded 5 sample jobs: Software Dev, Customer Service, Marketing, Data Entry, Graphic Design
+      = table structure: job_title, description, salary, location, employment_type, status, classification
+
+      = updated Jobs model to use job_listings table & added relationships
+      = fixed User model jobs() relationship to reference Jobs class
+
+NEXT TODO (Priority Order):
+
+1. create separate profile creation for informal jobseekers
+   • duplicate jobseeker complete.blade.php as complete-informal.blade.php
+   • remove formal fields (education history, certifications, etc.)
+   • keep only: personal info, basic skills, work experience, contact details
+   • update routes to redirect informal jobseekers to simplified form
+
+2. clean employer profile system for formal/informal types
+   • add 'employer_type' field to employers table migration
+   • update EmployerProfileController to handle formal/informal logic
+   • create separate company table for formal employers (company_name, tin, permits, etc.)
+   • modify employer complete.blade.php form to show different fields based on type
+
+3. create job listing display pages (index, show)
+   • create JobController with index() and show() methods
+   • create views/jobs/index.blade.php (list all jobs with filters)
+   • create views/jobs/show.blade.php (single job detail page)
+   • add routes for job listing pages
+
+4. add job search functionality to homepage
+   • update welcome.blade.php search form to submit to jobs.index
+   • add search logic in JobController to filter by job_title and location
+   • implement pagination for job results
+
+5. create job posting form for employers
+   • create JobController store() method for creating jobs
+   • create views/jobs/create.blade.php form for employers
+   • add validation for job posting fields
+   • restrict access to employers only
+
+08/17 = completed full CRUD job management system for employers
+      = created job posting form (create.blade.php) with all required fields
+      = added complete job editing functionality with pre-filled values & status management
+      = implemented secure delete with CSRF protection & confirmation dialog
+      = fixed database enum to include 'filled' status (open/closed/filled)
+      = added proper authorization checks (job owners only can edit/delete)
+      = created job listings index page with card layout & action buttons
+      = updated migration to support 'filled' status for job completion tracking
+      = added User model import to JobseekerProfileController to fix PHP linting errors
+      = job status meanings: open=accepting apps, closed=paused, filled=position occupied
+
+      SAFE GIT PUSH STEPS (IRREVERSIBLE - USE WITH CAUTION):
+      1. git add .                     # Stage all changes
+      2. git commit -m "Complete job management CRUD system"  # Commit with message
+      3. git push origin main          # Push to GitHub main branch
+      
+      ALTERNATIVE SAFER APPROACH:
+      1. git add .
+      2. git commit -m "Complete job management CRUD system"
+      3. git push origin main          # Creates backup on GitHub
+      4. If needed later: git revert HEAD~1  # Undo last commit (safer than force push)
+      
+      NUCLEAR OPTION (IRREVERSIBLE - DESTROYS HISTORY):
+      git push --force origin main     # DANGER: Overwrites remote history permanently

@@ -11,10 +11,10 @@ class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
-    // Relationship: User has one JobseekerProfile
-    public function jobseekerProfile()
+    // Relationship: User has many Jobs (for employers posting jobs)
+    public function jobs()
     {
-        return $this->hasOne(JobseekerProfile::class);
+        return $this->hasMany(Jobs::class, 'company_id');
     }
     
     // Relationship: User has one Employer profile
@@ -40,6 +40,8 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
+
+    
     protected $hidden = [
         'password',
         'remember_token',

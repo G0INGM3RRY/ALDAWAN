@@ -7,6 +7,8 @@ use App\Models\JobseekerProfile;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Employer;
+use App\Models\Jobs;
+use App\Models\User;
 
 class EmployerProfileController extends Controller
 {
@@ -57,5 +59,116 @@ class EmployerProfileController extends Controller
         return view('users.employers.edit', compact('user', 'profile'));
     }
 
-    
+    public function create()
+    {
+        $user = Auth::user();
+        return view('users.employers.create', compact('user'));//edit
+    }
+
+    public function index()
+    {
+        $user = Auth::user();
+        $jobs = $user->jobs; // Get jobs posted by this employer
+        return view('users.employers.jobs.index', compact('user', 'jobs'));
+    }
+
+    public function createJob()
+    {
+        $user = Auth::user();
+        return view('users.employers.create', compact('user'));
+    }
+
+    public function storeJob(Request $request)
+    {
+        $user = Auth::user();
+
+        // Validate the form data
+        $request->validate([
+            'job_title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'requirements' => 'required|string',
+            'salary' => 'required|numeric|min:0',
+            'location' => 'required|string|max:255',
+            'employment_type' => 'required|in:full-time,part-time,contract,freelance,internship',
+            'classification' => 'required|string|max:255',
+        ]);
+
+        // Create the job posting
+        $user->jobs()->create([
+            'job_title' => $request->job_title,
+            'description' => $request->description,
+            'requirements' => $request->requirements,
+            'salary' => $request->salary,
+            'location' => $request->location,
+            'employment_type' => $request->employment_type,
+            'classification' => $request->classification,
+            'status' => 'open',
+        ]);
+
+        return redirect()->route('employers.jobs.index')->with('success', 'Job posted successfully!');
+    }
+
+    public function editJob(Jobs $job)
+    {
+        $user = Auth::user();
+        
+        // Ensure the job belongs to the authenticated user
+        if ($job->company_id !== $user->id) {
+            abort(403, 'Unauthorized');
+        }
+        
+        return view('users.employers.jobs.edit', compact('user', 'job'));
+    }
+
+    public function updateJob(Request $request, Jobs $job)
+    {
+        $user = Auth::user();
+        
+        // Ensure the job belongs to the authenticated user
+        if ($job->company_id !== $user->id) {
+            abort(403, 'Unauthorized');
+        }
+
+        // Validate the form data
+        $request->validate([
+            'job_title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'requirements' => 'required|string',
+            'salary' => 'required|numeric|min:0',
+            'location' => 'required|string|max:255',
+            'employment_type' => 'required|in:full-time,part-time,contract,freelance,internship',
+            'classification' => 'required|string|max:255',
+            'status' => 'required|in:open,closed,filled',
+        ]);
+
+        // Update the job posting
+        $job->update([
+            'job_title' => $request->job_title,
+            'description' => $request->description,
+            'requirements' => $request->requirements,
+            'salary' => $request->salary,
+            'location' => $request->location,
+            'employment_type' => $request->employment_type,
+            'classification' => $request->classification,
+            'status' => $request->status,
+        ]);
+
+        return redirect()->route('employers.jobs.index')->with('success', 'Job updated successfully!');
+    }
+
+    public function deleteJob(Jobs $job)
+    {
+        $user = Auth::user();
+
+        // Ensure the job belongs to the authenticated user
+        if ($job->company_id !== $user->id) {
+            abort(403, 'Unauthorized');
+        }
+
+        // Delete the job posting
+        $job->delete();
+
+        return redirect()->route('employers.jobs.index')->with('success', 'Job deleted successfully!');
+    }
+
 }

@@ -29,85 +29,99 @@
             <!-- Main Content Area -->
             <div class="col-md-9">
               
-                <form action="{{ route('jobseeker.edit') }}" method="POST">
+                <form action="{{ route('jobseekers.update') }}" method="POST">
                     @csrf
+                    @method('PUT')
                 
                         <!-- Personal information -->
                         <div id="section-personal-information">
                             <div class="mb-3">
+                                <label for="job_seeker_type" class="form-label">Job Seeker Type</label>
+                                <select name="job_seeker_type" class="form-control" required>
+                                    <option value="">Select Type</option>
+                                    <option value="formal" {{ (old('job_seeker_type', $profile->job_seeker_type ?? '') == 'formal') ? 'selected' : '' }}>Formal</option>
+                                    <option value="informal" {{ (old('job_seeker_type', $profile->job_seeker_type ?? '') == 'informal') ? 'selected' : '' }}>Informal</option>
+                                </select>
+                                @error('job_seeker_type')<div class="text-danger">{{ $message }}</div>@enderror
+                            </div>
+                            
+                            <div class="mb-3">
                                 <label for="first_name" class="form-label">First Name</label>
-                                <input type="text" name="first_name" class="form-control">
+                                <input type="text" name="first_name" class="form-control" value="{{ old('first_name', $profile->first_name ?? '') }}" required>
                             </div>
                             <div class="mb-3">
                                 <label for="middle_name" class="form-label">Middle Name</label>
-                                <input type="text" name="middle_name" class="form-control">
+                                <input type="text" name="middle_name" class="form-control" value="{{ old('middle_name', $profile->middle_name ?? '') }}">
                             </div>
                             <div class="mb-3">
                                 <label for="last_name" class="form-label">Last Name</label>
-                                <input type="text" name="last_name" class="form-control">
+                                <input type="text" name="last_name" class="form-control" value="{{ old('last_name', $profile->last_name ?? '') }}" required>
                             </div>
                             <div class="mb-3">
                                 <label for="suffix" class="form-label">Suffix</label>
                                 <select name="suffix" class="form-control">
                                     <option value="">None</option>
-                                    <option value="Jr.">Jr.</option>
-                                    <option value="Sr.">Sr.</option>
-                                    <option value="III">III</option>
-                                    <option value="IV">IV</option>
+                                    <option value="Jr." {{ (old('suffix', $profile->suffix ?? '') == 'Jr.') ? 'selected' : '' }}>Jr.</option>
+                                    <option value="Sr." {{ (old('suffix', $profile->suffix ?? '') == 'Sr.') ? 'selected' : '' }}>Sr.</option>
+                                    <option value="III" {{ (old('suffix', $profile->suffix ?? '') == 'III') ? 'selected' : '' }}>III</option>
+                                    <option value="IV" {{ (old('suffix', $profile->suffix ?? '') == 'IV') ? 'selected' : '' }}>IV</option>
                                 </select>
                             </div>
                             <div class="mb-3">
                                 <label for="birthday" class="form-label">Date of birth</label>
-                                <input type="date" name="birthday" id="birthday" class="form-control">
+                                <input type="date" name="birthday" id="birthday" class="form-control" value="{{ old('birthday', $profile->birthday ?? '') }}">
                             </div>
                             <div class="mb-3">
                                 <label for="sex" class="form-label">Sex</label>
                                 <select name="sex" class="form-control">
                                     <option value="">None</option>
-                                    <option value="male">Male</option>
-                                    <option value="female">Female</option>
+                                    <option value="male" {{ (old('sex', $profile->sex ?? '') == 'male') ? 'selected' : '' }}>Male</option>
+                                    <option value="female" {{ (old('sex', $profile->sex ?? '') == 'female') ? 'selected' : '' }}>Female</option>
                                 </select>
                             </div>
                             <div class="mb-3">
                                 <label for="photo" class="form-label">Photo</label>
                                 <input type="file" name="photo" id="photo" class="form-control">
+                                @if($profile && $profile->photo)
+                                    <small class="text-muted">Current: {{ $profile->photo }}</small>
+                                @endif
                             </div>
                             <div class="mb-3">
                                 <label for="civilstatus" class="form-label">Civil Status</label>
                                 <select name="civilstatus" class="form-control">
                                     <option value="">Select</option>
-                                    <option value="single">Single</option>
-                                    <option value="married">Married</option>
-                                    <option value="widowed">Widowed</option>
+                                    <option value="single" {{ (old('civilstatus', $profile->civilstatus ?? '') == 'single') ? 'selected' : '' }}>Single</option>
+                                    <option value="married" {{ (old('civilstatus', $profile->civilstatus ?? '') == 'married') ? 'selected' : '' }}>Married</option>
+                                    <option value="widowed" {{ (old('civilstatus', $profile->civilstatus ?? '') == 'widowed') ? 'selected' : '' }}>Widowed</option>
                                 </select>
                             </div>
                             <div class="mb-3">
                                 <label for="street"  class="form-label">Street</label>
-                                <input type="text" name="street" id="street" class="form-control">
+                                <input type="text" name="street" id="street" class="form-control" value="{{ old('street', $profile->street ?? '') }}">
                             </div>
                             <div class="mb-3">
                                 <label for="barangay"  class="form-label">Barangay</label>
-                                <input type="text" name="barangay" id="barangay" class="form-control">
+                                <input type="text" name="barangay" id="barangay" class="form-control" value="{{ old('barangay', $profile->barangay ?? '') }}">
                             </div>
                             <div class="mb-3">
                                 <label for="municipality"  class="form-label">Municipality</label>
-                                <input type="text" name="municipality" id="municipality"class="form-control">
+                                <input type="text" name="municipality" id="municipality" class="form-control" value="{{ old('municipality', $profile->municipality ?? '') }}">
                             </div>
                             <div class="mb-3">
                                 <label for="province"  class="form-label">Province</label>
-                                <input type="text" name="province" id="province"class="form-control">
+                                <input type="text" name="province" id="province" class="form-control" value="{{ old('province', $profile->province ?? '') }}">
                             </div>
                             <div class="mb-3">
                                 <label for="religion"  class="form-label">Religion</label>
-                                <input type="text" name="religion" id="religion"class="form-control">
+                                <input type="text" name="religion" id="religion" class="form-control" value="{{ old('religion', $profile->religion ?? '') }}">
                             </div>
                             <div class="mb-3">
                                 <label for="contactnumber"  class="form-label">Contact Number</label>
-                                <input type="text" name="contactnumber" id="contactnumber"class="form-control">
+                                <input type="text" name="contactnumber" id="contactnumber" class="form-control" value="{{ old('contactnumber', $profile->contactnumber ?? '') }}">
                             </div>
                             <div class="mb-3">
                                 <label for="email"  class="form-label">Email</label>
-                                <input type="email" name="email" id="email" class="form-control">
+                                <input type="email" name="email" id="email" class="form-control" value="{{ old('email', $profile->email ?? '') }}">
                             </div>
                         </div>
 
@@ -116,24 +130,28 @@
                         <div id="section-employment-status">
                             <div class="mb-3">
                                 <label class="form-label" style="font-weight:600;letter-spacing:1px;">Disability</label><br>
+                                @php
+                                    $disabilities = $profile && $profile->disability ? json_decode($profile->disability, true) : [];
+                                    $disabilities = is_array($disabilities) ? $disabilities : [];
+                                @endphp
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="disability[]" id="disability_visual" value="visual">
+                                    <input class="form-check-input" type="checkbox" name="disability[]" id="disability_visual" value="visual" {{ in_array('visual', $disabilities) ? 'checked' : '' }}>
                                     <label class="form-check-label" for="disability_visual">Visual</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="disability[]" id="disability_hearing" value="hearing">
+                                    <input class="form-check-input" type="checkbox" name="disability[]" id="disability_hearing" value="hearing" {{ in_array('hearing', $disabilities) ? 'checked' : '' }}>
                                     <label class="form-check-label" for="disability_hearing">Hearing</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="disability[]" id="disability_speech" value="speech">
+                                    <input class="form-check-input" type="checkbox" name="disability[]" id="disability_speech" value="speech" {{ in_array('speech', $disabilities) ? 'checked' : '' }}>
                                     <label class="form-check-label" for="disability_speech">Speech</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="disability[]" id="disability_physical" value="physical">
+                                    <input class="form-check-input" type="checkbox" name="disability[]" id="disability_physical" value="physical" {{ in_array('physical', $disabilities) ? 'checked' : '' }}>
                                     <label class="form-check-label" for="disability_physical">Physical</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="disability[]" id="disability_mental" value="mental">
+                                    <input class="form-check-input" type="checkbox" name="disability[]" id="disability_mental" value="mental" {{ in_array('mental', $disabilities) ? 'checked' : '' }}>
                                     <label class="form-check-label" for="disability_mental">Mental</label>
                                 </div>
                                 <div class="form-check form-check-inline">
@@ -144,7 +162,7 @@
                             <div class="mb-3">
                                 <label class="form-label" style="font-weight:600;letter-spacing:1px;">4PS Benificiary?</label><br>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="is_4ps" id="is_4ps" value="yes">
+                                    <input class="form-check-input" type="checkbox" name="is_4ps" id="is_4ps" value="yes" {{ (old('is_4ps', $profile->is_4ps ?? false)) ? 'checked' : '' }}>
                                     <label class="form-check-label" for="is_4ps">Yes</label>
                                 </div>
                             </div>
@@ -152,8 +170,8 @@
                                 <label for="employmentstatus" class="form-label">Employment Status</label>
                                 <select name="employmentstatus" id="employmentstatus" class="form-control">
                                     <option value="">Select</option>
-                                    <option value="employed">Employed</option>
-                                    <option value="unemployed">Unemployed</option>
+                                    <option value="employed" {{ (old('employmentstatus', $profile->employmentstatus ?? '') == 'employed') ? 'selected' : '' }}>Employed</option>
+                                    <option value="unemployed" {{ (old('employmentstatus', $profile->employmentstatus ?? '') == 'unemployed') ? 'selected' : '' }}>Unemployed</option>
                                 </select>
                             </div>
                         </div>
