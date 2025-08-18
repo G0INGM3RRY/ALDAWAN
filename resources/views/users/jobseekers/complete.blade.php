@@ -185,6 +185,86 @@
                             </select>
                         </div>
 
+                        <!-- Job Preferences -->
+                        <div id="section-job-preferences">
+                            <h3>Job Preferences</h3>
+                            <p class="text-muted">Specify your preferred job types and requirements. You can add multiple preferences.</p>
+                            
+                            <div id="job-preferences-container">
+                                <div class="job-preference-item border p-3 mb-3 rounded">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Preferred Job Title</label>
+                                                <input type="text" name="job_preferences[0][preferred_job_title]" class="form-control" placeholder="e.g., Software Developer">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Job Classification</label>
+                                                <select name="job_preferences[0][preferred_classification]" class="form-control">
+                                                    <option value="">Select Classification</option>
+                                                    <option value="Information Technology">Information Technology</option>
+                                                    <option value="Customer Service">Customer Service</option>
+                                                    <option value="Marketing">Marketing</option>
+                                                    <option value="Administrative">Administrative</option>
+                                                    <option value="Creative">Creative</option>
+                                                    <option value="Sales">Sales</option>
+                                                    <option value="Finance">Finance</option>
+                                                    <option value="Healthcare">Healthcare</option>
+                                                    <option value="Education">Education</option>
+                                                    <option value="Manufacturing">Manufacturing</option>
+                                                    <option value="Other">Other</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                <label class="form-label">Min Salary (PHP)</label>
+                                                <input type="number" name="job_preferences[0][min_salary]" class="form-control" step="0.01" placeholder="15000">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                <label class="form-label">Max Salary (PHP)</label>
+                                                <input type="number" name="job_preferences[0][max_salary]" class="form-control" step="0.01" placeholder="25000">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                <label class="form-label">Preferred Location</label>
+                                                <input type="text" name="job_preferences[0][preferred_location]" class="form-control" placeholder="e.g., Makati, Remote">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Employment Type</label>
+                                                <select name="job_preferences[0][preferred_employment_type]" class="form-control">
+                                                    <option value="">Select Type</option>
+                                                    <option value="full-time">Full-time</option>
+                                                    <option value="part-time">Part-time</option>
+                                                    <option value="contract">Contract</option>
+                                                    <option value="freelance">Freelance</option>
+                                                    <option value="internship">Internship</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 d-flex align-items-end">
+                                            <button type="button" class="btn btn-outline-danger remove-preference" style="display: none;">Remove Preference</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button type="button" class="btn btn-outline-primary" id="add-job-preference">
+                                + Add Another Job Preference
+                            </button>
+                        </div>
+
                         <!-- Educational background -->
                         <div id="section-educational-background">
                             <h3>Educational Background</h3>
@@ -378,6 +458,107 @@
         </div>
     </div>
 
+    <script>
+        let preferenceCount = 1;
+        
+        document.getElementById('add-job-preference').addEventListener('click', function() {
+            const container = document.getElementById('job-preferences-container');
+            const newPreference = createJobPreferenceItem(preferenceCount);
+            container.insertAdjacentHTML('beforeend', newPreference);
+            
+            // Show remove buttons if more than one preference
+            const removeButtons = document.querySelectorAll('.remove-preference');
+            if (removeButtons.length > 1) {
+                removeButtons.forEach(btn => btn.style.display = 'block');
+            }
+            
+            preferenceCount++;
+        });
+        
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('remove-preference')) {
+                e.target.closest('.job-preference-item').remove();
+                
+                // Hide remove buttons if only one preference remains
+                const remainingItems = document.querySelectorAll('.job-preference-item');
+                if (remainingItems.length === 1) {
+                    document.querySelector('.remove-preference').style.display = 'none';
+                }
+            }
+        });
+        
+        function createJobPreferenceItem(index) {
+            return `
+                <div class="job-preference-item border p-3 mb-3 rounded">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Preferred Job Title</label>
+                                <input type="text" name="job_preferences[${index}][preferred_job_title]" class="form-control" placeholder="e.g., Software Developer">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Job Classification</label>
+                                <select name="job_preferences[${index}][preferred_classification]" class="form-control">
+                                    <option value="">Select Classification</option>
+                                    <option value="Information Technology">Information Technology</option>
+                                    <option value="Customer Service">Customer Service</option>
+                                    <option value="Marketing">Marketing</option>
+                                    <option value="Administrative">Administrative</option>
+                                    <option value="Creative">Creative</option>
+                                    <option value="Sales">Sales</option>
+                                    <option value="Finance">Finance</option>
+                                    <option value="Healthcare">Healthcare</option>
+                                    <option value="Education">Education</option>
+                                    <option value="Manufacturing">Manufacturing</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Min Salary (PHP)</label>
+                                <input type="number" name="job_preferences[${index}][min_salary]" class="form-control" step="0.01" placeholder="15000">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Max Salary (PHP)</label>
+                                <input type="number" name="job_preferences[${index}][max_salary]" class="form-control" step="0.01" placeholder="25000">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Preferred Location</label>
+                                <input type="text" name="job_preferences[${index}][preferred_location]" class="form-control" placeholder="e.g., Makati, Remote">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Employment Type</label>
+                                <select name="job_preferences[${index}][preferred_employment_type]" class="form-control">
+                                    <option value="">Select Type</option>
+                                    <option value="full-time">Full-time</option>
+                                    <option value="part-time">Part-time</option>
+                                    <option value="contract">Contract</option>
+                                    <option value="freelance">Freelance</option>
+                                    <option value="internship">Internship</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6 d-flex align-items-end">
+                            <button type="button" class="btn btn-outline-danger remove-preference">Remove Preference</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
     
 </body>
 </html>

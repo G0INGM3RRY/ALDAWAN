@@ -23,6 +23,18 @@ class User extends Authenticatable
         return $this->hasOne(Employer::class);
     }
 
+    // Relationship: User has one Jobseeker profile
+    public function jobseekerProfile()
+    {
+        return $this->hasOne(JobseekerProfile::class);
+    }
+
+    // Relationship: User has many Job Preferences (for jobseekers)
+    public function jobPreferences()
+    {
+        return $this->hasMany(JobPreference::class);
+    }
+
     /**
      * The attributes that are mass assignable.
      *

@@ -4,6 +4,7 @@ use App\Http\Controllers\EmployerProfileController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\JobseekerProfileController;
+use App\Http\Controllers\JobController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -114,3 +115,9 @@ Route::controller(UserController::class)->group(function() {
     Route::get('/users/{user}', 'show')->name('users.show');
     Route::get('/users/{user}/complete', 'complete')->name('users.complete'); 
 });
+
+
+// Job Controller
+Route::resource('jobs', JobController::class);
+Route::get('/jobs', [JobController::class, 'index'])->name('jobs.index');
+Route::get('/jobs/{job}', [JobController::class, 'show'])->name('jobs.show');

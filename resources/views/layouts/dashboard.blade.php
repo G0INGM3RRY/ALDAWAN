@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
@@ -15,6 +16,11 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
+        @if(Auth::user()->role === 'jobseeker')
+        <li class="nav-item">
+          <a class="nav-link" href="{{ route('jobs.index') }}">Browse Jobs</a>
+        </li>
+        @endif
         <li class="nav-item">
           @if(Auth::user()->role === 'employer')
             <a class="nav-link" href="{{ route('employers.edit') }}">Update Profile</a>

@@ -4,6 +4,7 @@ use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Http\Request;
 use App\Models\JobseekerProfile;
 use App\Models\User;
+use App\Models\JobPreference;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 
@@ -57,6 +58,27 @@ class JobseekerProfileController extends Controller
         $profile->is_4ps = $request->has('is_4ps');
         $profile->save();
 
+        // Handle job preferences
+        if ($request->has('job_preferences')) {
+            // Delete existing preferences
+            $user->jobPreferences()->delete();
+            
+            // Save new preferences
+            foreach ($request->job_preferences as $preference) {
+                if (!empty($preference['preferred_job_title']) && !empty($preference['preferred_classification'])) {
+                    JobPreference::create([
+                        'user_id' => $user->id,
+                        'preferred_job_title' => $preference['preferred_job_title'],
+                        'preferred_classification' => $preference['preferred_classification'],
+                        'min_salary' => $preference['min_salary'] ?? null,
+                        'max_salary' => $preference['max_salary'] ?? null,
+                        'preferred_location' => $preference['preferred_location'] ?? null,
+                        'preferred_employment_type' => $preference['preferred_employment_type'] ?? null,
+                    ]);
+                }
+            }
+        }
+
         return redirect()->route('dashboard')->with('success', 'Profile saved!');
     }
 
@@ -64,7 +86,8 @@ class JobseekerProfileController extends Controller
     {
         $user = auth()->user();
         $profile = $user->jobseekerProfile; // Get the user's profile data
-        return view('users.jobseekers.edit', compact('user', 'profile'));
+        $jobPreferences = $user->jobPreferences; // Get user's job preferences
+        return view('users.jobseekers.edit', compact('user', 'profile', 'jobPreferences'));
     }
 
     public function update(Request $request)
@@ -117,6 +140,27 @@ class JobseekerProfileController extends Controller
         $profile->skills = json_encode($skills);
         $profile->is_4ps = $request->has('is_4ps');
         $profile->save();
+
+        // Handle job preferences
+        if ($request->has('job_preferences')) {
+            // Delete existing preferences
+            $user->jobPreferences()->delete();
+            
+            // Save new preferences
+            foreach ($request->job_preferences as $preference) {
+                if (!empty($preference['preferred_job_title']) && !empty($preference['preferred_classification'])) {
+                    JobPreference::create([
+                        'user_id' => $user->id,
+                        'preferred_job_title' => $preference['preferred_job_title'],
+                        'preferred_classification' => $preference['preferred_classification'],
+                        'min_salary' => $preference['min_salary'] ?? null,
+                        'max_salary' => $preference['max_salary'] ?? null,
+                        'preferred_location' => $preference['preferred_location'] ?? null,
+                        'preferred_employment_type' => $preference['preferred_employment_type'] ?? null,
+                    ]);
+                }
+            }
+        }
 
         return redirect()->route('dashboard')->with('success', 'Profile updated successfully!');
     }

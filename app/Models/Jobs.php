@@ -27,9 +27,9 @@ class Jobs extends Model
         return $this->belongsTo(User::class, 'company_id');
     }
     
-    // Alias for easier access
-    public function employer()
+    // Get employer details through user relationship
+    public function employerProfile()
     {
-        return $this->belongsTo(User::class, 'company_id');
+        return $this->hasOneThrough(Employer::class, User::class, 'id', 'user_id', 'company_id');
     }
 }
