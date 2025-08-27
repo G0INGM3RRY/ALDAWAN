@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\JobPreference;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Jobs;
 
 class JobseekerProfileController extends Controller
 {

@@ -1,0 +1,42 @@
+/* Dashboard and forms styles for ALDAWAN job portal */
+
+/* Dashboard navigation styles */
+.nav-link.btn-link {
+    display: inline;
+    cursor: pointer;
+}
+
+/* Form label styles */
+.form-label.styled-label {
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+/* Button styles */
+.remove-preference.hidden {
+    display: none;
+}
+
+/* Table styles for jobseeker forms */
+.education-table th:nth-child(1) { width: 18%; }
+.education-table th:nth-child(2) { width: 32%; }
+.education-table th:nth-child(3) { width: 15%; }
+.education-table th:nth-child(4) { width: 20%; }
+.education-table th:nth-child(5) { width: 15%; }
+
+.experience-table th:nth-child(1) { width: 22%; }
+.experience-table th:nth-child(2) { width: 20%; }
+.experience-table th:nth-child(3) { width: 16%; }
+.experience-table th:nth-child(4) { width: 14%; }
+.experience-table th:nth-child(5) { width: 14%; }
+.experience-table th:nth-child(6) { width: 14%; }
+
+/* Inline form styles */
+.inline-form {
+    display: inline;
+}
+
+/* Delete button container */
+.delete-form {
+    display: inline;
+}

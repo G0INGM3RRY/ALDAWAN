@@ -11,14 +11,13 @@ use Illuminate\Support\Facades\Auth;
 class UserController extends Controller
 {
     /**
-     * Display a listing of jobseekers.
-     * This method is specifically used for the jobseekers index page.
+     * Display the current jobseeker's profile view.
+     * This method shows the logged-in jobseeker's profile information.
      */
     public function index()
     {
-        // Get only users with role 'seeker'
-        $users = User::where('role', 'seeker')->get();
-        return view('users.jobseekers.index', compact('users'));
+        // Return the jobseeker's profile view (no need to pass data, using Auth::user())
+        return view('users.jobseekers.index');
     }
 
     /**

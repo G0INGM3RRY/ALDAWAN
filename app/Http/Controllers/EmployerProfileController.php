@@ -59,6 +59,13 @@ class EmployerProfileController extends Controller
         return view('users.employers.edit', compact('user', 'profile'));
     }
 
+    public function show()
+    {
+        $user = Auth::user();
+        $profile = $user->employerProfile;
+        return view('users.employers.show', compact('user', 'profile'));
+    }
+
     public function create()
     {
         $user = Auth::user();

@@ -5,65 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>ALDAWAN - Job Portal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .hero-section {
-            background-color: #f8f9fa;
-            padding: 60px 0;
-        }
-        .search-box {
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            border: 1px solid #dee2e6;
-        }
-        .feature-card {
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-        }
-        .job-category {
-            background: white;
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            padding: 15px;
-            text-align: center;
-        }
-        .navbar-brand {
-            font-weight: bold;
-        }
-    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    @vite('resources/css/welcome.css')
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
-            <a class="navbar-brand text-primary" href="#">ALDAWAN</a>
+            <a class="navbar-brand text-white fw-bold" href="#">Aldawan</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Find Jobs</a>
+                        <a class="nav-link text-white" href="#">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">About</a>
+                        <a class="nav-link text-white" href="#">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="#">Support</a>
                     </li>
                 </ul>
                 @if (Route::has('login'))
                     <ul class="navbar-nav">
                         @auth
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ url('/dashboard') }}">Dashboard</a>
+                                <a class="btn btn-light btn-sm" href="{{ url('/dashboard') }}">Dashboard</a>
                             </li>
                         @else
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('login') }}">Login</a>
+                                <a class="btn btn-outline-light btn-lg" href="{{ route('login') }}">Log In</a>
                             </li>
-                            @if (Route::has('register'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">Register</a>
-                                </li>
-                            @endif
                         @endauth
                     </ul>
                 @endif
@@ -74,25 +48,29 @@
     <!-- Hero Section -->
     <section class="hero-section">
         <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-8 text-center">
-                    <h1 class="display-5 fw-bold mb-4">Find Your Dream Job</h1>
-                    <p class="lead mb-5 text-muted">Connect with employers and discover opportunities that match your skills</p>
-                    
-                    <!-- Job Search Box -->
-                    <div class="search-box">
-                        <div class="row g-3 justify-content-center">
-                            <div class="col-md-6">
-                                <input type="text" class="form-control" placeholder="Job title or keywords">
-                            </div>
-                            <div class="col-md-3">
-                                <button class="btn btn-primary w-100">Search Jobs</button>
+            <div class="row align-items-center min-vh-75 justify-content-center">
+                <div class="col-lg-8 d-flex justify-content-center">
+                    <div class="card bg-primary text-white job-search-card">
+                        <div class="card-body p-5">
+                            <h1 class="fw-bold mb-4">Want a Job? Try what matches to you</h1>
+                            <p class="mb-5 fs-5">Log in to find the job for you</p>
+                            
+                            <div class="d-flex justify-content-center gap-3">
+                                @guest
+                                    <a href="{{ route('login') }}" class="btn btn-light btn-lg px-3 py-1">Log In</a>
+                                    @if (Route::has('register'))
+                                        <a href="{{ route('register') }}" class="btn btn-outline-light btn-lg px-3 py-1">Sign Up</a>
+                                    @endif
+                                @else
+                                    <a href="{{ url('/dashboard') }}" class="btn btn-light btn-lg px-4 py-3">Go to Dashboard</a>
+                                @endguest
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </section>
     <!-- Features Section -->
     <section class="py-5">
         <div class="container">
@@ -145,22 +123,20 @@
                             <a href="{{ route('register') }}" class="btn btn-light me-3">Create Account</a>
                         @endguest
                     @endif
-                    <a href="#" class="btn btn-outline-light">Browse Jobs</a>
+                    <a href="{{ route('login') }}" class="btn btn-outline-light">Browse Jobs</a>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="py-4 bg-dark text-white">
+    <footer class="py-4 bg-secondary text-white">
         <div class="container">
-            <div class="row">
+            <div class="row justify-content-center text-center">
                 <div class="col-md-6">
-                    <h5>ALDAWAN</h5>
-                    <p class="text-muted">Your trusted partner in finding the perfect job opportunity.</p>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <p class="text-muted mb-0">&copy; {{ date('Y') }} ALDAWAN. All rights reserved.</p>
+                    <h5 class="text-white">ALDAWAN</h5>
+                    <p class="text-light">Your trusted partner in finding the perfect job opportunity.</p>
+                    <p class="text-light mb-0">&copy; {{ date('Y') }} ALDAWAN. All rights reserved.</p>
                 </div>
             </div>
         </div>

@@ -1,16 +1,9 @@
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <title>Personal Information</title>
-</head>
-<body>
-    <div class="container mt-5">
-        <h1>Manage your personal profile</h1>
-        <div class="row">
+@extends('layouts.dashboard')
+
+@section('content')
+    <h1>Manage your personal profile</h1>
+    <div class="row">
             <!-- Sidebar Navigation -->
             <!-- <div class="col-md-3">
                 <ul class="list-group">
@@ -129,7 +122,7 @@
                         <!-- Employment status -->
                         <div id="section-employment-status">
                             <div class="mb-3">
-                                <label class="form-label" style="font-weight:600;letter-spacing:1px;">Disability</label><br>
+                                <label class="form-label styled-label">Disability</label><br>
                                 @php
                                     $disabilities = $profile && $profile->disability ? json_decode($profile->disability, true) : [];
                                     $disabilities = is_array($disabilities) ? $disabilities : [];
@@ -160,7 +153,7 @@
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label" style="font-weight:600;letter-spacing:1px;">4PS Benificiary?</label><br>
+                                <label class="form-label styled-label">4PS Benificiary?</label><br>
                                 <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="checkbox" name="is_4ps" id="is_4ps" value="yes" {{ (old('is_4ps', $profile->is_4ps ?? false)) ? 'checked' : '' }}>
                                     <label class="form-check-label" for="is_4ps">Yes</label>
@@ -255,7 +248,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6 d-flex align-items-end">
-                                                    <button type="button" class="btn btn-outline-danger remove-preference" style="{{ $jobPreferences->count() <= 1 ? 'display: none;' : '' }}">Remove Preference</button>
+                                                    <button type="button" class="btn btn-outline-danger remove-preference {{ $jobPreferences->count() <= 1 ? 'hidden' : '' }}">Remove Preference</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -324,7 +317,7 @@
                                                 </div>
                                             </div>
                                             <div class="col-md-6 d-flex align-items-end">
-                                                <button type="button" class="btn btn-outline-danger remove-preference" style="display: none;">Remove Preference</button>
+                                                <button type="button" class="btn btn-outline-danger remove-preference hidden">Remove Preference</button>
                                             </div>
                                         </div>
                                     </div>
@@ -341,14 +334,14 @@
                             <h3>Educational Background</h3>
                             <p class="text-muted">Please fill in your educational attainment from elementary up to the highest level attained.</p>
                             <div class="table-responsive">
-                                <table class="table table-bordered align-middle">
+                                <table class="table table-bordered align-middle education-table">
                                     <thead class="table-light">
                                         <tr>
-                                            <th style="width: 18%">Level</th>
-                                            <th style="width: 32%">School Attended</th>
-                                            <th style="width: 15%">Year Graduated</th>
-                                            <th style="width: 20%">Honors/Remarks</th>
-                                            <th style="width: 15%">Highest Level/Units Earned</th>
+                                            <th>Level</th>
+                                            <th>School Attended</th>
+                                            <th>Year Graduated</th>
+                                            <th>Honors/Remarks</th>
+                                            <th>Highest Level/Units Earned</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -397,15 +390,15 @@
                             <h3>Work Experience</h3>
                             <p class="text-muted">List your previous work experiences. Leave blank if not applicable.</p>
                             <div class="table-responsive">
-                                <table class="table table-bordered align-middle">
+                                <table class="table table-bordered align-middle experience-table">
                                     <thead class="table-light">
                                         <tr>
-                                            <th style="width: 22%">Employer Name</th>
-                                            <th style="width: 20%">Address</th>
-                                            <th style="width: 16%">Position Held</th>
-                                            <th style="width: 14%">Date From</th>
-                                            <th style="width: 14%">Date To</th>
-                                            <th style="width: 14%">Status</th>
+                                            <th>Employer Name</th>
+                                            <th>Address</th>
+                                            <th>Position Held</th>
+                                            <th>Date From</th>
+                                            <th>Date To</th>
+                                            <th>Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -631,6 +624,4 @@
             `;
         }
     </script>
-    
-</body>
-</html>
+@endsection

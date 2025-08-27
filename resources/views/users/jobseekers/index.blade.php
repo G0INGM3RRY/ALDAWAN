@@ -1,75 +1,163 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jobseeker Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">Job Portal</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item">
-          <a class="nav-link" href="{{ route('users.edit', auth()->user()->id ?? 1) }}">Update Profile</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">My Applications</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Settings</a>
-        </li>
-        <li class="nav-item">
-          <form action="{{ route('logout') }}" method="POST" class="d-inline">
-            @csrf
-            <button type="submit" class="btn btn-link nav-link" style="display:inline;cursor:pointer;">Log Out</button>
-          </form>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
+@extends('layouts.dashboard')
 
-<div class="container">
-    <h1 class="mb-4">Available Jobs</h1>
-    <div class="row">
-        <!-- Example job cards, replace with dynamic jobs if available -->
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title">Software Engineer</h5>
-                    <p class="card-text">Join our team to build amazing web applications. Experience with Laravel required.</p>
-                    <a href="#" class="btn btn-primary">View Details</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title">Graphic Designer</h5>
-                    <p class="card-text">Creative designer needed for branding and marketing projects. Portfolio required.</p>
-                    <a href="#" class="btn btn-primary">View Details</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title">Data Analyst</h5>
-                    <p class="card-text">Analyze data trends and provide insights for business growth. Excel and SQL skills a plus.</p>
-                    <a href="#" class="btn btn-primary">View Details</a>
-                </div>
-            </div>
-        </div>
-        <!-- End example cards -->
+@section('content')
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>My Profile</h1>
+        <a href="{{ route('jobseekers.edit') }}" class="btn btn-primary">Edit Profile</a>
     </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
+    <!-- Profile Overview Card -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Personal Information</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3 text-center">
+                    @if(Auth::user()->jobseekerProfile && Auth::user()->jobseekerProfile->photo)
+                        <img src="{{ asset('storage/' . Auth::user()->jobseekerProfile->photo) }}" 
+                             alt="Profile Photo" class="img-fluid rounded-circle mb-3" style="max-width: 150px;">
+                    @else
+                        <div class="bg-light rounded-circle d-flex align-items-center justify-content-center mb-3 mx-auto" 
+                             style="width: 150px; height: 150px;">
+                            <i class="fas fa-user fa-3x text-muted"></i>
+                        </div>
+                    @endif
+                </div>
+                <div class="col-md-9">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4>{{ Auth::user()->jobseekerProfile->first_name ?? 'Not Set' }} 
+                                {{ Auth::user()->jobseekerProfile->middle_name ?? '' }} 
+                                {{ Auth::user()->jobseekerProfile->last_name ?? '' }}
+                                {{ Auth::user()->jobseekerProfile->suffix ?? '' }}</h4>
+                            
+                            <p class="text-muted mb-2">{{ Auth::user()->email }}</p>
+                            
+                            @if(Auth::user()->jobseekerProfile && Auth::user()->jobseekerProfile->contactnumber)
+                                <p class="text-muted mb-2">{{ Auth::user()->jobseekerProfile->contactnumber }}</p>
+                            @endif
+                            
+                            @if(Auth::user()->jobseekerProfile)
+                                <p class="text-muted mb-2">
+                                    Born: 
+                                    @if(Auth::user()->jobseekerProfile->birthday)
+                                        {{ \Carbon\Carbon::parse(Auth::user()->jobseekerProfile->birthday)->format('F d, Y') }}
+                                    @else
+                                        <span class="text-danger">Birthday not set</span>
+                                    @endif
+                                </p>
+                            @endif
+                        </div>
+                        <div class="col-md-6">
+                            @if(Auth::user()->jobseekerProfile)
+                                @php $profile = Auth::user()->jobseekerProfile; @endphp
+                                
+                                @if($profile->street || $profile->barangay || $profile->municipality || $profile->province)
+                                    <p class="text-muted mb-2">
+                                        <strong>Address:</strong><br>
+                                        {{ $profile->street ? $profile->street . ', ' : '' }}
+                                        {{ $profile->barangay ? $profile->barangay . ', ' : '' }}
+                                        {{ $profile->municipality ? $profile->municipality . ', ' : '' }}
+                                        {{ $profile->province }}
+                                    </p>
+                                @endif
+                                
+                                @if($profile->civilstatus)
+                                    <p class="text-muted mb-2">
+                                        <strong>Civil Status:</strong> {{ ucfirst($profile->civilstatus) }}
+                                    </p>
+                                @endif
+                                
+                                @if($profile->sex)
+                                    <p class="text-muted mb-2">
+                                        <strong>Gender:</strong> {{ ucfirst($profile->sex) }}
+                                    </p>
+                                @endif
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Job Preferences -->
+    @if(Auth::user()->jobPreferences && Auth::user()->jobPreferences->count() > 0)
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Job Preferences</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    @foreach(Auth::user()->jobPreferences as $preference)
+                        <div class="col-md-6 mb-3">
+                            <div class="border rounded p-3">
+                                <h6 class="fw-bold">{{ $preference->preferred_job_title }}</h6>
+                                <p class="mb-1">
+                                    <span class="badge bg-primary">{{ ucfirst(str_replace('_', ' ', $preference->preferred_employment_type)) }}</span>
+                                </p>
+                                @if($preference->preferred_location)
+                                    <p class="text-muted mb-0">
+                                        Location: {{ $preference->preferred_location }}
+                                    </p>
+                                @endif
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    @endif
+
+    <!-- Profile Completion Status -->
+    <div class="card">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0">Profile Completion</h5>
+        </div>
+        <div class="card-body">
+            @php
+                $profile = Auth::user()->jobseekerProfile;
+                $completionFields = [
+                    'first_name', 'last_name', 'birthday', 'sex', 'contactnumber', 
+                    'street', 'barangay', 'municipality', 'province'
+                ];
+                $completed = 0;
+                $total = count($completionFields);
+                
+                if($profile) {
+                    foreach($completionFields as $field) {
+                        if(!empty($profile->$field)) $completed++;
+                    }
+                }
+                
+                $percentage = $total > 0 ? ($completed / $total) * 100 : 0;
+            @endphp
+            
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span>Profile Completion</span>
+                <span class="fw-bold">{{ number_format($percentage, 0) }}%</span>
+            </div>
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" style="width: {{ $percentage }}%" 
+                     aria-valuenow="{{ $percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            
+            @if($percentage < 100)
+                <div class="mt-3">
+                    <p class="text-muted mb-2">Complete your profile to increase your chances of getting hired!</p>
+                    <a href="{{ route('jobseekers.edit') }}" class="btn btn-outline-primary btn-sm">
+                        Complete Profile
+                    </a>
+                </div>
+            @endif
+        </div>
+    </div>
+@endsection

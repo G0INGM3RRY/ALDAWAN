@@ -53,7 +53,7 @@
                                             <a href="{{ route('employers.jobs.edit', $job->id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
  
                                             <!-- form scured with proper delete-->            
-                                             <form method="POST" action="{{ route('employers.jobs.delete', $job->id) }}" style="display: inline;">
+                                             <form method="POST" action="{{ route('employers.jobs.delete', $job->id) }}" class="delete-form">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this job?')">Delete</button>

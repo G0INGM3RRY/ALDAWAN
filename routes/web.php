@@ -7,6 +7,8 @@ use App\Http\Controllers\JobseekerProfileController;
 use App\Http\Controllers\JobController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Jobs;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -84,6 +86,7 @@ Route::prefix('employers')->middleware('auth')->group(function () {
     Route::get('/jobs/{job}/edit', [EmployerProfileController::class, 'editJob'])->name('employers.jobs.edit');
     Route::put('/jobs/{job}', [EmployerProfileController::class, 'updateJob'])->name('employers.jobs.update');
     Route::delete('/jobs/{job}', [EmployerProfileController::class, 'deleteJob'])->name('employers.jobs.delete');
+    Route::get('/profile', [EmployerProfileController::class, 'show'])->name('employers.show');
 });
 
 /*
