@@ -7,6 +7,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property string $email
+ * @property string $password
+ * @property string $role
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ */
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
@@ -33,6 +42,20 @@ class User extends Authenticatable
     public function jobPreferences()
     {
         return $this->hasMany(JobPreference::class);
+    }
+    
+    // Relationship: User has many Formal Job Applications (for jobseekers)
+    public function formalJobApplications()
+    {
+        return $this->hasMany(FormalJobApplication::class);
+    }
+    
+    // Helper method: Get applications for jobs posted by this employer
+    public function receivedApplications()
+    {
+        return FormalJobApplication::whereHas('job', function($query) {
+            $query->where('company_id', $this->id);
+        });
     }
 
     /**

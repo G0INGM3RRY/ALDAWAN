@@ -46,10 +46,32 @@
                     
                     <!-- Apply Button -->
                     @auth
-                        @if(auth()->user()->role === 'jobseeker' && $job->status === 'open')
+                        @if(auth()->user()->role === 'seeker' && $job->status === 'open')
+                            @php
+                                $hasApplied = $job->hasAppliedBy(auth()->id());
+                            @endphp
+                            
                             <div class="mb-4">
-                                <button class="btn btn-primary btn-lg">Apply Now</button>
-                                <button class="btn btn-outline-secondary">Save Job</button>
+                                @if($hasApplied)
+                                    <div class="alert alert-success d-flex align-items-center" role="alert">
+                                        <i class="fas fa-check-circle me-2"></i>
+                                        <div>
+                                            <strong>Application Submitted!</strong> You have already applied for this position.
+                                            <a href="{{ route('jobseekers.applications') }}" class="alert-link">View your applications</a>
+                                        </div>
+                                    </div>
+                                @else
+                                    <a href="{{ route('jobs.apply', $job->id) }}" class="btn btn-primary btn-lg">
+                                        <i class="fas fa-paper-plane me-2"></i>Apply Now
+                                    </a>
+                                    <button class="btn btn-outline-secondary btn-lg ms-2">
+                                        <i class="fas fa-bookmark me-2"></i>Save Job
+                                    </button>
+                                @endif
+                            </div>
+                        @elseif(auth()->user()->role === 'seeker' && $job->status !== 'open')
+                            <div class="alert alert-warning mb-4">
+                                <strong>Applications Closed</strong> - This job is {{ $job->status === 'filled' ? 'filled' : 'no longer accepting applications' }}.
                             </div>
                         @endif
                     @else
@@ -80,8 +102,7 @@
                     <div>
                         <h5>Company Information</h5>
                         <div class="border p-3 rounded bg-light">
-                            <strong>Company:</strong> {{ $job->user->name ?? 'Company Name' }}<br>
-                            <strong>Job ID:</strong> #{{ $job->id }}<br>
+                            <strong>Company:</strong> {{ $job->user->employerProfile->company_name ?? 'Company Name' }}<br>
                             <strong>Classification:</strong> {{ $job->classification }}
                         </div>
                     </div>

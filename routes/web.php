@@ -3,6 +3,7 @@
 use App\Http\Controllers\EmployerProfileController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\FormalJobApplicationController;
 use App\Http\Controllers\JobseekerProfileController;
 use App\Http\Controllers\JobController;
 use Illuminate\Support\Facades\Route;
@@ -99,6 +100,11 @@ Route::prefix('jobseekers')->middleware('auth')->group(function () {
     Route::get('/', [UserController::class, 'index'])->name('jobseekers.index');
     Route::get('/edit', [JobseekerProfileController::class, 'edit'])->name('jobseekers.edit');
     Route::put('/update', [JobseekerProfileController::class, 'update'])->name('jobseekers.update');
+    
+    // Formal Job Application Routes
+    Route::get('/applications', [FormalJobApplicationController::class, 'myApplications'])->name('jobseekers.applications');
+    Route::get('/applications/{application}', [FormalJobApplicationController::class, 'show'])->name('jobseekers.applications.show');
+    Route::delete('/applications/{application}/withdraw', [FormalJobApplicationController::class, 'withdraw'])->name('jobseekers.applications.withdraw');
         
 });
 
@@ -124,3 +130,7 @@ Route::controller(UserController::class)->group(function() {
 Route::resource('jobs', JobController::class);
 Route::get('/jobs', [JobController::class, 'index'])->name('jobs.index');
 Route::get('/jobs/{job}', [JobController::class, 'show'])->name('jobs.show');
+
+// Job Application Routes (public access with auth middleware on actions)
+Route::get('/jobs/{job}/apply', [FormalJobApplicationController::class, 'quickApply'])->name('jobs.apply');
+Route::post('/jobs/{job}/apply', [FormalJobApplicationController::class, 'store'])->name('jobs.apply.store');
