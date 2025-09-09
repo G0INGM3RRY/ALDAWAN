@@ -4,12 +4,20 @@
     <div class="d-flex justify-content-between align-items-center mb-4 ">
        
         <a href="#">Search</a>
-        <a href="{{ route('jobs.index') }}" class="btn btn-primary">Browse All Jobs</a>
+        <a href="{{ route('jobs.formal') }}" class="btn btn-primary">Browse Formal Jobs</a>
     </div>
      <h1>Recent Jobs</h1>
     <div class="row">
         @php
-            $recentJobs = App\Models\Jobs::with(['user.employerProfile'])->latest()->take(6)->get();
+            // Get recent jobs from formal employers
+            $recentJobs = App\Models\Jobs::with(['user.employerProfile'])
+                ->whereHas('user.employerProfile', function($query) {
+                    $query->where('employer_type', 'formal');
+                })
+                ->where('status', 'open')
+                ->latest()
+                ->take(6)
+                ->get();
         @endphp
         
         @if($recentJobs->count() > 0)
@@ -46,7 +54,7 @@
                             @if($job->salary)
                                 <div class="mb-2">
                                     <small class="text-success fw-bold">
-                                        PHP{{ number_format($job->salary) }} per year
+                                        PHP{{ number_format($job->salary) }} minimum
                                     </small>
                                 </div>
                             @endif
@@ -81,7 +89,7 @@
                     </div>
                     <h4 class="text-muted">No Jobs Available</h4>
                     <p class="text-muted">Check back later for new job opportunities.</p>
-                    <a href="{{ route('jobs.index') }}" class="btn btn-primary">Browse Jobs</a>
+                    <a href="{{ route('jobs.formal') }}" class="btn btn-primary">Browse Jobs</a>
                 </div>
             </div>
         @endif
@@ -89,7 +97,7 @@
 
     @if($recentJobs->count() > 0)
         <div class="text-center mt-4">
-            <a href="{{ route('jobs.index') }}" class="btn btn-outline-primary">View All Jobs</a>
+            <a href="{{ route('jobs.formal') }}" class="btn btn-outline-primary">View All Formal Jobs</a>
         </div>
     @endif
 @endsection

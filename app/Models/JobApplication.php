@@ -21,11 +21,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  */
-class FormalJobApplication extends Model
+class JobApplication extends Model
 {
     use HasFactory;
     
-    protected $table = 'formal_job_applications';
+    protected $table = 'formal_job_applications'; // Keep existing table name for backward compatibility
     
     protected $fillable = [
         'user_id',

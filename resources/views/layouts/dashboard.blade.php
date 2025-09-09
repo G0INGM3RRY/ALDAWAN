@@ -32,7 +32,7 @@
           <a class="nav-link" href="{{ route('jobseekers.index') }}"><i class="fas fa-user me-1"></i>My Profile</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{{ route('jobseekers.applications') }}"><i class="fas fa-briefcase me-1"></i>My Applications</a>
+          <a class="nav-link" href="{{ route('jobseekers.applications') }}">My Applications</a>
         </li>
         @endif
         <!-- Debug: Current user role is: {{ Auth::user()->role }} -->

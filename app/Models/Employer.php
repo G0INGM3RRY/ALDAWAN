@@ -13,7 +13,8 @@ class Employer extends Model
         'barangay',
         'municipality',
         'province',
-        'company_logo'
+        'company_logo',
+        'employer_type'
     ];
 
    

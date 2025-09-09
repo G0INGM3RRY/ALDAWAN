@@ -33,7 +33,13 @@ class Jobs extends Model
         'requirements',
         'posted_at',
         'status',
-        'classification'
+        'classification',
+        'job_type'
+    ];
+    
+    protected $casts = [
+        'posted_at' => 'datetime',
+        'salary' => 'decimal:2'
     ];
     
     // Relationship: Job belongs to a User (employer)
@@ -48,16 +54,22 @@ class Jobs extends Model
         return $this->hasOneThrough(Employer::class, User::class, 'id', 'user_id', 'company_id');
     }
     
-    // Relationship: Job has many Formal Applications
+    // Relationship: Job has many Applications
+    public function applications()
+    {
+        return $this->hasMany(\App\Models\JobApplication::class, 'job_id');
+    }
+    
+    // Legacy method name for backward compatibility
     public function formalApplications()
     {
-        return $this->hasMany(\App\Models\FormalJobApplication::class, 'job_id');
+        return $this->applications();
     }
     
     // Helper method: Check if user has already applied
     public function hasAppliedBy($userId)
     {
-        return \App\Models\FormalJobApplication::where('job_id', $this->id)
+        return \App\Models\JobApplication::where('job_id', $this->id)
                                               ->where('user_id', $userId)
                                               ->exists();
     }
@@ -65,6 +77,6 @@ class Jobs extends Model
     // Helper method: Get application count
     public function getApplicationCount()
     {
-        return $this->formalApplications()->count();
+        return $this->applications()->count();
     }
 }

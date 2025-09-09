@@ -19,7 +19,7 @@
             @csrf
 
             <div class="mb-3">
-              <label for="name" class="form-label">First Name</label>
+              <label for="name" class="form-label">Username</label>
               <input type="text" name="name" class="form-control" required autofocus autocomplete="name" value="{{ old('name') }}">
               @error('name')<div class="text-danger">{{ $message }}</div>@enderror
             </div>

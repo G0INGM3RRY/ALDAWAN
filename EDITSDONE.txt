@@ -1,9 +1,42 @@
 ``````````````````````plaintext
-````````````````````always start laragon, php artisan serve, npm run dev```````````````````````````````````````````````
+````````````````````DEVELOPMENT SERVER SETUP```````````````````````````````````````````````
 
+LOCAL DEVELOPMENT (Computer Only):
+- Start Laragon
+- php artisan serve
+- npm run dev
+- Access: http://localhost:8000 or http://127.0.0.1:8000
 
+MOBILE ACCESS (Phone on Same Network):
+1. Find your computer's IP address:
+   Windows: ipconfig (look for IPv4 Address)
+   Mac/Linux: ifconfig or ip addr show
+   
+2. Start Laravel with your IP address:
+   php artisan serve --host=0.0.0.0 --port=8000
+   OR
+   php artisan serve --host=YOUR_IP_ADDRESS --port=8000
+   
+3. Start Vite with network access:
+   npm run dev -- --host=0.0.0.0
+   OR
+   npm run dev -- --host=YOUR_IP_ADDRESS
+   
+4. Access from phone:
+   http://YOUR_IP_ADDRESS:8000
+   
+Example:
+- If your computer IP is 192.168.1.100
+- Commands: 
+  php artisan serve --host=192.168.1.100 --port=8000
+  npm run dev -- --host=192.168.1.100
+- Phone URL: http://192.168.1.100:8000
 
-
+IMPORTANT NOTES:
+- Both devices must be on same WiFi network
+- Disable firewall or allow ports 8000 and 5173
+- Use actual IP address, not localhost/127.0.0.1
+- Keep both terminals running (artisan serve + npm run dev)
 
 ------------------------------------------------------------------------------------------------------------------------
 Order
@@ -92,36 +125,8 @@ Views last: UI builds on stable data and endpoints. Less rework
 
 
 
-NEXT TODO (Priority Order):
 
-1. create separate profile creation for informal jobseekers
-   • duplicate jobseeker complete.blade.php as complete-informal.blade.php
-   • remove formal fields (education history, certifications, etc.)
-   • keep only: personal info, basic skills, work experience, contact details
-   • update routes to redirect informal jobseekers to simplified form
 
-2. clean employer profile system for formal/informal types
-   • add 'employer_type' field to employers table migration
-   • update EmployerProfileController to handle formal/informal logic
-   • create separate company table for formal employers (company_name, tin, permits, etc.)
-   • modify employer complete.blade.php form to show different fields based on type
-
-3. create job listing display pages (index, show)
-   • create JobController with index() and show() methods
-   • create views/jobs/index.blade.php (list all jobs with filters)
-   • create views/jobs/show.blade.php (single job detail page)
-   • add routes for job listing pages
-
-4. add job search functionality to homepage
-   • update welcome.blade.php search form to submit to jobs.index
-   • add search logic in JobController to filter by job_title and location
-   • implement pagination for job results
-
-5. create job posting form for employers
-   • create JobController store() method for creating jobs
-   • create views/jobs/create.blade.php form for employers
-   • add validation for job posting fields
-   • restrict access to employers only
 
 08/17 = completed full CRUD job management system for employers
       = created job posting form (create.blade.php) with all required fields
@@ -187,6 +192,26 @@ NEXT TODO (Priority Order):
       = **NEXT: Need to implement employer side to view/manage applications**
 
 
+09/07 = **JOB APPLICATION VIEWING SYSTEM IMPLEMENTATION (OFFLINE WORK)**
+      = created "My Applications" functionality for jobseekers
+      = added route: GET `/jobseekers/applications` → `FormalJobApplicationController@myApplications`
+      = implemented `myApplications()` controller method in FormalJobApplicationController
+        • fetches all applications for current authenticated jobseeker
+        • loads job and employer relationships for display
+        • returns paginated results to view
+      = created `resources/views/users/jobseekers/applications.blade.php` view
+        • table layout showing: Job Title, Company, Applied Date, Status, Actions
+        • status badges with color coding (pending=warning, under_review=info, etc.)
+        • "View Details" buttons for each application
+        • empty state message when no applications exist
+        • integrated with dashboard layout system
+      = added "My Applications" link to jobseeker dashboard navigation
+      = implemented application status visualization with Bootstrap badges
+      = established foundation for complete application management workflow
+      = **STATUS: Jobseekers can now view all submitted applications with current status**
+      = **NEXT: Need employer side to view/manage incoming applications**
+
+
 
       SAFE GIT PUSH STEPS (IRREVERSIBLE - USE WITH CAUTION):
       1. git add .                     # Stage all changes
@@ -201,3 +226,78 @@ NEXT TODO (Priority Order):
       
       NUCLEAR OPTION (IRREVERSIBLE - DESTROYS HISTORY):
       git push --force origin main     # DANGER: Overwrites remote history permanently
+
+
+09/08 = **JOB-LEVEL CLASSIFICATION SYSTEM & EMPLOYER MODULE SEPARATION**
+      = **DATABASE IMPROVEMENTS**
+        • created migration: `add_job_type_to_job_listings_table` 
+        • added `job_type` enum column ('formal', 'informal') to job_listings table
+        • updated Jobs model to include 'job_type' in fillable attributes
+        • created data migration command: `MigrateJobTypes.php` for existing jobs
+        • successfully migrated 5 existing jobs to proper job_type classification
+
+      = **JOB CREATION & MANAGEMENT ENHANCEMENTS**
+        • updated job creation form in `employers/create.blade.php` with job type selection
+        • added job type dropdown with smart defaults based on employer type
+        • included helpful descriptions for formal vs informal job types
+        • updated EmployerProfileController validation to include job_type field
+        • enhanced job creation to store job_type in database
+        • updated job editing forms to handle job_type modification
+        • added job type validation in both store and update methods
+
+      = **JOB FILTERING ALGORITHM OVERHAUL**
+        • **OLD**: Complex employer-based filtering via relationship queries
+        • **NEW**: Direct job-level filtering using job_type column
+        • updated JobController@index() with direct job_type filtering
+        • updated JobController@formalJobs() for performance (no complex joins)
+        • updated JobController@informalJobs() for performance
+        • added backward compatibility for employer_type URL parameters
+        • significantly improved query performance by eliminating complex joins
+
+      = **VIEW ROUTING FIXES**
+        • fixed JobController@show() method to route based on user's jobseeker type
+        • fixed JobController@index() method to use appropriate formal/informal views
+        • resolved "view not found" errors for jobs.show and jobs.index routes
+        • implemented smart view routing based on authenticated user's profile type
+        • ensured all job listing and detail routes work correctly
+
+      = **UI/UX IMPROVEMENTS**
+        • added job type badges to all job listing views (formal=green, informal=yellow)
+        • updated formal job index with job type indicators
+        • updated informal job index with job type indicators  
+        • enhanced employer job listing with job type badges
+        • implemented visual job type classification across all interfaces
+
+      = **EMPLOYER MODULE SEPARATION (MATCHING JOBSEEKER STRUCTURE)**
+        • created separated employer view directories:
+          - `resources/views/users/employers/formal/` (professional blue theme)
+          - `resources/views/users/employers/informal/` (gig yellow theme)
+        • implemented smart view routing helper: `getViewPath()` in EmployerProfileController
+        • created type-specific dashboards with appropriate branding and terminology
+        • separated all employer views: create, edit, dashboard, jobs management
+        • updated all controller methods to use dynamic view routing
+        • created route-based dashboard selection for employer types
+
+      = **EMPLOYER DASHBOARD CUSTOMIZATION**
+        • **Formal Employer Dashboard**: Professional blue theme, "Company Profile", "Professional Positions"
+        • **Informal Employer Dashboard**: Yellow gig theme, "Business Profile", "Gig Opportunities"
+        • added real-time job statistics for both employer types
+        • implemented proper database field usage (removed non-existent fields)
+        • created smart location display using actual address fields (street, barangay, municipality, province)
+        • enhanced dashboard with type-specific terminology and visual indicators
+
+      = **CODE CLEANUP & OPTIMIZATION**
+        • cleaned up employer view structure (moved all views to formal/informal folders)
+        • updated all view-returning controller methods to use smart routing
+        • fixed syntax errors and namespace issues in EmployerProfileController
+        • implemented consistent MVC pattern across employer modules
+        • ensured all routes work correctly with separated view structure
+
+      = **SYSTEM TESTING & VALIDATION**
+        • tested all job creation, editing, and listing functionality
+        • verified job type filtering works correctly
+        • confirmed employer dashboard routing for both types
+        • validated database consistency with migration commands
+        • ensured no broken routes or missing views
+        • **STATUS: Complete job-level classification system with separated employer modules**
+        • **BENEFIT: Flexible job posting (formal employers can post gig work, informal can post permanent positions)**

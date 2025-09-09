@@ -16,8 +16,15 @@ class UserController extends Controller
      */
     public function index()
     {
-        // Return the jobseeker's profile view (no need to pass data, using Auth::user())
-        return view('users.jobseekers.index');
+        $user = Auth::user();
+        $profile = $user->jobseekerProfile;
+        
+        // Route to appropriate index view based on job seeker type
+        if ($profile && $profile->job_seeker_type === 'informal') {
+            return view('users.jobseekers.informal.index');
+        } else {
+            return view('users.jobseekers.formal.index');
+        }
     }
 
     /**
@@ -29,7 +36,12 @@ class UserController extends Controller
         if($user->role === 'seeker'){
             // Get the job_seeker_type from the request or session
             $job_seeker_type = $request->session()->get('job_seeker_type', $request->job_seeker_type);
-            return view('users.jobseekers.complete', compact('user', 'job_seeker_type'));
+            
+            if ($job_seeker_type === 'informal') {
+                return view('users.jobseekers.informal.complete', compact('user', 'job_seeker_type'));
+            } else {
+                return view('users.jobseekers.formal.complete', compact('user', 'job_seeker_type'));
+            }
         }elseif($user->role === 'employer'){
             return view('users.employers.complete', compact('user'));
         }
@@ -45,6 +57,13 @@ class UserController extends Controller
             abort(404);
         }
         
-        return view('users.jobseekers.show', compact('user'));
+        $profile = $user->jobseekerProfile;
+        
+        // Route to appropriate view based on job seeker type
+        if ($profile && $profile->job_seeker_type === 'informal') {
+            return view('users.jobseekers.informal.index', compact('user'));
+        } else {
+            return view('users.jobseekers.formal.index', compact('user'));
+        }
     }
 }
