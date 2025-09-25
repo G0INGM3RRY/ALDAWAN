@@ -93,39 +93,25 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="classification" class="form-label">Job Classification <span class="text-danger">*</span></label>
-                                    <select class="form-control w-75 @error('classification') is-invalid @enderror" 
-                                            id="classification" name="classification" required>
+                                    <label for="classification_id" class="form-label">Job Classification <span class="text-danger">*</span></label>
+                                    <select class="form-control w-75 @error('classification_id') is-invalid @enderror" 
+                                            id="classification_id" name="classification_id" required>
                                         <option value="">Select Classification</option>
                                         
                                         @if($user->employerProfile && $user->employerProfile->employer_type === 'informal')
-                                            <!-- Informal Employer Classifications -->
-                                            <option value="Household Services" {{ old('classification') == 'Household Services' ? 'selected' : '' }}>Household Services</option>
-                                            <option value="Construction/Labor" {{ old('classification') == 'Construction/Labor' ? 'selected' : '' }}>Construction/Labor</option>
-                                            <option value="Food Service" {{ old('classification') == 'Food Service' ? 'selected' : '' }}>Food Service</option>
-                                            <option value="Retail/Sales" {{ old('classification') == 'Retail/Sales' ? 'selected' : '' }}>Retail/Sales</option>
-                                            <option value="Delivery/Transport" {{ old('classification') == 'Delivery/Transport' ? 'selected' : '' }}>Delivery/Transport</option>
-                                            <option value="Care Services" {{ old('classification') == 'Care Services' ? 'selected' : '' }}>Care Services</option>
-                                            <option value="Repair/Maintenance" {{ old('classification') == 'Repair/Maintenance' ? 'selected' : '' }}>Repair/Maintenance</option>
-                                            <option value="Agriculture" {{ old('classification') == 'Agriculture' ? 'selected' : '' }}>Agriculture</option>
-                                            <option value="General Labor" {{ old('classification') == 'General Labor' ? 'selected' : '' }}>General Labor</option>
-                                            <option value="Cleaning Services" {{ old('classification') == 'Cleaning Services' ? 'selected' : '' }}>Cleaning Services</option>
-                                            <option value="Security" {{ old('classification') == 'Security' ? 'selected' : '' }}>Security</option>
-                                            <option value="Manufacturing" {{ old('classification') == 'Manufacturing' ? 'selected' : '' }}>Manufacturing</option>
+                                            @foreach($jobClassifications->where('type', 'informal') as $classification)
+                                                <option value="{{ $classification->id }}" 
+                                                        {{ old('classification_id') == $classification->id ? 'selected' : '' }}>
+                                                    {{ $classification->name }}
+                                                </option>
+                                            @endforeach
                                         @else
-                                            <!-- Formal Employer Classifications -->
-                                            <option value="Information Technology" {{ old('classification') == 'Information Technology' ? 'selected' : '' }}>Information Technology</option>
-                                            <option value="Customer Service" {{ old('classification') == 'Customer Service' ? 'selected' : '' }}>Customer Service</option>
-                                            <option value="Marketing" {{ old('classification') == 'Marketing' ? 'selected' : '' }}>Marketing</option>
-                                            <option value="Administrative" {{ old('classification') == 'Administrative' ? 'selected' : '' }}>Administrative</option>
-                                            <option value="Creative" {{ old('classification') == 'Creative' ? 'selected' : '' }}>Creative</option>
-                                            <option value="Sales" {{ old('classification') == 'Sales' ? 'selected' : '' }}>Sales</option>
-                                            <option value="Finance" {{ old('classification') == 'Finance' ? 'selected' : '' }}>Finance</option>
-                                            <option value="Healthcare" {{ old('classification') == 'Healthcare' ? 'selected' : '' }}>Healthcare</option>
-                                            <option value="Education" {{ old('classification') == 'Education' ? 'selected' : '' }}>Education</option>
-                                            <option value="Engineering" {{ old('classification') == 'Engineering' ? 'selected' : '' }}>Engineering</option>
-                                            <option value="Legal" {{ old('classification') == 'Legal' ? 'selected' : '' }}>Legal</option>
-                                            <option value="Management" {{ old('classification') == 'Management' ? 'selected' : '' }}>Management</option>
+                                            @foreach($jobClassifications->where('type', 'formal') as $classification)
+                                                <option value="{{ $classification->id }}" 
+                                                        {{ old('classification_id') == $classification->id ? 'selected' : '' }}>
+                                                    {{ $classification->name }}
+                                                </option>
+                                            @endforeach
                                         @endif
                                         
                                         <option value="Other" {{ old('classification') == 'Other' ? 'selected' : '' }}>Other</option>

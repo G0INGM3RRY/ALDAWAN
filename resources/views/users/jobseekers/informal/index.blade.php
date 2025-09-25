@@ -3,7 +3,7 @@
 @section('content')
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>My Profile</h1>
-        <a href="{{ route('jobseekers.edit') }}" class="btn btn-primary">Edit Profile</a>
+        <a href="{{ route('jobseekers.informal.edit') }}" class="btn btn-primary">Edit Profile</a>
     </div>
 
     @if(session('success'))
@@ -153,7 +153,7 @@
             @if($percentage < 100)
                 <div class="mt-3">
                     <p class="text-muted mb-2">Complete your profile to increase your chances of getting hired!</p>
-                    <a href="{{ route('jobseekers.edit') }}" class="btn btn-outline-primary btn-sm">
+                    <a href="{{ route('jobseekers.informal.edit') }}" class="btn btn-outline-primary btn-sm">
                         Complete Profile
                     </a>
                 </div>

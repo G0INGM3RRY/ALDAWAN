@@ -39,6 +39,8 @@
         <li class="nav-item">
           @if(Auth::user()->role === 'employer')
             <a class="nav-link" href="{{ route('employers.edit') }}"><i class="fas fa-user-edit me-1"></i>Update Profile</a>
+          @elseif(Auth::user()->jobseekerProfile && Auth::user()->jobseekerProfile->job_seeker_type === 'informal')
+            <a class="nav-link" href="{{ route('jobseekers.informal.edit') }}"><i class="fas fa-user-edit me-1"></i>Update Profile</a>
           @else
             <a class="nav-link" href="{{ route('jobseekers.edit') }}"><i class="fas fa-user-edit me-1"></i>Update Profile</a>
           @endif

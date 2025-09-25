@@ -21,6 +21,19 @@ class JobController extends Controller
         // Backward compatibility: also support employer_type parameter
         if ($request->has('employer_type') && in_array($request->employer_type, ['formal', 'informal'])) {
             $query->where('job_type', $request->employer_type);
+        } else {
+            // Filter jobs based on current user's job seeker type if no explicit filter is provided
+            $user = auth()->user();
+            if ($user && $user->jobseekerProfile) {
+                $jobSeekerType = $user->jobseekerProfile->job_seeker_type;
+                if ($jobSeekerType === 'informal') {
+                    $query->where('job_type', 'informal');
+                } elseif ($jobSeekerType === 'formal') {
+                    $query->where('job_type', 'formal');
+                }
+                // If no job seeker type is set, show all jobs (for admins or incomplete profiles)
+            }
+            // For guests (unauthenticated users), show all jobs
         }
         
         // Only show open jobs

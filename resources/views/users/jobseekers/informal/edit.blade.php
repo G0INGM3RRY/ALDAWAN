@@ -130,24 +130,18 @@
                             <div class="mb-3">
                                 <label class="form-label">Disability (if any)</label><br>
                                 @php
-                                    $disabilities = is_string($profile->disability ?? '') ? json_decode($profile->disability ?? '[]', true) : ($profile->disability ?? []);
-                                    if (!is_array($disabilities)) $disabilities = [];
+                                    $userDisabilities = $profile && $profile->disabilities ? $profile->disabilities->pluck('id')->toArray() : [];
                                 @endphp
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="disability[]" id="disability_visual" value="visual" {{ in_array('visual', $disabilities) ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="disability_visual">Visual</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="disability[]" id="disability_hearing" value="hearing" {{ in_array('hearing', $disabilities) ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="disability_hearing">Hearing</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="disability[]" id="disability_physical" value="physical" {{ in_array('physical', $disabilities) ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="disability_physical">Physical</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="disability[]" id="disability_others" value="others" {{ in_array('others', $disabilities) ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="disability_others">Others</label>
+                                @foreach($disabilities as $disability)
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" name="disabilities[]" 
+                                               id="disability_{{ $disability->id }}" value="{{ $disability->id }}" 
+                                               {{ in_array($disability->id, $userDisabilities) ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="disability_{{ $disability->id }}">{{ $disability->name }}</label>
+                                    </div>
+                                @endforeach
+                                <div class="mt-2">
+                                    <small class="text-muted">Select all that apply for appropriate workplace accommodations.</small>
                                 </div>
                             </div>
                             
@@ -176,72 +170,29 @@
                             <div class="mb-3">
                                 <label class="form-label">Basic Skills (Select all that apply)</label><br>
                                 @php
-                                    $skills = is_string($profile->skills ?? '') ? json_decode($profile->skills ?? '[]', true) : ($profile->skills ?? []);
-                                    if (!is_array($skills)) $skills = [];
+                                    $userSkills = $profile && $profile->skills ? $profile->skills->pluck('id')->toArray() : [];
                                 @endphp
                                 <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="skills[]" id="skill_cleaning" value="cleaning" {{ in_array('cleaning', $skills) ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="skill_cleaning">Cleaning Services</label>
+                                    @foreach($informalSkills as $skill)
+                                        <div class="col-md-6 mb-2">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="informal_skills[]" 
+                                                       id="informal_skill_{{ $skill->id }}" value="{{ $skill->id }}" 
+                                                       {{ in_array($skill->id, $userSkills) ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="informal_skill_{{ $skill->id }}">{{ $skill->name }}</label>
+                                            </div>
                                         </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="skills[]" id="skill_cooking" value="cooking" {{ in_array('cooking', $skills) ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="skill_cooking">Cooking</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="skills[]" id="skill_gardening" value="gardening" {{ in_array('gardening', $skills) ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="skill_gardening">Gardening</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="skills[]" id="skill_construction" value="construction" {{ in_array('construction', $skills) ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="skill_construction">Construction Work</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="skills[]" id="skill_delivery" value="delivery" {{ in_array('delivery', $skills) ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="skill_delivery">Delivery Services</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="skills[]" id="skill_driving" value="driving" {{ in_array('driving', $skills) ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="skill_driving">Driving</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="skills[]" id="skill_repair" value="repair" {{ in_array('repair', $skills) ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="skill_repair">Basic Repairs</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="skills[]" id="skill_selling" value="selling" {{ in_array('selling', $skills) ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="skill_selling">Selling/Retail</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="skills[]" id="skill_babysitting" value="babysitting" {{ in_array('babysitting', $skills) ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="skill_babysitting">Childcare</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="skills[]" id="skill_elderly_care" value="elderly_care" {{ in_array('elderly_care', $skills) ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="skill_elderly_care">Elderly Care</label>
-                                        </div>
-                                    </div>
+                                    @endforeach
                                 </div>
                             </div>
                             
                             <div class="mb-3">
                                 <label for="skills_other" class="form-label">Other Skills (separate by comma)</label>
-                                <textarea name="skills_other" id="skills_other" class="form-control w-75" rows="3" placeholder="e.g., sewing, massage therapy, tutoring">{{ old('skills_other', $profile->skills_other ?? '') }}</textarea>
+                                <textarea name="skills_other" id="skills_other" class="form-control w-75" rows="3" placeholder="e.g., sewing, massage therapy, tutoring">{{ old('skills_other', '') }}</textarea>
                             </div>
                         </div>
 
-                        <!-- Simple Work Experience -->
-                        <div id="section-work-experience">
-                            <h4 class="mb-3 mt-4">Work Experience (Optional)</h4>
-                            
-                            <div class="mb-3">
-                                <label for="work_experience" class="form-label">Previous Work Experience</label>
-                                <textarea name="work_experience" id="work_experience" class="form-control w-75" rows="4" placeholder="Briefly describe your previous work experience, including what type of work you did and for how long.">{{ old('work_experience', is_string($profile->work_experience ?? '') ? $profile->work_experience : (is_array($profile->work_experience ?? []) ? implode(', ', $profile->work_experience) : '')) }}</textarea>
-                            </div>
-                        </div>
+                        <!-- Work Experience section removed - using structured work_experiences instead -->
 
                         <div class="d-grid gap-2 mt-4">
                             <button type="submit" class="btn btn-primary btn-lg">Update Profile</button>

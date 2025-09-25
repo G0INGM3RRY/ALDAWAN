@@ -9,11 +9,9 @@
      <h1>Recent Jobs</h1>
     <div class="row">
         @php
-            // Get recent jobs from formal employers
+            // Get recent formal jobs (filter by job_type, not employer_type)
             $recentJobs = App\Models\Jobs::with(['user.employerProfile'])
-                ->whereHas('user.employerProfile', function($query) {
-                    $query->where('employer_type', 'formal');
-                })
+                ->where('job_type', 'formal')
                 ->where('status', 'open')
                 ->latest()
                 ->take(6)
@@ -46,8 +44,8 @@
                                 @if($job->employment_type)
                                     <span class="badge bg-primary">{{ ucfirst(str_replace('_', ' ', $job->employment_type)) }}</span>
                                 @endif
-                                @if($job->classification)
-                                    <span class="badge bg-secondary">{{ $job->classification }}</span>
+                                @if($job->jobClassification)
+                                    <span class="badge bg-secondary">{{ $job->jobClassification->name }}</span>
                                 @endif
                             </div>
 

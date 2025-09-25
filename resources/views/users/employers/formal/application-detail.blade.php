@@ -23,7 +23,7 @@
                     <div class="row">
                         <div class="col-md-8">
                             <h4 class="text-dark">{{ $application->job->job_title }}</h4>
-                            <p class="text-muted mb-2">{{ $application->job->classification }}</p>
+                            <p class="text-muted mb-2">{{ $application->job->jobClassification->name ?? 'Not specified' }}</p>
                             <small class="text-muted">
                                 Applied on: {{ $application->applied_at->format('F j, Y \a\t g:i A') }}
                             </small>

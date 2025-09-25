@@ -36,8 +36,8 @@
                                         @if($job->employment_type)
                                             <span class="badge bg-primary">{{ ucfirst(str_replace('_', ' ', $job->employment_type)) }}</span>
                                         @endif
-                                        @if($job->classification)
-                                            <span class="badge bg-secondary">{{ $job->classification }}</span>
+                                        @if($job->jobClassification)
+                                            <span class="badge bg-secondary">{{ $job->jobClassification->name }}</span>
                                         @endif
                                         @if($job->job_type)
                                             <span class="badge bg-{{ $job->job_type === 'formal' ? 'success' : 'warning' }}">

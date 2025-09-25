@@ -17,7 +17,7 @@
                 </div>
                 <div class="card-body">
                     <h4 class="text-dark">{{ $job->job_title }}</h4>
-                    <h6 class="text-primary mb-2">{{ $job->classification }}</h6>
+                    <h6 class="text-primary mb-2">{{ $job->jobClassification->name ?? 'Not specified' }}</h6>
                     <div class="row g-2">
                         <div class="col-md-6">
                             <small class="text-muted">

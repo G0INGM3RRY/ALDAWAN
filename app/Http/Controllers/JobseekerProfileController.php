@@ -5,8 +5,12 @@ use Illuminate\Http\Request;
 use App\Models\JobseekerProfile;
 use App\Models\User;
 use App\Models\JobPreference;
+use App\Models\Skill;
+use App\Models\Disability;
+use App\Models\EducationLevel;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Models\Jobs;
 
 class JobseekerProfileController extends Controller
@@ -107,7 +111,7 @@ class JobseekerProfileController extends Controller
     public function edit()
     {
         $user = auth()->user();
-        $profile = $user->jobseekerProfile; // Get the user's profile data
+        $profile = JobseekerProfile::with(['skills', 'disabilities', 'educationLevel'])->where('user_id', $user->id)->first(); // Eager load relationships
         $jobPreferences = $user->jobPreferences; // Get user's job preferences
         
         // Check if user is informal type and redirect to appropriate form
@@ -120,7 +124,12 @@ class JobseekerProfileController extends Controller
             return redirect()->route('dashboard')->with('error', 'Please complete your profile first.');
         }
         
-        return view('users.jobseekers.formal.edit', compact('user', 'profile', 'jobPreferences'));
+        // Load required data for the form
+        $skills = Skill::active()->orderBy('name')->get();
+        $disabilities = Disability::active()->orderBy('name')->get();
+        $educationLevels = EducationLevel::active()->orderBy('name')->get();
+        
+        return view('users.jobseekers.formal.edit', compact('user', 'profile', 'jobPreferences', 'skills', 'disabilities', 'educationLevels'));
     }
 
 
@@ -163,12 +172,14 @@ class JobseekerProfileController extends Controller
             'religion' => 'nullable|string',
             'contactnumber' => 'nullable|string',
             'email' => 'nullable|string',
-            'disability' => 'nullable|array',
+            'disabilities' => 'nullable|array',
+            'disabilities.*' => 'exists:disabilities,id',
             'is_4ps' => 'nullable',
             'employmentstatus' => 'nullable|string',
             'education' => 'nullable|array',
             'work' => 'nullable|array',
             'skills' => 'nullable|array',
+            'skills.*' => 'exists:skills,id',
             'skills_other' => 'nullable|string',
         ]);
 
@@ -186,60 +197,144 @@ class JobseekerProfileController extends Controller
             $profile = new JobseekerProfile();
             $profile->user_id = $user->id;
         }
-        
-        $profile->fill($data);
-        $profile->disability = json_encode($request->input('disability', []));
-        $profile->education = json_encode($request->input('education', []));
-        $profile->work_experience = json_encode($request->input('work', []));
-        
-        $skills = $request->input('skills', []);
-        $skills_other = $request->input('skills_other', '');
-        if ($skills_other) {
-            $skills = array_merge($skills, array_map('trim', explode(',', $skills_other)));
-        }
-        $profile->skills = json_encode($skills);
-        $profile->is_4ps = $request->has('is_4ps');
-        $profile->save();
 
-     
-
-        // Handle job preferences
-        if ($request->has('job_preferences')) {
-            // Delete existing preferences
-            $user->jobPreferences()->delete();
+        DB::beginTransaction();
+        
+        try {
+            // Remove relationship fields from data array for profile fill, but keep education fields
+            $relationshipFields = ['disabilities', 'skills', 'work'];
+            $profileData = collect($data)->except($relationshipFields)->toArray();
             
-            // Save new preferences
-            foreach ($request->job_preferences as $preference) {
-                if (!empty($preference['preferred_job_title']) && !empty($preference['preferred_classification'])) {
-                    JobPreference::create([
-                        'user_id' => $user->id,
-                        'preferred_job_title' => $preference['preferred_job_title'],
-                        'preferred_classification' => $preference['preferred_classification'],
-                        'min_salary' => $preference['min_salary'] ?? null,
-                        'max_salary' => $preference['max_salary'] ?? null,
-                        'preferred_location' => $preference['preferred_location'] ?? null,
-                        'preferred_employment_type' => $preference['preferred_employment_type'] ?? null,
-                    ]);
+            // Handle education fields explicitly
+            if ($request->filled('education_level_id')) {
+                $profileData['education_level_id'] = $request->input('education_level_id');
+            }
+            
+            // Handle other education fields
+            $educationFields = ['institution_name', 'graduation_year', 'gpa', 'degree_field'];
+            foreach ($educationFields as $field) {
+                if ($request->filled($field)) {
+                    $profileData[$field] = $request->input($field);
                 }
             }
-        }
+            
+            $profile->fill($profileData);
+            $profile->is_4ps = $request->has('is_4ps');
+            $profile->save();
 
-        
-        return redirect()->route('dashboard')->with('success', 'Profile updated successfully!');
+            \Log::info('Profile basic data saved for user: ' . $user->id);
+
+            // Handle skills relationship
+            $skillIds = $request->input('skills', []);
+            \Log::info('Skills from request: ', $skillIds);
+            
+            // Handle additional skills from 'skills_other'
+            if ($request->filled('skills_other')) {
+                $otherSkills = array_map('trim', explode(',', $request->input('skills_other')));
+                foreach ($otherSkills as $skillName) {
+                    if (!empty($skillName)) {
+                        $skill = Skill::firstOrCreate(['name' => $skillName]);
+                        $skillIds[] = $skill->id;
+                    }
+                }
+            }
+
+            // Handle skills relationship using direct DB queries
+            // First, remove existing skills
+            DB::table('jobseeker_skills')->where('jobseeker_profile_id', $profile->id)->delete();
+            
+            // Then add new skills
+            if (!empty($skillIds)) {
+                $skillData = [];
+                foreach ($skillIds as $skillId) {
+                    $skillData[] = [
+                        'jobseeker_profile_id' => $profile->id,
+                        'skill_id' => $skillId,
+                        'proficiency_level' => null,
+                        'years_experience' => null,
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ];
+                }
+                DB::table('jobseeker_skills')->insert($skillData);
+                \Log::info('Skills inserted via DB: ' . count($skillData) . ' skills');
+            } else {
+                \Log::info('No skills to insert');
+            }
+
+            // Handle disabilities relationship
+            $disabilityIds = $request->input('disabilities', []);
+            \Log::info('Disabilities from request: ', $disabilityIds);
+            // Handle disabilities relationship using direct DB queries
+            // First, remove existing disabilities
+            DB::table('jobseeker_disabilities')->where('jobseeker_profile_id', $profile->id)->delete();
+            
+            // Then add new disabilities
+            if (!empty($disabilityIds)) {
+                $disabilityData = [];
+                foreach ($disabilityIds as $disabilityId) {
+                    $disabilityData[] = [
+                        'jobseeker_profile_id' => $profile->id,
+                        'disability_id' => $disabilityId,
+                        'accommodation_needs' => null,
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ];
+                }
+                DB::table('jobseeker_disabilities')->insert($disabilityData);
+                \Log::info('Disabilities inserted via DB: ' . count($disabilityData) . ' disabilities');
+            } else {
+                \Log::info('No disabilities to insert');
+            }
+
+            // Handle job preferences (existing logic)
+            if ($request->has('job_preferences')) {
+                // Delete existing preferences
+                $user->jobPreferences()->delete();
+                
+                // Save new preferences
+                foreach ($request->job_preferences as $preference) {
+                    if (!empty($preference['preferred_job_title']) && !empty($preference['preferred_classification'])) {
+                        JobPreference::create([
+                            'user_id' => $user->id,
+                            'preferred_job_title' => $preference['preferred_job_title'],
+                            'preferred_classification' => $preference['preferred_classification'],
+                            'min_salary' => $preference['min_salary'] ?? null,
+                            'max_salary' => $preference['max_salary'] ?? null,
+                            'preferred_location' => $preference['preferred_location'] ?? null,
+                            'preferred_employment_type' => $preference['preferred_employment_type'] ?? null,
+                        ]);
+                    }
+                }
+            }
+
+            DB::commit();
+            
+            return redirect()->route('dashboard')->with('success', 'Profile updated successfully!');
+            
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Profile update failed: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to update profile. Please try again.');
+        }
     }
 
     // Informal Jobseeker Methods
     public function editInformal()
     {
         $user = auth()->user();
-        $profile = $user->jobseekerProfile; // Get the user's profile data
+        $profile = JobseekerProfile::with(['skills', 'disabilities'])->where('user_id', $user->id)->first(); // Eager load relationships
         
         // Security check: Only allow informal users to access this form
         if ($profile && $profile->job_seeker_type !== 'informal') {
             return redirect()->route('jobseekers.edit')->with('error', 'Access denied. You are not an informal worker.');
         }
         
-        return view('users.jobseekers.informal.edit', compact('user', 'profile'));
+        // Load required data for the form
+        $disabilities = Disability::active()->orderBy('name')->get();
+        $informalSkills = Skill::active()->orderBy('name')->get();
+        
+        return view('users.jobseekers.informal.edit', compact('user', 'profile', 'disabilities', 'informalSkills'));
     }
 
     public function storeInformal(Request $request)
@@ -347,10 +442,12 @@ class JobseekerProfileController extends Controller
             'province' => 'nullable|string',
             'contactnumber' => 'nullable|string',
             'email' => 'nullable|string',
-            'disability' => 'nullable|array',
+            'disabilities' => 'nullable|array',
+            'disabilities.*' => 'exists:disabilities,id',
             'is_4ps' => 'nullable',
             'employmentstatus' => 'nullable|string',
-            'skills' => 'nullable|array',
+            'informal_skills' => 'nullable|array',
+            'informal_skills.*' => 'exists:skills,id',
             'skills_other' => 'nullable|string',
             'work_experience' => 'nullable|string',
         ]);
@@ -368,21 +465,86 @@ class JobseekerProfileController extends Controller
             $profile = new JobseekerProfile();
             $profile->user_id = $user->id;
         }
-        
-        $profile->fill($data);
-        $profile->disability = json_encode($request->input('disability', []));
-        $profile->work_experience = $request->input('work_experience', '');
-        
-        $skills = $request->input('skills', []);
-        $skills_other = $request->input('skills_other', '');
-        if ($skills_other) {
-            $skills = array_merge($skills, array_map('trim', explode(',', $skills_other)));
-        }
-        $profile->skills = json_encode($skills);
-        $profile->is_4ps = $request->has('is_4ps');
-        $profile->save();
 
-        return redirect()->route('dashboard')->with('success', 'Profile updated successfully!');
+        DB::beginTransaction();
+        
+        try {
+            // Remove relationship fields from data array
+            $relationshipFields = ['disabilities', 'informal_skills'];
+            $profileData = collect($data)->except($relationshipFields)->toArray();
+            
+            $profile->fill($profileData);
+            $profile->is_4ps = $request->has('is_4ps');
+            $profile->save();
+
+            \Log::info('Informal profile basic data saved for user: ' . $user->id);
+
+            // Handle disabilities relationship using direct DB queries
+            DB::table('jobseeker_disabilities')->where('jobseeker_profile_id', $profile->id)->delete();
+            
+            $disabilityIds = $request->input('disabilities', []);
+            if (!empty($disabilityIds)) {
+                $disabilityData = [];
+                foreach ($disabilityIds as $disabilityId) {
+                    $disabilityData[] = [
+                        'jobseeker_profile_id' => $profile->id,
+                        'disability_id' => $disabilityId,
+                        'accommodation_needs' => null,
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ];
+                }
+                DB::table('jobseeker_disabilities')->insert($disabilityData);
+                \Log::info('Informal disabilities inserted via DB: ' . count($disabilityData) . ' disabilities');
+            } else {
+                \Log::info('No informal disabilities to insert');
+            }
+
+            // Handle skills relationship
+            $skillIds = $request->input('informal_skills', []);
+            \Log::info('Informal skills from request: ', $skillIds);
+            
+            // Handle additional skills from 'skills_other'
+            if ($request->filled('skills_other')) {
+                $otherSkills = array_map('trim', explode(',', $request->input('skills_other')));
+                foreach ($otherSkills as $skillName) {
+                    if (!empty($skillName)) {
+                        $skill = Skill::firstOrCreate(['name' => $skillName]);
+                        $skillIds[] = $skill->id;
+                    }
+                }
+            }
+            
+            // Handle skills relationship using direct DB queries
+            DB::table('jobseeker_skills')->where('jobseeker_profile_id', $profile->id)->delete();
+            
+            if (!empty($skillIds)) {
+                $skillData = [];
+                foreach ($skillIds as $skillId) {
+                    $skillData[] = [
+                        'jobseeker_profile_id' => $profile->id,
+                        'skill_id' => $skillId,
+                        'proficiency_level' => null,
+                        'years_experience' => null,
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ];
+                }
+                DB::table('jobseeker_skills')->insert($skillData);
+                \Log::info('Informal skills inserted via DB: ' . count($skillData) . ' skills');
+            } else {
+                \Log::info('No informal skills to insert');
+            }
+
+            DB::commit();
+            
+            return redirect()->route('dashboard')->with('success', 'Profile updated successfully!');
+            
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Informal profile update failed: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to update profile. Please try again.');
+        }
     }
 
 }

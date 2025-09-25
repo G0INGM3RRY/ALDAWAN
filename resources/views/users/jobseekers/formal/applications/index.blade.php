@@ -40,7 +40,7 @@
                     <!-- Job Details -->
                     <div class="mb-3">
                         <h5 class="fw-bold text-dark mb-2">{{ $application->job->job_title }}</h5>
-                        <h6 class="text-primary mb-2">{{ $application->job->classification }}</h6>
+                        <h6 class="text-primary mb-2">{{ $application->job->jobClassification->name ?? 'Not specified' }}</h6>
                         
                         <!-- Job Info -->
                         <div class="row g-2 mb-3">

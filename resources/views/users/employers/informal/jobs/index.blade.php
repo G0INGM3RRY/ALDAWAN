@@ -45,7 +45,7 @@
                                         </div>
                                     </div>
                                     
-                                    <h6 class="card-subtitle mb-2 text-muted">{{ $job->classification }}</h6>
+                                    <h6 class="card-subtitle mb-2 text-muted">{{ $job->jobClassification->name ?? 'Not specified' }}</h6>
                                     
                                     <p class="card-text">
                                         {{ Str::limit($job->description, 100) }}

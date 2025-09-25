@@ -38,9 +38,16 @@ class UserController extends Controller
             $job_seeker_type = $request->session()->get('job_seeker_type', $request->job_seeker_type);
             
             if ($job_seeker_type === 'informal') {
-                return view('users.jobseekers.informal.complete', compact('user', 'job_seeker_type'));
+                // Get lookup data for informal complete form
+                $informalSkills = \App\Models\Skill::whereIn('category', ['trade', 'soft', 'language'])->orderBy('name')->get();
+                $disabilities = \App\Models\Disability::orderBy('name')->get();
+                return view('users.jobseekers.informal.complete', compact('user', 'job_seeker_type', 'informalSkills', 'disabilities'));
             } else {
-                return view('users.jobseekers.formal.complete', compact('user', 'job_seeker_type'));
+                // Get lookup data for formal complete form  
+                $skills = \App\Models\Skill::whereIn('category', ['technical', 'soft', 'language'])->orderBy('name')->get();
+                $disabilities = \App\Models\Disability::orderBy('name')->get();
+                $educationLevels = \App\Models\EducationLevel::all();
+                return view('users.jobseekers.formal.complete', compact('user', 'job_seeker_type', 'skills', 'disabilities', 'educationLevels'));
             }
         }elseif($user->role === 'employer'){
             return view('users.employers.complete', compact('user'));

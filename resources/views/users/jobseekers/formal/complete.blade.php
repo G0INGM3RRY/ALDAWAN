@@ -109,30 +109,13 @@
                         <div id="section-employment-status">
                             <div class="mb-3">
                                 <label class="form-label styled-label">Disability</label><br>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="disability[]" id="disability_visual" value="visual">
-                                    <label class="form-check-label" for="disability_visual">Visual</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="disability[]" id="disability_hearing" value="hearing">
-                                    <label class="form-check-label" for="disability_hearing">Hearing</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="disability[]" id="disability_speech" value="speech">
-                                    <label class="form-check-label" for="disability_speech">Speech</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="disability[]" id="disability_physical" value="physical">
-                                    <label class="form-check-label" for="disability_physical">Physical</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="disability[]" id="disability_mental" value="mental">
-                                    <label class="form-check-label" for="disability_mental">Mental</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="disability[]" id="disability_others" value="others">
-                                    <label class="form-check-label" for="disability_others">Others</label>
-                                </div>
+                                @foreach($disabilities as $disability)
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" name="disabilities[]" 
+                                               id="disability_{{ $disability->id }}" value="{{ $disability->id }}">
+                                        <label class="form-check-label" for="disability_{{ $disability->id }}">{{ $disability->name }}</label>
+                                    </div>
+                                @endforeach
                             </div>
                             <div class="mb-3">
                                 <label class="form-label styled-label">4PS Benificiary?</label><br>
@@ -149,23 +132,6 @@
                                     <option value="unemployed">Unemployed</option>
                                 </select>
                             </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label styled-label">4PS Benificiary?</label><br>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" name="is_4ps" id="is_4ps" value="yes">
-                                <label class="form-check-label" for="is_4ps">Yes</label>
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="employmentstatus" class="form-label">Employment Status</label>
-                            <select name="employmentstatus" id="employmentstatus" class="form-control w-75">
-                                <option value="">Select</option>
-                                <option value="employed">Employed</option>
-                                <option value="unemployed">Unemployed</option>
-                            </select>
                         </div>
 
                         <!-- Job Preferences -->
@@ -392,35 +358,17 @@
                             <h3>Skills</h3>
                             <label class="form-label">Select your skills</label>
                             <div class="mb-2">
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="skills[]" id="skill_gardening" value="gardening">
-                                    <label class="form-check-label" for="skill_gardening">Gardening</label>
+                                <div class="row">
+                                    @foreach($skills as $skill)
+                                        <div class="col-md-4 mb-2">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="skills[]" 
+                                                       id="skill_{{ $skill->id }}" value="{{ $skill->id }}">
+                                                <label class="form-check-label" for="skill_{{ $skill->id }}">{{ $skill->name }}</label>
+                                            </div>
+                                        </div>
+                                    @endforeach
                                 </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="skills[]" id="skill_carpentry" value="carpentry">
-                                    <label class="form-check-label" for="skill_carpentry">Carpentry</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="skills[]" id="skill_computer_repair" value="computer repair">
-                                    <label class="form-check-label" for="skill_computer_repair">Computer Repair</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="skills[]" id="skill_sewing" value="sewing">
-                                    <label class="form-check-label" for="skill_sewing">Sewing</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="skills[]" id="skill_driving" value="driving">
-                                    <label class="form-check-label" for="skill_driving">Driving</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="skills[]" id="skill_cooking" value="cooking">
-                                    <label class="form-check-label" for="skill_cooking">Cooking</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="skills[]" id="skill_cleaning" value="cleaning">
-                                    <label class="form-check-label" for="skill_cleaning">Cleaning</label>
-                                </div>
-                                <!-- Add more common skills as needed -->
                             </div>
                             <div class="mb-2">
                                 <label for="skills_other" class="form-label">Other skills (not listed above):</label>

@@ -9,11 +9,9 @@
     <h1>Recent Job Opportunities</h1>
     <div class="row">
         @php
-            // Get recent jobs from informal employers
+            // Get recent informal jobs (filter by job_type, not employer_type)
             $recentJobs = App\Models\Jobs::with(['user.employerProfile'])
-                ->whereHas('user.employerProfile', function($query) {
-                    $query->where('employer_type', 'informal');
-                })
+                ->where('job_type', 'informal')
                 ->where('status', 'open')
                 ->latest()
                 ->take(6)

@@ -44,7 +44,7 @@
                     </div>
                     
                     <!-- Job Classification -->
-                    <h6 class="text-warning fw-semibold mb-2">{{ $job->classification ?? 'General Labor' }}</h6>
+                    <h6 class="text-warning fw-semibold mb-2">{{ $job->jobClassification->name ?? 'General Labor' }}</h6>
                     
                     <!-- Description -->
                     <p class="card-text text-muted mb-3">

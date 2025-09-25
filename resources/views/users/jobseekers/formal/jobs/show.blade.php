@@ -17,7 +17,7 @@
                     <div class="d-flex justify-content-between align-items-start mb-3">
                         <div>
                             <h2 class="mb-2">{{ $job->job_title }}</h2>
-                            <h6 class="text-muted">{{ $job->classification }}</h6>
+                            <h6 class="text-muted">{{ $job->jobClassification->name ?? 'Not specified' }}</h6>
                         </div>
                         <span class="badge bg-{{ $job->status == 'open' ? 'success' : 'secondary' }} fs-6">
                             {{ ucfirst($job->status) }}

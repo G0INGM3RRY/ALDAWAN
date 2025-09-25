@@ -3,6 +3,17 @@
 
 @section('content')
     <h1>Manage your personal profile</h1>
+    
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+    
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
@@ -111,32 +122,18 @@
                             <div class="mb-3">
                                 <label class="form-label styled-label">Disability</label><br>
                                 @php
-                                    $disabilities = $profile && $profile->disability ? json_decode($profile->disability, true) : [];
-                                    $disabilities = is_array($disabilities) ? $disabilities : [];
+                                    $userDisabilities = $profile && $profile->disabilities ? $profile->disabilities->pluck('id')->toArray() : [];
                                 @endphp
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="disability[]" id="disability_visual" value="visual" {{ in_array('visual', $disabilities) ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="disability_visual">Visual</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="disability[]" id="disability_hearing" value="hearing" {{ in_array('hearing', $disabilities) ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="disability_hearing">Hearing</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="disability[]" id="disability_speech" value="speech" {{ in_array('speech', $disabilities) ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="disability_speech">Speech</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="disability[]" id="disability_physical" value="physical" {{ in_array('physical', $disabilities) ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="disability_physical">Physical</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="disability[]" id="disability_mental" value="mental" {{ in_array('mental', $disabilities) ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="disability_mental">Mental</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="disability[]" id="disability_others" value="others">
-                                    <label class="form-check-label" for="disability_others">Others</label>
+                                @foreach($disabilities as $disability)
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" name="disabilities[]" 
+                                               id="disability_{{ $disability->id }}" value="{{ $disability->id }}" 
+                                               {{ in_array($disability->id, $userDisabilities) ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="disability_{{ $disability->id }}">{{ $disability->name }}</label>
+                                    </div>
+                                @endforeach
+                                <div class="mt-2">
+                                    <small class="text-muted">Select all disabilities that apply to you for appropriate workplace accommodations.</small>
                                 </div>
                             </div>
                             <div class="mb-3">
@@ -319,176 +316,217 @@
                         <!-- Educational background -->
                         <div id="section-educational-background">
                             <h3>Educational Background</h3>
-                            <p class="text-muted">Please fill in your educational attainment from elementary up to the highest level attained.</p>
-                            <div class="table-responsive">
-                                <table class="table table-bordered align-middle education-table">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>Level</th>
-                                            <th>School Attended</th>
-                                            <th>Year Graduated</th>
-                                            <th>Honors/Remarks</th>
-                                            <th>Highest Level/Units Earned</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Elementary</td>
-                                            <td><input type="text" name="education[elementary][school]" class="form-control w-75" placeholder="School name"></td>
-                                            <td><input type="text" name="education[elementary][year]" class="form-control w-75" placeholder="Year graduated"></td>
-                                            <td><input type="text" name="education[elementary][honors]" class="form-control w-75" placeholder="Honors/Remarks"></td>
-                                            <td><input type="text" name="education[elementary][units]" class="form-control w-75" placeholder="N/A"></td>
-                                        </tr>
-                                        <tr>
-                                            <td>High School</td>
-                                            <td><input type="text" name="education[high_school][school]" class="form-control w-75" placeholder="School name"></td>
-                                            <td><input type="text" name="education[high_school][year]" class="form-control w-75" placeholder="Year graduated"></td>
-                                            <td><input type="text" name="education[high_school][honors]" class="form-control w-75" placeholder="Honors/Remarks"></td>
-                                            <td><input type="text" name="education[high_school][units]" class="form-control w-75" placeholder="N/A"></td>
-                                        </tr>
-                                        <tr>
-                                            <td>College</td>
-                                            <td><input type="text" name="education[college][school]" class="form-control w-75" placeholder="School name"></td>
-                                            <td><input type="text" name="education[college][year]" class="form-control w-75" placeholder="Year graduated"></td>
-                                            <td><input type="text" name="education[college][honors]" class="form-control w-75" placeholder="Honors/Remarks"></td>
-                                            <td><input type="text" name="education[college][units]" class="form-control w-75" placeholder="If undergraduate, highest year/units"></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Vocational</td>
-                                            <td><input type="text" name="education[vocational][school]" class="form-control w-75" placeholder="School name"></td>
-                                            <td><input type="text" name="education[vocational][year]" class="form-control w-75" placeholder="Year graduated"></td>
-                                            <td><input type="text" name="education[vocational][honors]" class="form-control w-75" placeholder="Honors/Remarks"></td>
-                                            <td><input type="text" name="education[vocational][units]" class="form-control w-75" placeholder="Course/Units"></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Graduate Studies</td>
-                                            <td><input type="text" name="education[graduate][school]" class="form-control w-75" placeholder="School name"></td>
-                                            <td><input type="text" name="education[graduate][year]" class="form-control w-75" placeholder="Year graduated"></td>
-                                            <td><input type="text" name="education[graduate][honors]" class="form-control w-75" placeholder="Honors/Remarks"></td>
-                                            <td><input type="text" name="education[graduate][units]" class="form-control w-75" placeholder="Course/Units"></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <p class="text-muted">Please select your highest education level and provide details.</p>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="education_level_id" class="form-label">Highest Education Level</label>
+                                        <select name="education_level_id" id="education_level_id" class="form-control">
+                                            <option value="">Select Education Level</option>
+                                            @foreach($educationLevels as $level)
+                                                <option value="{{ $level->id }}" 
+                                                        {{ old('education_level_id', $profile->education_level_id ?? '') == $level->id ? 'selected' : '' }}>
+                                                    {{ $level->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="institution_name" class="form-label">Institution Name</label>
+                                        <input type="text" name="institution_name" id="institution_name" 
+                                               class="form-control" 
+                                               value="{{ old('institution_name', $profile->institution_name ?? '') }}" 
+                                               placeholder="Name of school/university">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="graduation_year" class="form-label">Graduation Year</label>
+                                        <input type="number" name="graduation_year" id="graduation_year" 
+                                               class="form-control" 
+                                               value="{{ old('graduation_year', $profile->graduation_year ?? '') }}" 
+                                               placeholder="e.g., 2020" min="1950" max="{{ date('Y') + 10 }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="gpa" class="form-label">GPA (Optional)</label>
+                                        <input type="number" name="gpa" id="gpa" 
+                                               class="form-control" step="0.01" min="1" max="4" 
+                                               value="{{ old('gpa', $profile->gpa ?? '') }}" 
+                                               placeholder="e.g., 3.75">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="degree_field" class="form-label">Field of Study</label>
+                                        <input type="text" name="degree_field" id="degree_field" 
+                                               class="form-control" 
+                                               value="{{ old('degree_field', $profile->degree_field ?? '') }}" 
+                                               placeholder="e.g., Computer Science">
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
                         <!-- Work experience -->
                         <div id="section-work-experience">
                             <h3>Work Experience</h3>
-                            <p class="text-muted">List your previous work experiences. Leave blank if not applicable.</p>
-                            <div class="table-responsive">
-                                <table class="table table-bordered align-middle experience-table">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>Employer Name</th>
-                                            <th>Address</th>
-                                            <th>Position Held</th>
-                                            <th>Date From</th>
-                                            <th>Date To</th>
-                                            <th>Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td><input type="text" name="work[0][employer]" class="form-control w-75" placeholder="Employer name"></td>
-                                            <td><input type="text" name="work[0][address]" class="form-control w-75" placeholder="Address"></td>
-                                            <td><input type="text" name="work[0][position]" class="form-control w-75" placeholder="Position held"></td>
-                                            <td><input type="date" name="work[0][date_from]" class="form-control w-75"></td>
-                                            <td><input type="date" name="work[0][date_to]" class="form-control w-75"></td>
-                                            <td>
-                                                <select name="work[0][status]" class="form-control w-75">
-                                                    <option value="">Select</option>
-                                                    <option value="permanent">Permanent</option>
-                                                    <option value="contractual">Contractual</option>
-                                                    <option value="probationary">Probationary</option>
-                                                    <option value="part_time">Part-time</option>
-                                                    <option value="casual">Casual</option>
-                                                    <option value="project_based">Project-based</option>
-                                                    <option value="seasonal">Seasonal</option>
-                                                    <option value="others">Others</option>
-                                                </select>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><input type="text" name="work[1][employer]" class="form-control w-75" placeholder="Employer name"></td>
-                                            <td><input type="text" name="work[1][address]" class="form-control w-75" placeholder="Address"></td>
-                                            <td><input type="text" name="work[1][position]" class="form-control w-75" placeholder="Position held"></td>
-                                            <td><input type="date" name="work[1][date_from]" class="form-control w-75"></td>
-                                            <td><input type="date" name="work[1][date_to]" class="form-control w-75"></td>
-                                            <td>
-                                                <select name="work[1][status]" class="form-control w-75">
-                                                    <option value="">Select</option>
-                                                    <option value="permanent">Permanent</option>
-                                                    <option value="contractual">Contractual</option>
-                                                    <option value="probationary">Probationary</option>
-                                                    <option value="part_time">Part-time</option>
-                                                    <option value="casual">Casual</option>
-                                                    <option value="project_based">Project-based</option>
-                                                    <option value="seasonal">Seasonal</option>
-                                                    <option value="others">Others</option>
-                                                </select>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><input type="text" name="work[2][employer]" class="form-control w-75" placeholder="Employer name"></td>
-                                            <td><input type="text" name="work[2][address]" class="form-control w-75" placeholder="Address"></td>
-                                            <td><input type="text" name="work[2][position]" class="form-control w-75" placeholder="Position held"></td>
-                                            <td><input type="date" name="work[2][date_from]" class="form-control w-75"></td>
-                                            <td><input type="date" name="work[2][date_to]" class="form-control w-75"></td>
-                                            <td>
-                                                <select name="work[2][status]" class="form-control w-75">
-                                                    <option value="">Select</option>
-                                                    <option value="permanent">Permanent</option>
-                                                    <option value="contractual">Contractual</option>
-                                                    <option value="probationary">Probationary</option>
-                                                    <option value="part_time">Part-time</option>
-                                                    <option value="casual">Casual</option>
-                                                    <option value="project_based">Project-based</option>
-                                                    <option value="seasonal">Seasonal</option>
-                                                    <option value="others">Others</option>
-                                                </select>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                <small class="text-muted">Add more rows if needed.</small>
+                            <p class="text-muted">Add your work experiences. You can add multiple entries.</p>
+                            
+                            <div id="work-experiences-container">
+                                @if($profile && $profile->workExperiences && $profile->workExperiences->count() > 0)
+                                    @foreach($profile->workExperiences as $index => $workExp)
+                                        <div class="work-experience-item border p-3 mb-3 rounded">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Company Name</label>
+                                                        <input type="text" name="work_experiences[{{ $index }}][company_name]" 
+                                                               class="form-control" 
+                                                               value="{{ old('work_experiences.'.$index.'.company_name', $workExp->company_name) }}" 
+                                                               placeholder="Company name">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Job Title</label>
+                                                        <input type="text" name="work_experiences[{{ $index }}][job_title]" 
+                                                               class="form-control" 
+                                                               value="{{ old('work_experiences.'.$index.'.job_title', $workExp->job_title) }}" 
+                                                               placeholder="Position held">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Start Date</label>
+                                                        <input type="date" name="work_experiences[{{ $index }}][start_date]" 
+                                                               class="form-control" 
+                                                               value="{{ old('work_experiences.'.$index.'.start_date', $workExp->start_date ? $workExp->start_date->format('Y-m-d') : '') }}">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">End Date</label>
+                                                        <input type="date" name="work_experiences[{{ $index }}][end_date]" 
+                                                               class="form-control" 
+                                                               value="{{ old('work_experiences.'.$index.'.end_date', $workExp->end_date ? $workExp->end_date->format('Y-m-d') : '') }}">
+                                                        <small class="text-muted">Leave blank if current position</small>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="mb-3">
+                                                        <div class="form-check mt-4">
+                                                            <input type="checkbox" name="work_experiences[{{ $index }}][is_current]" 
+                                                                   class="form-check-input" id="current_{{ $index }}" 
+                                                                   value="1" {{ old('work_experiences.'.$index.'.is_current', $workExp->is_current) ? 'checked' : '' }}>
+                                                            <label class="form-check-label" for="current_{{ $index }}">Current Position</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-8">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Description (Optional)</label>
+                                                        <textarea name="work_experiences[{{ $index }}][description]" 
+                                                                  class="form-control" rows="2" 
+                                                                  placeholder="Brief description of responsibilities">{{ old('work_experiences.'.$index.'.description', $workExp->description) }}</textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 d-flex align-items-end">
+                                                    <button type="button" class="btn btn-outline-danger remove-work-experience">Remove</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <div class="work-experience-item border p-3 mb-3 rounded">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Company Name</label>
+                                                    <input type="text" name="work_experiences[0][company_name]" 
+                                                           class="form-control" placeholder="Company name">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Job Title</label>
+                                                    <input type="text" name="work_experiences[0][job_title]" 
+                                                           class="form-control" placeholder="Position held">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Start Date</label>
+                                                    <input type="date" name="work_experiences[0][start_date]" class="form-control">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label class="form-label">End Date</label>
+                                                    <input type="date" name="work_experiences[0][end_date]" class="form-control">
+                                                    <small class="text-muted">Leave blank if current position</small>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <div class="form-check mt-4">
+                                                        <input type="checkbox" name="work_experiences[0][is_current]" 
+                                                               class="form-check-input" id="current_0" value="1">
+                                                        <label class="form-check-label" for="current_0">Current Position</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Description (Optional)</label>
+                                                    <textarea name="work_experiences[0][description]" 
+                                                              class="form-control" rows="2" 
+                                                              placeholder="Brief description of responsibilities"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
                             </div>
+                            
+                            <button type="button" class="btn btn-outline-primary" id="add-work-experience">
+                                + Add Work Experience
+                            </button>
                         </div>
 
                         <!-- Skills -->
                         <div id="section-skills">
                             <h3>Skills</h3>
                             <label class="form-label">Select your skills</label>
-                            <div class="mb-2">
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="skills[]" id="skill_gardening" value="gardening">
-                                    <label class="form-check-label" for="skill_gardening">Gardening</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="skills[]" id="skill_carpentry" value="carpentry">
-                                    <label class="form-check-label" for="skill_carpentry">Carpentry</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="skills[]" id="skill_computer_repair" value="computer repair">
-                                    <label class="form-check-label" for="skill_computer_repair">Computer Repair</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="skills[]" id="skill_sewing" value="sewing">
-                                    <label class="form-check-label" for="skill_sewing">Sewing</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="skills[]" id="skill_driving" value="driving">
-                                    <label class="form-check-label" for="skill_driving">Driving</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="skills[]" id="skill_cooking" value="cooking">
-                                    <label class="form-check-label" for="skill_cooking">Cooking</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="skills[]" id="skill_cleaning" value="cleaning">
-                                    <label class="form-check-label" for="skill_cleaning">Cleaning</label>
-                                </div>
-                                <!-- Add more common skills as needed -->
+                            @php
+                                $userSkills = $profile && $profile->skills ? $profile->skills->pluck('id')->toArray() : [];
+                            @endphp
+                            <div class="mb-2 row">
+                                @foreach($skills->chunk(3) as $skillChunk)
+                                    <div class="col-md-4">
+                                        @foreach($skillChunk as $skill)
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="skills[]" 
+                                                       id="skill_{{ $skill->id }}" value="{{ $skill->id }}" 
+                                                       {{ in_array($skill->id, $userSkills) ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="skill_{{ $skill->id }}">{{ $skill->name }}</label>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @endforeach
                             </div>
                             <div class="mb-2">
                                 <label for="skills_other" class="form-label">Other skills (not listed above):</label>
@@ -605,6 +643,82 @@
                         </div>
                         <div class="col-md-6 d-flex align-items-end">
                             <button type="button" class="btn btn-outline-danger remove-preference">Remove Preference</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Work Experience Management
+        let workExperienceCount = {{ $profile && $profile->workExperiences ? $profile->workExperiences->count() : 1 }};
+        
+        document.getElementById('add-work-experience').addEventListener('click', function() {
+            const container = document.getElementById('work-experiences-container');
+            const newWorkExperience = createWorkExperienceItem(workExperienceCount);
+            container.insertAdjacentHTML('beforeend', newWorkExperience);
+            workExperienceCount++;
+        });
+        
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('remove-work-experience')) {
+                e.target.closest('.work-experience-item').remove();
+            }
+        });
+        
+        function createWorkExperienceItem(index) {
+            return `
+                <div class="work-experience-item border p-3 mb-3 rounded">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Company Name</label>
+                                <input type="text" name="work_experiences[${index}][company_name]" 
+                                       class="form-control" placeholder="Company name">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Job Title</label>
+                                <input type="text" name="work_experiences[${index}][job_title]" 
+                                       class="form-control" placeholder="Position held">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Start Date</label>
+                                <input type="date" name="work_experiences[${index}][start_date]" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">End Date</label>
+                                <input type="date" name="work_experiences[${index}][end_date]" class="form-control">
+                                <small class="text-muted">Leave blank if current position</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <div class="form-check mt-4">
+                                    <input type="checkbox" name="work_experiences[${index}][is_current]" 
+                                           class="form-check-input" id="current_${index}" value="1">
+                                    <label class="form-check-label" for="current_${index}">Current Position</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                <label class="form-label">Description (Optional)</label>
+                                <textarea name="work_experiences[${index}][description]" 
+                                          class="form-control" rows="2" 
+                                          placeholder="Brief description of responsibilities"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-4 d-flex align-items-end">
+                            <button type="button" class="btn btn-outline-danger remove-work-experience">Remove</button>
                         </div>
                     </div>
                 </div>

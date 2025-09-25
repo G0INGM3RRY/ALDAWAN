@@ -14,8 +14,15 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
        
-        // call the user seeder
+        // Call the lookup table seeders first
         $this->call([
+            SkillSeeder::class,
+            EducationLevelSeeder::class,
+            ClassificationSeeder::class,
+            DisabilitySeeder::class,
+            CompanyTypeSeeder::class,
+            
+            // Then call existing seeders
             UserSeeder::class,
             JobSeeder::class,
         ]);
