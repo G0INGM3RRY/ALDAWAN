@@ -44,12 +44,13 @@ class JobseekerProfileController extends Controller
             'religion' => 'nullable|string',
             'contactnumber' => 'nullable|string',
             'email' => 'nullable|string',
-            'disability' => 'nullable|array',
+            'disabilities' => 'nullable|array',
             'is_4ps' => 'nullable',
             'employmentstatus' => 'nullable|string',
             'education' => 'nullable|array',
             'work' => 'nullable|array',
             'skills' => 'nullable|array',
+            'formal_skills' => 'nullable|array',
             'skills_other' => 'nullable|string',
         ]);
 
@@ -67,18 +68,54 @@ class JobseekerProfileController extends Controller
             $profile = new JobseekerProfile();
             $profile->user_id = $user->id;
         }
-        $profile->fill($data);
-        $profile->disability = json_encode($request->input('disability', []));
-        $profile->education = json_encode($request->input('education', []));
-        $profile->work_experience = json_encode($request->input('work', []));
-        $skills = $request->input('skills', []);
-        $skills_other = $request->input('skills_other', '');
-        if ($skills_other) {
-            $skills = array_merge($skills, array_map('trim', explode(',', $skills_other)));
-        }
-        $profile->skills = json_encode($skills);
+        
+        // Remove the old JSON fields from the data array before filling
+        $profileData = $data;
+        unset($profileData['disabilities'], $profileData['education'], $profileData['skills'], $profileData['formal_skills'], $profileData['skills_other']);
+        
+        $profile->fill($profileData);
         $profile->is_4ps = $request->has('is_4ps');
         $profile->save();
+
+        // Handle disabilities using the new relational structure
+        if ($request->has('disabilities')) {
+            $profile->disabilities()->sync($request->input('disabilities', []));
+        }
+
+        // Handle skills using the new relational structure
+        $skillIds = [];
+        if ($request->has('skills')) {
+            $skillIds = array_merge($skillIds, $request->input('skills', []));
+        }
+        if ($request->has('formal_skills')) {
+            $skillIds = array_merge($skillIds, $request->input('formal_skills', []));
+        }
+        if ($request->has('informal_skills')) {
+            $skillIds = array_merge($skillIds, $request->input('informal_skills', []));
+        }
+        
+        // Handle other skills (create new skills if needed)
+        $skills_other = $request->input('skills_other', '');
+        if ($skills_other) {
+            $otherSkills = array_map('trim', explode(',', $skills_other));
+            foreach ($otherSkills as $skillName) {
+                if (!empty($skillName)) {
+                    $skill = Skill::createOrGetCustomSkill($skillName, 'formal');
+                    $skillIds[] = $skill->id;
+                }
+            }
+        }
+        
+        if (!empty($skillIds)) {
+            // Increment usage count for selected skills
+            foreach ($skillIds as $skillId) {
+                $skill = Skill::find($skillId);
+                if ($skill) {
+                    $skill->incrementUsage();
+                }
+            }
+            $profile->skills()->sync(array_unique($skillIds));
+        }
 
 
 
@@ -125,7 +162,7 @@ class JobseekerProfileController extends Controller
         }
         
         // Load required data for the form
-        $skills = Skill::active()->orderBy('name')->get();
+        $skills = Skill::getLimitedSkillsForDisplay('formal', 20);
         $disabilities = Disability::active()->orderBy('name')->get();
         $educationLevels = EducationLevel::active()->orderBy('name')->get();
         
@@ -332,7 +369,7 @@ class JobseekerProfileController extends Controller
         
         // Load required data for the form
         $disabilities = Disability::active()->orderBy('name')->get();
-        $informalSkills = Skill::active()->orderBy('name')->get();
+        $informalSkills = Skill::getLimitedSkillsForDisplay('informal', 20);
         
         return view('users.jobseekers.informal.edit', compact('user', 'profile', 'disabilities', 'informalSkills'));
     }
@@ -368,10 +405,10 @@ class JobseekerProfileController extends Controller
             'province' => 'nullable|string',
             'contactnumber' => 'nullable|string',
             'email' => 'nullable|string',
-            'disability' => 'nullable|array',
             'is_4ps' => 'nullable',
             'employmentstatus' => 'nullable|string',
             'skills' => 'nullable|array',
+            'informal_skills' => 'nullable|array',
             'skills_other' => 'nullable|string',
             'work_experience' => 'nullable|string',
             'preferred_work_type' => 'nullable|string',
@@ -393,18 +430,42 @@ class JobseekerProfileController extends Controller
             $profile->user_id = $user->id;
         }
         
-        $profile->fill($data);
-        $profile->disability = json_encode($request->input('disability', []));
-        $profile->work_experience = $request->input('work_experience', '');
+        // Remove the old JSON fields from the data array before filling
+        $profileData = $data;
+        unset($profileData['skills'], $profileData['informal_skills'], $profileData['skills_other'], $profileData['work_experience']);
         
-        $skills = $request->input('skills', []);
-        $skills_other = $request->input('skills_other', '');
-        if ($skills_other) {
-            $skills = array_merge($skills, array_map('trim', explode(',', $skills_other)));
-        }
-        $profile->skills = json_encode($skills);
+        $profile->fill($profileData);
         $profile->is_4ps = $request->has('is_4ps');
         $profile->save();
+
+        // Handle skills using the new relational structure
+        $skillIds = [];
+        if ($request->has('skills')) {
+            $skillIds = array_merge($skillIds, $request->input('skills', []));
+        }
+        
+        // Handle other skills (create new skills if needed)
+        $skills_other = $request->input('skills_other', '');
+        if ($skills_other) {
+            $otherSkills = array_map('trim', explode(',', $skills_other));
+            foreach ($otherSkills as $skillName) {
+                if (!empty($skillName)) {
+                    $skill = Skill::createOrGetCustomSkill($skillName, 'informal');
+                    $skillIds[] = $skill->id;
+                }
+            }
+        }
+        
+        if (!empty($skillIds)) {
+            // Increment usage count for selected skills
+            foreach ($skillIds as $skillId) {
+                $skill = Skill::find($skillId);
+                if ($skill) {
+                    $skill->incrementUsage();
+                }
+            }
+            $profile->skills()->sync(array_unique($skillIds));
+        }
 
         return redirect()->route('dashboard')->with('success', 'Profile completed successfully!');
     }

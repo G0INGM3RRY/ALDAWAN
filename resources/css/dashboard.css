@@ -12,6 +12,7 @@
     letter-spacing: 1px;
 }
 
+
 /* Button styles */
 .remove-preference.hidden {
     display: none;
@@ -40,3 +41,11 @@
 .delete-form {
     display: inline;
 }
+
+.form-step{
+            display: none;
+        }
+        .form-step.active{
+            display: block;
+        }
+    

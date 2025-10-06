@@ -14,7 +14,7 @@
                         @method('PUT')
                 
                         <!-- Personal Information -->
-                        <div id="section-personal-information">
+                        <div id="section-personal-information" class="form-step active">
                             <h4 class="mb-3">Personal Information</h4>
                             
                             <!-- Display job seeker type as readonly -->
@@ -23,112 +23,157 @@
                                 <p class="text-muted">Informal Worker - This cannot be changed after registration</p>
                                 <input type="hidden" name="job_seeker_type" value="informal">
                             </div>
-                            
-                            <div class="mb-3">
-                                <label for="first_name" class="form-label">First Name</label>
-                                <input type="text" name="first_name" class="form-control w-75" value="{{ old('first_name', $profile->first_name ?? '') }}" required>
-                                @error('first_name')<div class="text-danger">{{ $message }}</div>@enderror
+                        
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="first_name" class="form-label">First Name</label>
+                                        <input type="text" name="first_name" class="form-control" value="{{ old('first_name', $profile->first_name ?? '') }}" required>
+                                        @error('first_name')<div class="text-danger">{{ $message }}</div>@enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="middle_name" class="form-label">Middle Name</label>
+                                        <input type="text" name="middle_name" class="form-control" value="{{ old('middle_name', $profile->middle_name ?? '') }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="last_name" class="form-label">Last Name</label>
+                                        <input type="text" name="last_name" class="form-control" value="{{ old('last_name', $profile->last_name ?? '') }}" required>
+                                        @error('last_name')<div class="text-danger">{{ $message }}</div>@enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="suffix" class="form-label">Suffix</label>
+                                        <select name="suffix" class="form-control">
+                                            <option value="">None</option>
+                                            <option value="Jr." {{ (old('suffix', $profile->suffix ?? '') == 'Jr.') ? 'selected' : '' }}>Jr.</option>
+                                            <option value="Sr." {{ (old('suffix', $profile->suffix ?? '') == 'Sr.') ? 'selected' : '' }}>Sr.</option>
+                                            <option value="III" {{ (old('suffix', $profile->suffix ?? '') == 'III') ? 'selected' : '' }}>III</option>
+                                            <option value="IV" {{ (old('suffix', $profile->suffix ?? '') == 'IV') ? 'selected' : '' }}>IV</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                             
-                            <div class="mb-3">
-                                <label for="middle_name" class="form-label">Middle Name</label>
-                                <input type="text" name="middle_name" class="form-control w-75" value="{{ old('middle_name', $profile->middle_name ?? '') }}">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="birthday" class="form-label">Date of Birth</label>
+                                        <input type="date" name="birthday" id="birthday" class="form-control" value="{{ old('birthday', $profile->birthday ?? '') }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="civilstatus" class="form-label">Civil Status</label>
+                                        <select name="civilstatus" class="form-control">
+                                            <option value="">Select</option>
+                                            <option value="single" {{ (old('civilstatus', $profile->civilstatus ?? '') == 'single') ? 'selected' : '' }}>Single</option>
+                                            <option value="married" {{ (old('civilstatus', $profile->civilstatus ?? '') == 'married') ? 'selected' : '' }}>Married</option>
+                                            <option value="widowed" {{ (old('civilstatus', $profile->civilstatus ?? '') == 'widowed') ? 'selected' : '' }}>Widowed</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="sex" class="form-label">Sex</label>
+                                        <div class="mt-2">
+                                            <div class="form-check form-check-inline">
+                                                <input type="radio" name="sex" id="informal_edit_male" value="male" class="form-check-input" {{ old('sex', $profile->sex ?? '') == 'male' ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="informal_edit_male">Male</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input type="radio" name="sex" id="informal_edit_female" value="female" class="form-check-input" {{ old('sex', $profile->sex ?? '') == 'female' ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="informal_edit_female">Female</label>
+                                            </div>
+                                        </div>   
+                                    </div>
+                                </div>
                             </div>
                             
-                            <div class="mb-3">
-                                <label for="last_name" class="form-label">Last Name</label>
-                                <input type="text" name="last_name" class="form-control w-75" value="{{ old('last_name', $profile->last_name ?? '') }}" required>
-                                @error('last_name')<div class="text-danger">{{ $message }}</div>@enderror
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="photo" class="form-label">Photo</label>
+                                        <input type="file" name="photo" id="photo" class="form-control">
+                                        <small class="form-text text-muted">Upload your profile photo (JPG, PNG, max 2MB)</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    @if($profile && $profile->photo)
+                                         <div class="mt-2">
+                                             <img src="{{ asset('storage/' . $profile->photo) }}" alt="Current Photo" class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
+                                            <small class="text-muted d-block">Current: {{ $profile->photo }}</small>
+                                         </div>
+                                    @endif
+                                </div>
+                            </div>
+                        
+                            
+                            <div class="d-flex">
+                                <div class="mb-3">
+                                    <label for="street" class="form-label">Street</label>
+                                    <input type="text" name="street" id="street" class="form-control w-100" value="{{ old('street', $profile->street ?? '') }}">
+                                </div>
+                            
+                                <div class="mb-3">
+                                    <label for="barangay" class="form-label">Barangay</label>
+                                    <input type="text" name="barangay" id="barangay" class="form-control w-100" value="{{ old('barangay', $profile->barangay ?? '') }}">
+                                </div>
                             </div>
                             
-                            <div class="mb-3">
-                                <label for="suffix" class="form-label">Suffix</label>
-                                <select name="suffix" class="form-control w-75">
-                                    <option value="">None</option>
-                                    <option value="Jr." {{ (old('suffix', $profile->suffix ?? '') == 'Jr.') ? 'selected' : '' }}>Jr.</option>
-                                    <option value="Sr." {{ (old('suffix', $profile->suffix ?? '') == 'Sr.') ? 'selected' : '' }}>Sr.</option>
-                                    <option value="III" {{ (old('suffix', $profile->suffix ?? '') == 'III') ? 'selected' : '' }}>III</option>
-                                    <option value="IV" {{ (old('suffix', $profile->suffix ?? '') == 'IV') ? 'selected' : '' }}>IV</option>
-                                </select>
+                            <div class="d-flex">
+                                <div class="mb-3">
+                                    <label for="municipality" class="form-label">Municipality</label>
+                                    <input type="text" name="municipality" id="municipality" class="form-control w-100" value="{{ old('municipality', $profile->municipality ?? '') }}">
+                                </div>
+                            
+                                <div class="mb-3">
+                                    <label for="province" class="form-label">Province</label>
+                                    <input type="text" name="province" id="province" class="form-control w-100" value="{{ old('province', $profile->province ?? '') }}">
+                                </div>
                             </div>
                             
-                            <div class="mb-3">
-                                <label for="birthday" class="form-label">Date of Birth</label>
-                                <input type="date" name="birthday" id="birthday" class="form-control w-75" value="{{ old('birthday', $profile->birthday ?? '') }}">
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="sex" class="form-label">Sex</label>
-                                <select name="sex" class="form-control w-75">
-                                    <option value="">Select</option>
-                                    <option value="male" {{ (old('sex', $profile->sex ?? '') == 'male') ? 'selected' : '' }}>Male</option>
-                                    <option value="female" {{ (old('sex', $profile->sex ?? '') == 'female') ? 'selected' : '' }}>Female</option>
-                                </select>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="photo" class="form-label">Photo</label>
-                                <input type="file" name="photo" id="photo" class="form-control w-75">
-                                @if($profile && $profile->photo)
-                                     <div class="mt-2">
-                                         <img src="{{ asset('storage/' . $profile->photo) }}" alt="Current Photo" style="max-width: 200px;">
-                                        <small class="text-muted d-block">Current: {{ $profile->photo }}</small>
-                                     </div>
-                                @endif
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="civilstatus" class="form-label">Civil Status</label>
-                                <select name="civilstatus" class="form-control w-75">
-                                    <option value="">Select</option>
-                                    <option value="single" {{ (old('civilstatus', $profile->civilstatus ?? '') == 'single') ? 'selected' : '' }}>Single</option>
-                                    <option value="married" {{ (old('civilstatus', $profile->civilstatus ?? '') == 'married') ? 'selected' : '' }}>Married</option>
-                                    <option value="widowed" {{ (old('civilstatus', $profile->civilstatus ?? '') == 'widowed') ? 'selected' : '' }}>Widowed</option>
-                                </select>
-                            </div>
-                        </div>
+                            <div class="d-flex">
+                                <div class="mb-3">
+                                    <label for="contactnumber" class="form-label">Contact Number</label>
+                                    <input type="text" name="contactnumber" id="contactnumber" class="form-control w-100" value="{{ old('contactnumber', $profile->contactnumber ?? '') }}">
+                                </div>
 
-                        <!-- Contact & Location Information -->
-                        <div id="section-contact-location">
-                            <h4 class="mb-3 mt-4">Contact & Location</h4>
-                            
-                            <div class="mb-3">
-                                <label for="street" class="form-label">Street</label>
-                                <input type="text" name="street" id="street" class="form-control w-75" value="{{ old('street', $profile->street ?? '') }}">
+                                <div class="mb-3">
+                                    <label for="religion" class="form-label">Religion</label>
+                                    <input type="text" name="religion" id="religion" class="form-control w-100">
+                                </div>
                             </div>
                             
-                            <div class="mb-3">
-                                <label for="barangay" class="form-label">Barangay</label>
-                                <input type="text" name="barangay" id="barangay" class="form-control w-75" value="{{ old('barangay', $profile->barangay ?? '') }}">
+                            <div class="d-flex justify-content-center">
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" name="email" id="email" class="form-control w-100" value="{{ old('email', $profile->email ?? '') }}">
+                                 </div>
+                                 
                             </div>
-                            
-                            <div class="mb-3">
-                                <label for="municipality" class="form-label">Municipality</label>
-                                <input type="text" name="municipality" id="municipality" class="form-control w-75" value="{{ old('municipality', $profile->municipality ?? '') }}">
+
+                            <div class="mt-4 text-end">
+                                <button type="button" onclick="nextStep()" class="btn btn-primary">Next</button>
                             </div>
-                            
-                            <div class="mb-3">
-                                <label for="province" class="form-label">Province</label>
-                                <input type="text" name="province" id="province" class="form-control w-75" value="{{ old('province', $profile->province ?? '') }}">
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="contactnumber" class="form-label">Contact Number</label>
-                                <input type="text" name="contactnumber" id="contactnumber" class="form-control w-75" value="{{ old('contactnumber', $profile->contactnumber ?? '') }}">
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Email</label>
-                                <input type="email" name="email" id="email" class="form-control w-75" value="{{ old('email', $profile->email ?? '') }}">
-                            </div>
-                        </div>
+                        </div>   
+                       
 
                         <!-- Basic Work Information -->
-                        <div id="section-work-status">
+                        <div id="section-work-status" class="form-step">
                             <h4 class="mb-3 mt-4">Work Status & Benefits</h4>
                             
                             <div class="mb-3">
-                                <label class="form-label">Disability (if any)</label><br>
+                                <label class="form-label">Disability (if any)</label>
+                                <div class="mt-2">
+                                    <small class="text-muted">Select all that apply for appropriate workplace accommodations.</small>
+                                </div>
+                                <br>
                                 @php
                                     $userDisabilities = $profile && $profile->disabilities ? $profile->disabilities->pluck('id')->toArray() : [];
                                 @endphp
@@ -140,8 +185,15 @@
                                         <label class="form-check-label" for="disability_{{ $disability->id }}">{{ $disability->name }}</label>
                                     </div>
                                 @endforeach
-                                <div class="mt-2">
-                                    <small class="text-muted">Select all that apply for appropriate workplace accommodations.</small>
+                                
+
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="mb-3">
+                                            <label for="other_disabilities" class="form-label">Other disabilities (not listed above):</label>
+                                            <input type="text" name="other_disabilities" id="other_disabilities" class="form-control" placeholder="Type other disabilities here, separated by commas">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             
@@ -153,18 +205,26 @@
                                 </div>
                             </div>
                             
-                            <div class="mb-3">
-                                <label for="employmentstatus" class="form-label">Current Employment Status</label>
-                                <select name="employmentstatus" id="employmentstatus" class="form-control w-75">
-                                    <option value="">Select</option>
-                                    <option value="employed" {{ (old('employmentstatus', $profile->employmentstatus ?? '') == 'employed') ? 'selected' : '' }}>Currently Working</option>
-                                    <option value="unemployed" {{ (old('employmentstatus', $profile->employmentstatus ?? '') == 'unemployed') ? 'selected' : '' }}>Looking for Work</option>
-                                </select>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="employmentstatus" class="form-label">Current Employment Status</label>
+                                        <select name="employmentstatus" id="employmentstatus" class="form-control">
+                                            <option value="">Select</option>
+                                            <option value="employed" {{ (old('employmentstatus', $profile->employmentstatus ?? '') == 'employed') ? 'selected' : '' }}>Currently Working</option>
+                                            <option value="unemployed" {{ (old('employmentstatus', $profile->employmentstatus ?? '') == 'unemployed') ? 'selected' : '' }}>Looking for Work</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-4 d-flex justify-content-between">
+                                <button type="button" onclick="prevStep()" class="btn btn-secondary">Prev</button>
+                                <button type="button" onclick="nextStep()" class="btn btn-primary">Next</button>
                             </div>
                         </div>
 
                         <!-- Basic Skills -->
-                        <div id="section-skills">
+                        <div id="section-skills" class="form-step">
                             <h4 class="mb-3 mt-4">Skills & Experience</h4>
                             
                             <div class="mb-3">
@@ -186,20 +246,68 @@
                                 </div>
                             </div>
                             
-                            <div class="mb-3">
-                                <label for="skills_other" class="form-label">Other Skills (separate by comma)</label>
-                                <textarea name="skills_other" id="skills_other" class="form-control w-75" rows="3" placeholder="e.g., sewing, massage therapy, tutoring">{{ old('skills_other', '') }}</textarea>
+                            <small class="form-text text-muted mb-3">
+                                <i class="fas fa-info-circle text-primary"></i> <strong>Smart Skills Display:</strong> We show the 20 most popular and relevant skills. Custom skills you add will be included in future selections based on usage.
+                            </small>
+                            
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="mb-3">
+                                        <label for="skills_other" class="form-label">Other Skills (separate by comma)</label>
+                                        <textarea name="skills_other" id="skills_other" class="form-control" rows="3" placeholder="e.g., sewing, massage therapy, tutoring">{{ old('skills_other', '') }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 d-flex justify-content-between">
+                                <button type="button" onclick="prevStep()" class="btn btn-secondary">Prev</button>
+                                <button type="submit" class="btn btn-success btn-lg">Update Profile</button>
                             </div>
                         </div>
 
-                        <!-- Work Experience section removed - using structured work_experiences instead -->
-
-                        <div class="d-grid gap-2 mt-4">
-                            <button type="submit" class="btn btn-primary btn-lg">Update Profile</button>
-                        </div>
+                      
                     </form>
                 </div>
             </div>
         </div>
     </div>
+
+    <style>
+        .form-step{
+            display: none;
+        }
+        .form-step.active{
+            display: block;
+        }
+    </style>
+
+    <script>
+        //step by step 
+        let currentStep = 0;
+        const steps = document.querySelectorAll(".form-step");
+
+        function showStep(step){
+            steps.forEach((s, i)=> {
+                s.classList.remove("active");
+                if(i === step){
+                    s.classList.add("active");
+                }
+            });
+        }
+
+        function prevStep(){
+            if(currentStep > 0){
+                currentStep--;
+                showStep(currentStep);
+            }
+        }
+
+        function nextStep(){
+            if(currentStep < steps.length-1){
+                currentStep++;
+                showStep(currentStep);
+            }
+        }
+        showStep(currentStep);
+    </script>
 @endsection

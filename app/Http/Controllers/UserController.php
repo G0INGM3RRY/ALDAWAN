@@ -17,6 +17,16 @@ class UserController extends Controller
     public function index()
     {
         $user = Auth::user();
+        
+        // Eager load all necessary relationships for comprehensive profile display
+        $user->load([
+            'jobseekerProfile.skills',
+            'jobseekerProfile.disabilities', 
+            'jobseekerProfile.educationLevel',
+            'jobseekerProfile.workExperiences',
+            'jobPreferences'
+        ]);
+        
         $profile = $user->jobseekerProfile;
         
         // Route to appropriate index view based on job seeker type
@@ -39,12 +49,12 @@ class UserController extends Controller
             
             if ($job_seeker_type === 'informal') {
                 // Get lookup data for informal complete form
-                $informalSkills = \App\Models\Skill::whereIn('category', ['trade', 'soft', 'language'])->orderBy('name')->get();
+                $informalSkills = \App\Models\Skill::getLimitedSkillsForDisplay('informal', 20);
                 $disabilities = \App\Models\Disability::orderBy('name')->get();
                 return view('users.jobseekers.informal.complete', compact('user', 'job_seeker_type', 'informalSkills', 'disabilities'));
             } else {
                 // Get lookup data for formal complete form  
-                $skills = \App\Models\Skill::whereIn('category', ['technical', 'soft', 'language'])->orderBy('name')->get();
+                $skills = \App\Models\Skill::getLimitedSkillsForDisplay('formal', 20);
                 $disabilities = \App\Models\Disability::orderBy('name')->get();
                 $educationLevels = \App\Models\EducationLevel::all();
                 return view('users.jobseekers.formal.complete', compact('user', 'job_seeker_type', 'skills', 'disabilities', 'educationLevels'));

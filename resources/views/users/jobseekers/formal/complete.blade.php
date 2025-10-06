@@ -1,142 +1,252 @@
-
 @extends('layouts.dashboard')
 
 @section('content')
-    <h1>Manage your personal profile</h1>
+    <h1>Complete your personal profile</h1>
+    
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+    
     <div class="row justify-content-center">
         <div class="col-md-10">
             <div class="card">
                 <div class="card-header">
                     <h3 class="mb-0 text-center">Complete your personal profile</h3>
+                    <!-- Progress Steps -->
+                    <div class="progress mt-3">
+                        <div class="progress-bar" role="progressbar" style="width: 33%" id="progress-bar"></div>
+                    </div>
+                    <div class="step-indicators d-flex justify-content-between mt-2">
+                        <span class="step-indicator active" id="step-1">1. Personal Info</span>
+                        <span class="step-indicator" id="step-2">2. Employment Status</span>
+                        <span class="step-indicator" id="step-3">3. Job Preferences</span>
+                    </div>
                 </div>
                 <div class="card-body">
                     <form action="{{ route('jobseeker.complete') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                    
-                        <!-- Personal information -->
-                        <div id="section-personal-information">
+                        <!-- Section 1: Personal Information -->
+                        <div id="section-personal-information" class="form-step active">
+                            <h4 class="mb-4">Personal Information</h4>
+                            
                             <div class="mb-3">
                                 <label class="form-label">Job Seeker Type</label>
                                 <p class="text-muted">Formal Worker - Selected during registration</p>
                                 <input type="hidden" name="job_seeker_type" value="formal">
                             </div>
                             
-                            <div class="mb-3">
-                                <label for="first_name" class="form-label">First Name</label>
-                                <input type="text" name="first_name" class="form-control w-75" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="middle_name" class="form-label">Middle Name</label>
-                                <input type="text" name="middle_name" class="form-control w-75">
-                            </div>
-                            <div class="mb-3">
-                                <label for="last_name" class="form-label">Last Name</label>
-                                <input type="text" name="last_name" class="form-control w-75" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="suffix" class="form-label">Suffix</label>
-                                <select name="suffix" class="form-control w-75">
-                                    <option value="">None</option>
-                                    <option value="Jr.">Jr.</option>
-                                    <option value="Sr.">Sr.</option>
-                                    <option value="III">III</option>
-                                    <option value="IV">IV</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="birthday" class="form-label">Date of birth</label>
-                                <input type="date" name="birthday" id="birthday" class="form-control w-75">
-                            </div>
-                            <div class="mb-3">
-                                <label for="sex" class="form-label">Sex</label>
-                                <select name="sex" class="form-control w-75">
-                                    <option value="">None</option>
-                                    <option value="male">Male</option>
-                                    <option value="female">Female</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="photo" class="form-label">Photo</label>
-                                <input type="file" name="photo" id="photo" class="form-control w-75">
-                                @if($profile && $profile->photo)
-                                    <div class="mt-2">
-                                        <img src="{{ asset('storage/' . $profile->photo) }}" alt="Current Photo" style="max-width: 200px;">
-                                        <small class="text-muted d-block">Current: {{ $profile->photo }}</small>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="first_name" class="form-label">First Name</label>
+                                        <input type="text" name="first_name" class="form-control" required>
                                     </div>
-                                @endif
-                            </div>
-                            <div class="mb-3">
-                                <label for="civilstatus" class="form-label">Civil Status</label>
-                                <select name="civilstatus" class="form-control w-75">
-                                    <option value="">Select</option>
-                                    <option value="single">Single</option>
-                                    <option value="married">Married</option>
-                                    <option value="widowed">Widowed</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="street"  class="form-label">Street</label>
-                                <input type="text" name="street" id="street" class="form-control w-75">
-                            </div>
-                            <div class="mb-3">
-                                <label for="barangay"  class="form-label">Barangay</label>
-                                <input type="text" name="barangay" id="barangay" class="form-control w-75">
-                            </div>
-                            <div class="mb-3">
-                                <label for="municipality"  class="form-label">Municipality</label>
-                                <input type="text" name="municipality" id="municipality"class="form-control w-75">
-                            </div>
-                            <div class="mb-3">
-                                <label for="province"  class="form-label">Province</label>
-                                <input type="text" name="province" id="province"class="form-control w-75">
-                            </div>
-                            <div class="mb-3">
-                                <label for="religion"  class="form-label">Religion</label>
-                                <input type="text" name="religion" id="religion"class="form-control w-75">
-                            </div>
-                            <div class="mb-3">
-                                <label for="contactnumber"  class="form-label">Contact Number</label>
-                                <input type="text" name="contactnumber" id="contactnumber"class="form-control w-75">
-                            </div>
-                            <div class="mb-3">
-                                <label for="email"  class="form-label">Email</label>
-                                <input type="email" name="email" id="email" class="form-control w-75">
-                            </div>
-                        </div>
-
-
-                        <!-- Employment status -->
-                        <div id="section-employment-status">
-                            <div class="mb-3">
-                                <label class="form-label styled-label">Disability</label><br>
-                                @foreach($disabilities as $disability)
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" name="disabilities[]" 
-                                               id="disability_{{ $disability->id }}" value="{{ $disability->id }}">
-                                        <label class="form-check-label" for="disability_{{ $disability->id }}">{{ $disability->name }}</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="middle_name" class="form-label">Middle Name</label>
+                                        <input type="text" name="middle_name" class="form-control">
                                     </div>
-                                @endforeach
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label styled-label">4PS Benificiary?</label><br>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="is_4ps" id="is_4ps" value="yes">
-                                    <label class="form-check-label" for="is_4ps">Yes</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="last_name" class="form-label">Last Name</label>
+                                        <input type="text" name="last_name" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="suffix" class="form-label">Suffix</label>
+                                        <select name="suffix" class="form-control">
+                                            <option value="">None</option>
+                                            <option value="Jr.">Jr.</option>
+                                            <option value="Sr.">Sr.</option>
+                                            <option value="III">III</option>
+                                            <option value="IV">IV</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="mb-3">
-                                <label for="employmentstatus" class="form-label">Employment Status</label>
-                                <select name="employmentstatus" id="employmentstatus" class="form-control w-75">
-                                    <option value="">Select</option>
-                                    <option value="employed">Employed</option>
-                                    <option value="unemployed">Unemployed</option>
-                                </select>
+                            
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="birthday" class="form-label">Date of birth</label>
+                                        <input type="date" name="birthday" id="birthday" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="civilstatus" class="form-label">Civil Status</label>
+                                        <select name="civilstatus" class="form-control">
+                                            <option value="">Select</option>
+                                            <option value="single">Single</option>
+                                            <option value="married">Married</option>
+                                            <option value="widowed">Widowed</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="sex" class="form-label">Sex</label>
+                                        <div class="mt-2">
+                                            <div class="form-check form-check-inline">
+                                                <input type="radio" name="sex" id="formal_complete_male" value="male" class="form-check-input" {{ old('sex') == 'male' ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="formal_complete_male">Male</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input type="radio" name="sex" id="formal_complete_female" value="female" class="form-check-input" {{ old('sex') == 'female' ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="formal_complete_female">Female</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="photo" class="form-label">Photo</label>
+                                        <input type="file" name="photo" id="photo" class="form-control">
+                                        <small class="form-text text-muted">Upload your profile photo (JPG, PNG, max 2MB)</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    @if(isset($profile) && $profile->photo)
+                                        <div class="mt-2">
+                                            <img src="{{ asset('storage/' . $profile->photo) }}" alt="Current Photo" class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
+                                            <small class="text-muted d-block">Current: {{ $profile->photo }}</small>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <h5 class="mt-4 mb-3">Address Information</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="street" class="form-label">Street</label>
+                                        <input type="text" name="street" id="street" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="barangay" class="form-label">Barangay</label>
+                                        <input type="text" name="barangay" id="barangay" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="municipality" class="form-label">Municipality</label>
+                                        <input type="text" name="municipality" id="municipality" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="province" class="form-label">Province</label>
+                                        <input type="text" name="province" id="province" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h5 class="mt-4 mb-3">Contact Information</h5>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="contactnumber" class="form-label">Contact Number</label>
+                                        <input type="text" name="contactnumber" id="contactnumber" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label">Email</label>
+                                        <input type="email" name="email" id="email" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="religion" class="form-label">Religion</label>
+                                        <input type="text" name="religion" id="religion" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 text-end">
+                                <button type="button" onclick="nextStep()" class="btn btn-primary">Next</button>
                             </div>
                         </div>
 
-                        <!-- Job Preferences -->
-                        <div id="section-job-preferences">
-                            <h3>Job Preferences</h3>
+                        <!-- Section 2: Employment Status -->
+                        <div id="section-employment-status" class="form-step">
+                            <h4 class="mb-4">Employment Status & Information</h4>
+                            
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="mb-3">
+                                        <label class="form-label">Disability (Check all that apply)</label><br>
+                                        @if(isset($disabilities))
+                                            @foreach($disabilities as $disability)
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" name="disabilities[]" 
+                                                           id="disability_{{ $disability->id }}" value="{{ $disability->id }}">
+                                                    <label class="form-check-label" for="disability_{{ $disability->id }}">{{ $disability->name }}</label>
+                                                </div>
+                                            @endforeach
+                                        @else
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" name="disabilities[]" 
+                                                       id="disability_none" value="none">
+                                                <label class="form-check-label" for="disability_none">None</label>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">4PS Beneficiary?</label><br>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="is_4ps" id="is_4ps_yes" value="yes">
+                                            <label class="form-check-label" for="is_4ps_yes">Yes</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="is_4ps" id="is_4ps_no" value="no">
+                                            <label class="form-check-label" for="is_4ps_no">No</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="employmentstatus" class="form-label">Employment Status</label>
+                                        <select name="employmentstatus" id="employmentstatus" class="form-control">
+                                            <option value="">Select</option>
+                                            <option value="employed">Employed</option>
+                                            <option value="unemployed">Unemployed</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 d-flex justify-content-between">
+                                <button type="button" onclick="prevStep()" class="btn btn-secondary">Previous</button>
+                                <button type="button" onclick="nextStep()" class="btn btn-primary">Next</button>
+                            </div>
+                        </div>
+
+                        <!-- Section 3: Job Preferences -->
+                        <div id="section-job-preferences" class="form-step">
+                            <h4 class="mb-4">Job Preferences</h4>
                             <p class="text-muted">Specify your preferred job types and requirements. You can add multiple preferences.</p>
                             
                             <div id="job-preferences-container">
@@ -145,25 +255,19 @@
                                         <div class="col-md-6">
                                             <div class="mb-3">
                                                 <label class="form-label">Preferred Job Title</label>
-                                                <input type="text" name="job_preferences[0][preferred_job_title]" class="form-control w-75" placeholder="e.g., Software Developer">
+                                                <input type="text" name="job_preferences[0][preferred_job_title]" class="form-control" placeholder="e.g., Software Developer">
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="mb-3">
                                                 <label class="form-label">Job Classification</label>
-                                                <select name="job_preferences[0][preferred_classification]" class="form-control w-75">
+                                                <select name="job_preferences[0][job_classification_id]" class="form-control">
                                                     <option value="">Select Classification</option>
-                                                    <option value="Information Technology">Information Technology</option>
-                                                    <option value="Customer Service">Customer Service</option>
-                                                    <option value="Marketing">Marketing</option>
-                                                    <option value="Administrative">Administrative</option>
-                                                    <option value="Creative">Creative</option>
-                                                    <option value="Sales">Sales</option>
-                                                    <option value="Finance">Finance</option>
-                                                    <option value="Healthcare">Healthcare</option>
-                                                    <option value="Education">Education</option>
-                                                    <option value="Manufacturing">Manufacturing</option>
-                                                    <option value="Other">Other</option>
+                                                    @if(isset($jobClassifications))
+                                                        @foreach($jobClassifications as $classification)
+                                                            <option value="{{ $classification->id }}">{{ $classification->name }}</option>
+                                                        @endforeach
+                                                    @endif
                                                 </select>
                                             </div>
                                         </div>
@@ -172,19 +276,19 @@
                                         <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label class="form-label">Min Salary (PHP)</label>
-                                                <input type="number" name="job_preferences[0][min_salary]" class="form-control w-75" step="0.01" placeholder="15000">
+                                                <input type="number" name="job_preferences[0][min_salary]" class="form-control" step="0.01" placeholder="15000">
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label class="form-label">Max Salary (PHP)</label>
-                                                <input type="number" name="job_preferences[0][max_salary]" class="form-control w-75" step="0.01" placeholder="25000">
+                                                <input type="number" name="job_preferences[0][max_salary]" class="form-control" step="0.01" placeholder="25000">
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label class="form-label">Preferred Location</label>
-                                                <input type="text" name="job_preferences[0][preferred_location]" class="form-control w-75" placeholder="e.g., Makati, Remote">
+                                                <input type="text" name="job_preferences[0][preferred_location]" class="form-control" placeholder="e.g., Makati, Remote">
                                             </div>
                                         </div>
                                     </div>
@@ -192,7 +296,7 @@
                                         <div class="col-md-6">
                                             <div class="mb-3">
                                                 <label class="form-label">Employment Type</label>
-                                                <select name="job_preferences[0][preferred_employment_type]" class="form-control w-75">
+                                                <select name="job_preferences[0][preferred_employment_type]" class="form-control">
                                                     <option value="">Select Type</option>
                                                     <option value="full-time">Full-time</option>
                                                     <option value="part-time">Part-time</option>
@@ -203,247 +307,114 @@
                                             </div>
                                         </div>
                                         <div class="col-md-6 d-flex align-items-end">
-                                            <button type="button" class="btn btn-outline-danger remove-preference hidden">Remove Preference</button>
+                                            <button type="button" class="btn btn-outline-primary" onclick="addJobPreference()">Add Another Preference</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            
-                            <button type="button" class="btn btn-outline-primary" id="add-job-preference">
-                                + Add Another Job Preference
-                            </button>
-                        </div>
 
-                        <!-- Educational background -->
-                        <div id="section-educational-background">
-                            <h3>Educational Background</h3>
-                            <p class="text-muted">Please fill in your educational attainment from elementary up to the highest level attained.</p>
-                            <div class="table-responsive">
-                                <table class="table table-bordered align-middle education-table">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>Level</th>
-                                            <th>School Attended</th>
-                                            <th>Year Graduated</th>
-                                            <th>Honors/Remarks</th>
-                                            <th>Highest Level/Units Earned</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Elementary</td>
-                                            <td><input type="text" name="education[elementary][school]" class="form-control w-75" placeholder="School name"></td>
-                                            <td><input type="text" name="education[elementary][year]" class="form-control w-75" placeholder="Year graduated"></td>
-                                            <td><input type="text" name="education[elementary][honors]" class="form-control w-75" placeholder="Honors/Remarks"></td>
-                                            <td><input type="text" name="education[elementary][units]" class="form-control w-75" placeholder="N/A"></td>
-                                        </tr>
-                                        <tr>
-                                            <td>High School</td>
-                                            <td><input type="text" name="education[high_school][school]" class="form-control w-75" placeholder="School name"></td>
-                                            <td><input type="text" name="education[high_school][year]" class="form-control w-75" placeholder="Year graduated"></td>
-                                            <td><input type="text" name="education[high_school][honors]" class="form-control w-75" placeholder="Honors/Remarks"></td>
-                                            <td><input type="text" name="education[high_school][units]" class="form-control w-75" placeholder="N/A"></td>
-                                        </tr>
-                                        <tr>
-                                            <td>College</td>
-                                            <td><input type="text" name="education[college][school]" class="form-control w-75" placeholder="School name"></td>
-                                            <td><input type="text" name="education[college][year]" class="form-control w-75" placeholder="Year graduated"></td>
-                                            <td><input type="text" name="education[college][honors]" class="form-control w-75" placeholder="Honors/Remarks"></td>
-                                            <td><input type="text" name="education[college][units]" class="form-control w-75" placeholder="If undergraduate, highest year/units"></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Vocational</td>
-                                            <td><input type="text" name="education[vocational][school]" class="form-control w-75" placeholder="School name"></td>
-                                            <td><input type="text" name="education[vocational][year]" class="form-control w-75" placeholder="Year graduated"></td>
-                                            <td><input type="text" name="education[vocational][honors]" class="form-control w-75" placeholder="Honors/Remarks"></td>
-                                            <td><input type="text" name="education[vocational][units]" class="form-control w-75" placeholder="Course/Units"></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Graduate Studies</td>
-                                            <td><input type="text" name="education[graduate][school]" class="form-control w-75" placeholder="School name"></td>
-                                            <td><input type="text" name="education[graduate][year]" class="form-control w-75" placeholder="Year graduated"></td>
-                                            <td><input type="text" name="education[graduate][honors]" class="form-control w-75" placeholder="Honors/Remarks"></td>
-                                            <td><input type="text" name="education[graduate][units]" class="form-control w-75" placeholder="Course/Units"></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <div class="mt-4 d-flex justify-content-between">
+                                <button type="button" onclick="prevStep()" class="btn btn-secondary">Previous</button>
+                                <button type="submit" class="btn btn-success btn-lg">Complete Profile</button>
                             </div>
                         </div>
-
-                        <!-- Work experience -->
-                        <div id="section-work-experience">
-                            <h3>Work Experience</h3>
-                            <p class="text-muted">List your previous work experiences. Leave blank if not applicable.</p>
-                            <div class="table-responsive">
-                                <table class="table table-bordered align-middle experience-table">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>Employer Name</th>
-                                            <th>Address</th>
-                                            <th>Position Held</th>
-                                            <th>Date From</th>
-                                            <th>Date To</th>
-                                            <th>Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td><input type="text" name="work[0][employer]" class="form-control w-75" placeholder="Employer name"></td>
-                                            <td><input type="text" name="work[0][address]" class="form-control w-75" placeholder="Address"></td>
-                                            <td><input type="text" name="work[0][position]" class="form-control w-75" placeholder="Position held"></td>
-                                            <td><input type="date" name="work[0][date_from]" class="form-control w-75"></td>
-                                            <td><input type="date" name="work[0][date_to]" class="form-control w-75"></td>
-                                            <td>
-                                                <select name="work[0][status]" class="form-control w-75">
-                                                    <option value="">Select</option>
-                                                    <option value="permanent">Permanent</option>
-                                                    <option value="contractual">Contractual</option>
-                                                    <option value="probationary">Probationary</option>
-                                                    <option value="part_time">Part-time</option>
-                                                    <option value="casual">Casual</option>
-                                                    <option value="project_based">Project-based</option>
-                                                    <option value="seasonal">Seasonal</option>
-                                                    <option value="others">Others</option>
-                                                </select>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><input type="text" name="work[1][employer]" class="form-control w-75" placeholder="Employer name"></td>
-                                            <td><input type="text" name="work[1][address]" class="form-control w-75" placeholder="Address"></td>
-                                            <td><input type="text" name="work[1][position]" class="form-control w-75" placeholder="Position held"></td>
-                                            <td><input type="date" name="work[1][date_from]" class="form-control w-75"></td>
-                                            <td><input type="date" name="work[1][date_to]" class="form-control w-75"></td>
-                                            <td>
-                                                <select name="work[1][status]" class="form-control w-75">
-                                                    <option value="">Select</option>
-                                                    <option value="permanent">Permanent</option>
-                                                    <option value="contractual">Contractual</option>
-                                                    <option value="probationary">Probationary</option>
-                                                    <option value="part_time">Part-time</option>
-                                                    <option value="casual">Casual</option>
-                                                    <option value="project_based">Project-based</option>
-                                                    <option value="seasonal">Seasonal</option>
-                                                    <option value="others">Others</option>
-                                                </select>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><input type="text" name="work[2][employer]" class="form-control w-75" placeholder="Employer name"></td>
-                                            <td><input type="text" name="work[2][address]" class="form-control w-75" placeholder="Address"></td>
-                                            <td><input type="text" name="work[2][position]" class="form-control w-75" placeholder="Position held"></td>
-                                            <td><input type="date" name="work[2][date_from]" class="form-control w-75"></td>
-                                            <td><input type="date" name="work[2][date_to]" class="form-control w-75"></td>
-                                            <td>
-                                                <select name="work[2][status]" class="form-control w-75">
-                                                    <option value="">Select</option>
-                                                    <option value="permanent">Permanent</option>
-                                                    <option value="contractual">Contractual</option>
-                                                    <option value="probationary">Probationary</option>
-                                                    <option value="part_time">Part-time</option>
-                                                    <option value="casual">Casual</option>
-                                                    <option value="project_based">Project-based</option>
-                                                    <option value="seasonal">Seasonal</option>
-                                                    <option value="others">Others</option>
-                                                </select>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                <small class="text-muted">Add more rows if needed.</small>
-                            </div>
-                        </div>
-
-                        <!-- Skills -->
-                        <div id="section-skills">
-                            <h3>Skills</h3>
-                            <label class="form-label">Select your skills</label>
-                            <div class="mb-2">
-                                <div class="row">
-                                    @foreach($skills as $skill)
-                                        <div class="col-md-4 mb-2">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" name="skills[]" 
-                                                       id="skill_{{ $skill->id }}" value="{{ $skill->id }}">
-                                                <label class="form-check-label" for="skill_{{ $skill->id }}">{{ $skill->name }}</label>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </div>
-                            <div class="mb-2">
-                                <label for="skills_other" class="form-label">Other skills (not listed above):</label>
-                                <input type="text" name="skills_other" id="skills_other" class="form-control w-75" placeholder="Type other skills here, separated by commas">
-                            </div>
-                            <small class="form-text text-muted">
-                                Please check all that apply and add any other skills not listed. Use common terms to help employers find you more easily.
-                            </small>
-                        </div>
-
-
-                       
-                      
-                        <button type="submit" class="btn btn-primary">Complete Profile</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 
+    <style>
+        .form-step {
+            display: none;
+        }
+        .form-step.active {
+            display: block;
+        }
+        .step-indicator {
+            padding: 8px 12px;
+            border-radius: 20px;
+            background-color: #f8f9fa;
+            color: #6c757d;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .step-indicator.active {
+            background-color: #007bff;
+            color: white;
+        }
+        .step-indicator.completed {
+            background-color: #28a745;
+            color: white;
+        }
+    </style>
+
     <script>
-        let preferenceCount = 1;
-        
-        document.getElementById('add-job-preference').addEventListener('click', function() {
-            const container = document.getElementById('job-preferences-container');
-            const newPreference = createJobPreferenceItem(preferenceCount);
-            container.insertAdjacentHTML('beforeend', newPreference);
-            
-            // Show remove buttons if more than one preference
-            const removeButtons = document.querySelectorAll('.remove-preference');
-            if (removeButtons.length > 1) {
-                removeButtons.forEach(btn => btn.style.display = 'block');
-            }
-            
-            preferenceCount++;
-        });
-        
-        document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('remove-preference')) {
-                e.target.closest('.job-preference-item').remove();
-                
-                // Hide remove buttons if only one preference remains
-                const remainingItems = document.querySelectorAll('.job-preference-item');
-                if (remainingItems.length === 1) {
-                    document.querySelector('.remove-preference').style.display = 'none';
+        let currentStep = 0;
+        const steps = document.querySelectorAll(".form-step");
+        const totalSteps = steps.length;
+
+        function showStep(step) {
+            steps.forEach((s, i) => {
+                s.classList.remove("active");
+                if (i === step) {
+                    s.classList.add("active");
                 }
+            });
+            
+            // Update progress bar
+            const progressPercentage = ((step + 1) / totalSteps) * 100;
+            document.getElementById('progress-bar').style.width = progressPercentage + '%';
+            
+            // Update step indicators
+            document.querySelectorAll('.step-indicator').forEach((indicator, i) => {
+                indicator.classList.remove('active', 'completed');
+                if (i === step) {
+                    indicator.classList.add('active');
+                } else if (i < step) {
+                    indicator.classList.add('completed');
+                }
+            });
+        }
+
+        function prevStep() {
+            if (currentStep > 0) {
+                currentStep--;
+                showStep(currentStep);
             }
-        });
-        
-        function createJobPreferenceItem(index) {
-            return `
+        }
+
+        function nextStep() {
+            if (currentStep < steps.length - 1) {
+                currentStep++;
+                showStep(currentStep);
+            }
+        }
+
+        // Add job preference functionality
+        let preferenceCount = 1;
+
+        function addJobPreference() {
+            const container = document.getElementById('job-preferences-container');
+            const newPreference = `
                 <div class="job-preference-item border p-3 mb-3 rounded">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="form-label">Preferred Job Title</label>
-                                <input type="text" name="job_preferences[${index}][preferred_job_title]" class="form-control w-75" placeholder="e.g., Software Developer">
+                                <input type="text" name="job_preferences[${preferenceCount}][preferred_job_title]" class="form-control" placeholder="e.g., Software Developer">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="form-label">Job Classification</label>
-                                <select name="job_preferences[${index}][preferred_classification]" class="form-control w-75">
+                                <select name="job_preferences[${preferenceCount}][job_classification_id]" class="form-control">
                                     <option value="">Select Classification</option>
-                                    <option value="Information Technology">Information Technology</option>
-                                    <option value="Customer Service">Customer Service</option>
-                                    <option value="Marketing">Marketing</option>
-                                    <option value="Administrative">Administrative</option>
-                                    <option value="Creative">Creative</option>
-                                    <option value="Sales">Sales</option>
-                                    <option value="Finance">Finance</option>
-                                    <option value="Healthcare">Healthcare</option>
-                                    <option value="Education">Education</option>
-                                    <option value="Manufacturing">Manufacturing</option>
-                                    <option value="Other">Other</option>
+                                    @if(isset($jobClassifications))
+                                        @foreach($jobClassifications as $classification)
+                                            <option value="{{ $classification->id }}">{{ $classification->name }}</option>
+                                        @endforeach
+                                    @endif
                                 </select>
                             </div>
                         </div>
@@ -452,19 +423,19 @@
                         <div class="col-md-4">
                             <div class="mb-3">
                                 <label class="form-label">Min Salary (PHP)</label>
-                                <input type="number" name="job_preferences[${index}][min_salary]" class="form-control w-75" step="0.01" placeholder="15000">
+                                <input type="number" name="job_preferences[${preferenceCount}][min_salary]" class="form-control" step="0.01" placeholder="15000">
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="mb-3">
                                 <label class="form-label">Max Salary (PHP)</label>
-                                <input type="number" name="job_preferences[${index}][max_salary]" class="form-control w-75" step="0.01" placeholder="25000">
+                                <input type="number" name="job_preferences[${preferenceCount}][max_salary]" class="form-control" step="0.01" placeholder="25000">
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="mb-3">
                                 <label class="form-label">Preferred Location</label>
-                                <input type="text" name="job_preferences[${index}][preferred_location]" class="form-control w-75" placeholder="e.g., Makati, Remote">
+                                <input type="text" name="job_preferences[${preferenceCount}][preferred_location]" class="form-control" placeholder="e.g., Makati, Remote">
                             </div>
                         </div>
                     </div>
@@ -472,7 +443,7 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="form-label">Employment Type</label>
-                                <select name="job_preferences[${index}][preferred_employment_type]" class="form-control w-75">
+                                <select name="job_preferences[${preferenceCount}][preferred_employment_type]" class="form-control">
                                     <option value="">Select Type</option>
                                     <option value="full-time">Full-time</option>
                                     <option value="part-time">Part-time</option>
@@ -488,6 +459,20 @@
                     </div>
                 </div>
             `;
+            
+            container.insertAdjacentHTML('beforeend', newPreference);
+            preferenceCount++;
+            
+            // Add event listener to remove button
+            const removeButtons = document.querySelectorAll('.remove-preference');
+            removeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    this.closest('.job-preference-item').remove();
+                });
+            });
         }
+
+        // Initialize
+        showStep(currentStep);
     </script>
 @endsection

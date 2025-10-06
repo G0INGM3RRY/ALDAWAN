@@ -13,6 +13,8 @@
                     <form action="{{ route('employers.update') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
+
+                        
                     <!-- Personal information -->
                     <div id="section-personal-information">
                         <div class="mb-3">
