@@ -13,10 +13,11 @@ class ProfileController extends Controller
 {
     /**
      * Display the user's profile form.
+     * Show account settings page for general account management.
      */
     public function edit(Request $request): View
     {
-        return view('profile.edit', [
+        return view('profile.account-settings', [
             'user' => $request->user(),
         ]);
     }

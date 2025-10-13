@@ -34,17 +34,18 @@
 
                             <div class="mb-3">
                                 <label for="employer_type" class="form-label">Employer Type <span class="text-danger">*</span></label>
-                                <select name="employer_type" id="employer_type" class="form-control w-75" required>
+                                                                <select name="employer_type" id="employer_type" class="form-control w-75" required>
                                     <option value="">Select Employer Type</option>
-                                    <option value="formal" {{ old('employer_type') == 'formal' ? 'selected' : '' }}>Formal Employer</option>
-                                    <option value="informal" {{ old('employer_type') == 'informal' ? 'selected' : '' }}>Informal Employer</option>
+                                    <option value="formal" {{ old('employer_type') == 'formal' ? 'selected' : '' }}>Formal Employer (Registered Business)</option>
+                                    <option value="informal" {{ old('employer_type') == 'informal' ? 'selected' : '' }}>Informal Employer (Household/Individual)</option>
                                 </select>
                                 <div class="form-text">
                                     <small>
-                                        <strong>Formal:</strong> Registered companies, corporations, government agencies<br>
-                                        <strong>Informal:</strong> Individual contractors, small businesses, household employers
+                                        <strong>Formal Employer:</strong> Companies, businesses with DTI/SEC registration<br>
+                                        <strong>Informal Employer:</strong> Households, individuals needing domestic help (maids, drivers, caregivers)
                                     </small>
                                 </div>
+                                @error('employer_type')<div class="text-danger">{{ $message }}</div>@enderror
                             </div>
                            
                             <div class="mb-3">
@@ -57,6 +58,22 @@
                                         <small class="text-muted d-block">Current: {{ $profile->company_logo }}</small>
                                     </div>
                                 @endif
+                            </div>
+
+                            <!-- Employer Information Section -->
+                            <h3>Employer Information</h3>
+                            
+                            <div class="mb-3">
+                                <label for="company_description" class="form-label">About You / Services Needed</label>
+                                <textarea name="company_description" id="company_description" class="form-control w-75" rows="4" 
+                                          placeholder="Tell us about yourself and what kind of help you need...">{{ old('company_description') }}</textarea>
+                                <div class="form-text">
+                                    <small><strong>Examples:</strong><br>
+                                    • "Family of 4 looking for a reliable house cleaner twice a week"<br>
+                                    • "Elderly couple needs a part-time caregiver for daily assistance"<br>
+                                    • "Need a driver for school pickup and grocery runs"</small>
+                                </div>
+                                @error('company_description')<div class="text-danger">{{ $message }}</div>@enderror
                             </div>
 
                             <h3>Location</h3>
@@ -86,8 +103,13 @@
                                 <input type="text" name="contactnumber" id="contactnumber"class="form-control w-75">
                             </div>
                             <div class="mb-3">
-                                <label for="email"  class="form-label">Email</label>
-                                <input type="email" name="email" id="email" class="form-control w-75">
+                                <label for="email" class="form-label">Email <span class="text-muted">(Registered Email)</span></label>
+                                <input type="email" name="email" id="email" class="form-control w-75 bg-light" 
+                                       value="{{ Auth::user()->email }}" readonly>
+                                <div class="form-text text-muted">
+                                    <i class="fas fa-lock me-1"></i>This is your registered email. 
+                                    <a href="{{ route('profile.edit') }}" class="text-primary">Change email in account settings</a>
+                                </div>
                             </div>
                         </div>
 

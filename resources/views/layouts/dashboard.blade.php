@@ -35,6 +35,13 @@
           <a class="nav-link" href="{{ route('jobseekers.applications') }}">My Applications</a>
         </li>
         @endif
+        
+        @if(Auth::user()->role === 'employer')
+        <li class="nav-item">
+          <a class="nav-link" href="{{ route('employers.show') }}"><i class="fas fa-building me-1"></i>My Profile</a>
+        </li>
+        @endif
+        
         <!-- Debug: Current user role is: {{ Auth::user()->role }} -->
         <li class="nav-item">
           @if(Auth::user()->role === 'employer')
@@ -47,7 +54,7 @@
         </li>
         
         <li class="nav-item">
-          <a class="nav-link" href="#"><i class="fas fa-cog me-1"></i>Settings</a>
+          <a class="nav-link" href="{{ route('profile.edit') }}"><i class="fas fa-cog me-1"></i>Account Settings</a>
         </li>
         <li class="nav-item">
           <form action="{{ route('logout') }}" method="POST" class="d-inline">

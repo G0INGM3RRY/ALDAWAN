@@ -52,6 +52,20 @@
               @error('role')<div class="text-danger">{{ $message }}</div>@enderror
             </div>
 
+            <div class="mb-3" id="employerTypeContainer" style="display: none;">
+              <label for="employer_type" class="form-label">Employer Type</label>
+              <select name="employer_type" id="employer_type" class="form-control">
+                <option value="">Select Type</option>
+                <option value="formal">Formal Employer (Registered Business)</option>
+                <option value="informal">Informal Employer (Household/Individual)</option>
+              </select>
+              <small class="form-text text-muted">
+                <strong>Formal:</strong> Companies, businesses with DTI/SEC registration<br>
+                <strong>Informal:</strong> Households, individuals needing domestic help (maids, drivers, caregivers)
+              </small>
+              @error('employer_type')<div class="text-danger">{{ $message }}</div>@enderror
+            </div>
+
             <div class="mb-3" id="jobSeekerTypeContainer" style="display: none;">
               <label for="job_seeker_type" class="form-label">Job Seeker Type</label>
               <select name="job_seeker_type" id="job_seeker_type" class="form-control">
@@ -77,15 +91,26 @@
 </div>
 
 <script>
-  // Show/hide job seeker type dropdown based on role selection
+  // Show/hide type dropdowns based on role selection
   document.getElementById('role').addEventListener('change', function() {
     var jobSeekerTypeContainer = document.getElementById('jobSeekerTypeContainer');
+    var employerTypeContainer = document.getElementById('employerTypeContainer');
+    
     if (this.value === 'seeker') {
       jobSeekerTypeContainer.style.display = 'block';
+      employerTypeContainer.style.display = 'none';
       document.getElementById('job_seeker_type').setAttribute('required', 'required');
+      document.getElementById('employer_type').removeAttribute('required');
+    } else if (this.value === 'employer') {
+      jobSeekerTypeContainer.style.display = 'none';
+      employerTypeContainer.style.display = 'block';
+      document.getElementById('job_seeker_type').removeAttribute('required');
+      document.getElementById('employer_type').setAttribute('required', 'required');
     } else {
       jobSeekerTypeContainer.style.display = 'none';
+      employerTypeContainer.style.display = 'none';
       document.getElementById('job_seeker_type').removeAttribute('required');
+      document.getElementById('employer_type').removeAttribute('required');
     }
   });
 </script>

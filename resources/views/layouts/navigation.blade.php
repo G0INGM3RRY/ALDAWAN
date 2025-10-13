@@ -34,8 +34,18 @@
                     </x-slot>
 
                     <x-slot name="content">
+                        @if(Auth::user()->role === 'employer')
+                            <x-dropdown-link :href="route('employers.edit')">
+                                {{ __('Company Profile') }}
+                            </x-dropdown-link>
+                        @else
+                            <x-dropdown-link :href="route('jobseekers.edit')">
+                                {{ __('My Profile') }}
+                            </x-dropdown-link>
+                        @endif
+                        
                         <x-dropdown-link :href="route('profile.edit')">
-                            {{ __('Profile') }}
+                            {{ __('Account Settings') }}
                         </x-dropdown-link>
 
                         <!-- Authentication -->
@@ -80,8 +90,18 @@
             </div>
 
             <div class="mt-3 space-y-1">
+                @if(Auth::user()->role === 'employer')
+                    <x-responsive-nav-link :href="route('employers.edit')">
+                        {{ __('Company Profile') }}
+                    </x-responsive-nav-link>
+                @else
+                    <x-responsive-nav-link :href="route('jobseekers.edit')">
+                        {{ __('My Profile') }}
+                    </x-responsive-nav-link>
+                @endif
+                
                 <x-responsive-nav-link :href="route('profile.edit')">
-                    {{ __('Profile') }}
+                    {{ __('Account Settings') }}
                 </x-responsive-nav-link>
 
                 <!-- Authentication -->

@@ -83,7 +83,7 @@
                                         <option value="full-time" {{ old('employment_type') == 'full-time' ? 'selected' : '' }}>Full-time</option>
                                         <option value="part-time" {{ old('employment_type') == 'part-time' ? 'selected' : '' }}>Part-time</option>
                                         <option value="contract" {{ old('employment_type') == 'contract' ? 'selected' : '' }}>Contract</option>
-                                        <option value="freelance" {{ old('employment_type') == 'freelance' ? 'selected' : '' }}>Freelance</option>
+                                        <option value="temporary" {{ old('employment_type') == 'temporary' ? 'selected' : '' }}>Temporary</option>
                                         <option value="internship" {{ old('employment_type') == 'internship' ? 'selected' : '' }}>Internship</option>
                                     </select>
                                     @error('employment_type')
@@ -144,6 +144,69 @@
                                     <strong>Formal:</strong> Regular employment with benefits, contracts, and formal processes.<br>
                                     <strong>Informal:</strong> Contract work, gig economy, freelance, or temporary positions.
                                 </small>
+                            </div>
+                        </div>
+
+                        <!-- Disability Restrictions Section -->
+                        <div class="mb-4">
+                            <h5 class="text-warning mb-3">
+                                <i class="fas fa-universal-access me-2"></i>Accessibility & Disability Considerations
+                            </h5>
+                            
+                            <div class="alert alert-info">
+                                <small>
+                                    <strong>Important:</strong> Select any disabilities that may prevent safe or effective performance of this job. 
+                                    This helps ensure job matches are appropriate and promotes workplace safety.
+                                </small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    Disability Restrictions <span class="text-muted">(Optional)</span>
+                                </label>
+                                <div class="form-text mb-2">
+                                    <small class="text-muted">
+                                        Select disabilities that may not be compatible with the essential functions of this position.
+                                    </small>
+                                </div>
+                                
+                                @if(isset($disabilities) && $disabilities->count() > 0)
+                                    <div class="row">
+                                        @foreach($disabilities as $disability)
+                                            <div class="col-md-6 col-lg-4 mb-2">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" 
+                                                           name="disability_restrictions[]" 
+                                                           value="{{ $disability->id }}" 
+                                                           id="disability_{{ $disability->id }}"
+                                                           {{ in_array($disability->id, old('disability_restrictions', [])) ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="disability_{{ $disability->id }}">
+                                                        {{ $disability->name }}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @else
+                                    <p class="text-muted">No disabilities data available.</p>
+                                @endif
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="accessibility_notes" class="form-label">
+                                    Accessibility Notes <span class="text-muted">(Optional)</span>
+                                </label>
+                                <textarea class="form-control" 
+                                          id="accessibility_notes" 
+                                          name="accessibility_notes" 
+                                          rows="3" 
+                                          placeholder="Provide additional information about workplace accessibility, accommodations available, or specific requirements...">{{ old('accessibility_notes') }}</textarea>
+                                <div class="form-text">
+                                    <small class="text-muted">
+                                        Example: "Office is wheelchair accessible", "Sign language interpreter available", 
+                                        "Job requires driving", "Heavy lifting required", etc.
+                                    </small>
+                                </div>
                             </div>
                         </div>
 

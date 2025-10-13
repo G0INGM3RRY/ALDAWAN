@@ -98,6 +98,33 @@
                         </div>
                     </div>
                     
+                    <!-- Accessibility Information -->
+                    @if($job->disability_restrictions && count($job->disability_restrictions) > 0 || $job->accessibility_notes)
+                        <div class="mb-4">
+                            <h5><i class="fas fa-universal-access me-2"></i>Accessibility Information</h5>
+                            <div class="border p-3 rounded bg-light">
+                                @if($job->disability_restrictions && count($job->disability_restrictions) > 0)
+                                    <div class="mb-3">
+                                        <strong class="text-warning">Important Notice:</strong><br>
+                                        <small class="text-muted">This position may not be suitable for individuals with the following conditions:</small>
+                                        <ul class="mt-2 mb-0">
+                                            @foreach($job->getRestrictedDisabilities() as $disability)
+                                                <li>{{ $disability->name }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                @endif
+                                
+                                @if($job->accessibility_notes)
+                                    <div>
+                                        <strong>Additional Accessibility Information:</strong><br>
+                                        {{ $job->accessibility_notes }}
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    @endif
+                    
                     <!-- Company Info -->
                     <div>
                         <h5>Company Information</h5>

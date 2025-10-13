@@ -32,22 +32,30 @@ class Jobs extends Model
         'company_id',
         'location',
         'salary',
+        'requirements',
         'posted_at',
         'status',
         'job_type',
+        'classification',
         // New normalized fields
         'minimum_education_level_id',
         'minimum_experience_years',
         'benefits',
         'employment_type',
         'remote_work_available',
-        'positions_available'
+        'positions_available',
+        // Disability restrictions fields
+        'disability_restrictions',
+        'accessibility_notes'
     ];
     
     protected $casts = [
         'posted_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
         'salary' => 'decimal:2',
         'remote_work_available' => 'boolean',
+        'disability_restrictions' => 'array',
         'minimum_experience_years' => 'integer',
         'positions_available' => 'integer',
     ];
@@ -103,6 +111,12 @@ class Jobs extends Model
         return $this->applications();
     }
     
+    // Alternative method name for consistency
+    public function jobApplications(): HasMany
+    {
+        return $this->applications();
+    }
+    
     // Helper method: Check if user has already applied
     public function hasAppliedBy($userId): bool
     {
@@ -131,5 +145,45 @@ class Jobs extends Model
     public function scopeRemoteAvailable($query)
     {
         return $query->where('remote_work_available', true);
+    }
+
+    /**
+     * Check if a specific disability is restricted for this job
+     */
+    public function hasDisabilityRestriction(int $disabilityId): bool
+    {
+        return in_array($disabilityId, $this->disability_restrictions ?? []);
+    }
+
+    /**
+     * Get restricted disability names
+     */
+    public function getRestrictedDisabilities()
+    {
+        if (empty($this->disability_restrictions)) {
+            return collect();
+        }
+        
+        return Disability::whereIn('id', $this->disability_restrictions)->get();
+    }
+
+    /**
+     * Check if a jobseeker with specific disabilities can apply for this job
+     */
+    public function isAccessibleForJobseeker($jobseekerProfile): bool
+    {
+        if (empty($this->disability_restrictions)) {
+            return true; // No restrictions, job is accessible to everyone
+        }
+        
+        if (!$jobseekerProfile || !method_exists($jobseekerProfile, 'disabilities')) {
+            return true; // No disabilities info, assume accessible
+        }
+        
+        $jobseekerDisabilityIds = $jobseekerProfile->disabilities->pluck('id')->toArray();
+        $restrictedDisabilityIds = $this->disability_restrictions ?? [];
+        
+        // Check if any of the jobseeker's disabilities are in the restricted list
+        return empty(array_intersect($jobseekerDisabilityIds, $restrictedDisabilityIds));
     }
 }

@@ -169,8 +169,13 @@
                             
                                 <div class="col-md-4">
                                     <div class="mb-3">
-                                        <label for="email" class="form-label">Email</label>
-                                        <input type="email" name="email" id="email" class="form-control" value="{{ old('email', $profile->email ?? '') }}">
+                                        <label for="email" class="form-label">Email <span class="text-muted">(Registered Email)</span></label>
+                                        <input type="email" name="email" id="email" class="form-control bg-light" 
+                                               value="{{ Auth::user()->email }}" readonly>
+                                        <div class="form-text text-muted">
+                                            <i class="fas fa-lock me-1"></i>This is your registered email. 
+                                            <a href="{{ route('profile.edit') }}" class="text-primary">Change email in account settings</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

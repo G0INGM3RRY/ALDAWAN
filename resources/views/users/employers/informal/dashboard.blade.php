@@ -63,16 +63,21 @@
             </a>
         </div>
         <div class="col-md-4 mb-4">
-            <a href="{{ route('employers.edit') }}" class="text-decoration-none">
-                <div class="card h-100 border-info">
-                    <div class="card-body text-center">
-                        <i class="fas fa-user-tie fa-2x text-info mb-3"></i>
-                        <h5 class="card-title text-info">Business Profile</h5>
-                        <p class="card-text text-muted">Update your business information</p>
-                        <small class="text-info">Build trust with potential workers</small>
+            <div class="card h-100 border-info">
+                <div class="card-body text-center">
+                    <i class="fas fa-user-tie fa-2x text-info mb-3"></i>
+                    <h5 class="card-title text-info">Business Profile</h5>
+                    <p class="card-text text-muted">View and manage your business information</p>
+                    <div class="d-grid gap-2">
+                        <a href="{{ route('employers.show') }}" class="btn btn-outline-info btn-sm">
+                            <i class="fas fa-eye me-1"></i>View Profile
+                        </a>
+                        <a href="{{ route('employers.edit') }}" class="btn btn-info btn-sm">
+                            <i class="fas fa-edit me-1"></i>Edit Profile
+                        </a>
                     </div>
                 </div>
-            </a>
+            </div>
         </div>
     </div>
 

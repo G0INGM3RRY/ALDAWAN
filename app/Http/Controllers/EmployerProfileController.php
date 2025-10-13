@@ -30,7 +30,15 @@ class EmployerProfileController extends Controller
     public function complete(){
         $user = Auth::user();
         $profile = $user->employerProfile;
-        return view($this->getViewPath('complete'), compact('user', 'profile'));
+        $companyTypes = \App\Models\CompanyType::where('is_active', true)->get();
+        return view($this->getViewPath('complete'), compact('user', 'profile', 'companyTypes'));
+    }
+
+    public function show()
+    {
+        $user = Auth::user();
+        $profile = $user->employerProfile;
+        return view($this->getViewPath('show'), compact('user', 'profile'));
     }
    
     public function update(Request $request)
@@ -50,30 +58,89 @@ class EmployerProfileController extends Controller
                 ])->withInput();
             }
             
-            // Validate with locked type
-            $request->validate([
+            // Validate with locked type and different rules based on employer type
+            $baseValidation = [
                 'company_name' => 'required|string|max:255',
                 'employer_type' => 'required|in:' . $requiredType,
                 'street' => 'nullable|string|max:255',
                 'barangay' => 'nullable|string|max:255',
                 'municipality' => 'nullable|string|max:255',
                 'province' => 'nullable|string|max:255',
-                'company_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
-            ]);
+                'company_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'company_type_id' => 'nullable|exists:company_types,id',
+                'company_description' => 'nullable|string|max:1000',
+                'website_url' => 'nullable|url|max:255',
+                'linkedin_url' => 'nullable|url|max:255',
+            ];
+            
+            // Add business-specific validation only for formal employers
+            if ($requiredType === 'formal') {
+                $baseValidation = array_merge($baseValidation, [
+                    'company_size_min' => 'nullable|integer|min:1',
+                    'company_size_max' => 'nullable|integer|min:1|gte:company_size_min',
+                    'founded_year' => 'nullable|integer|min:1800|max:' . date('Y'),
+                ]);
+            }
+            
+            $request->validate($baseValidation);
         } else {
             // First time setup - allow any type
-            $request->validate([
+            $baseValidation = [
                 'company_name' => 'required|string|max:255',
                 'employer_type' => 'required|in:formal,informal',
                 'street' => 'nullable|string|max:255',
                 'barangay' => 'nullable|string|max:255',
                 'municipality' => 'nullable|string|max:255',
                 'province' => 'nullable|string|max:255',
-                'company_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
-            ]);
+                'company_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'company_description' => 'nullable|string|max:1000',
+            ];
+            
+            // Different validation based on employer type
+            if ($request->employer_type === 'formal') {
+                // Formal employers need business-related fields
+                $baseValidation = array_merge($baseValidation, [
+                    'company_type_id' => 'required|exists:company_types,id',
+                    'website_url' => 'nullable|url|max:255',
+                    'linkedin_url' => 'nullable|url|max:255',
+                    'company_size_min' => 'required|integer|min:1',
+                    'company_size_max' => 'nullable|integer|min:1|gte:company_size_min',
+                    'founded_year' => 'required|integer|min:1800|max:' . date('Y'),
+                ]);
+            } else {
+                // Informal employers (households) - more relaxed requirements
+                $baseValidation = array_merge($baseValidation, [
+                    'company_type_id' => 'nullable|exists:company_types,id',
+                    'website_url' => 'nullable|url|max:255',
+                    'linkedin_url' => 'nullable|url|max:255',
+                    'company_size_min' => 'nullable|integer|min:1',
+                    'company_size_max' => 'nullable|integer|min:1|gte:company_size_min',
+                    'founded_year' => 'nullable|integer|min:1800|max:' . date('Y'),
+                ]);
+            }
+            
+            $request->validate($baseValidation);
         }
 
-        $data = $request->only(['company_name', 'employer_type', 'street', 'barangay', 'municipality', 'province']);
+        // Get base data that all employer types have
+        $data = $request->only([
+            'company_name', 'employer_type', 'street', 'barangay', 'municipality', 'province',
+            'company_type_id', 'company_description', 'website_url', 'linkedin_url'
+        ]);
+        
+        // Determine employer type (from request or existing profile)
+        $employerType = $request->employer_type ?? ($existingProfile->employer_type ?? 'informal');
+        
+        // Add business-specific fields only for formal employers
+        if ($employerType === 'formal') {
+            $businessData = $request->only(['company_size_min', 'company_size_max', 'founded_year']);
+            $data = array_merge($data, $businessData);
+        } else {
+            // For informal employers, set defaults for business fields if they don't exist in form
+            $data['company_size_min'] = $request->input('company_size_min', null);
+            $data['company_size_max'] = $request->input('company_size_max', null);
+            $data['founded_year'] = $request->input('founded_year', null);
+        }
         
         // Handle file upload
         if ($request->hasFile('company_logo')) {
@@ -94,15 +161,9 @@ class EmployerProfileController extends Controller
     public function edit()
     {
         $user = Auth::user();
-        $profile= $user->employerProfile;
-        return view($this->getViewPath('edit'), compact('user', 'profile'));
-    }
-
-    public function show()
-    {
-        $user = Auth::user();
         $profile = $user->employerProfile;
-        return view($this->getViewPath('show'), compact('user', 'profile'));
+        $companyTypes = \App\Models\CompanyType::where('is_active', true)->get();
+        return view($this->getViewPath('edit'), compact('user', 'profile', 'companyTypes'));
     }
 
     public function create()
@@ -121,36 +182,54 @@ class EmployerProfileController extends Controller
     public function createJob()
     {
         $user = Auth::user();
-        return view($this->getViewPath('create'), compact('user'));
+        $jobClassifications = \App\Models\Classification::active()->get();
+        return view($this->getViewPath('jobs.create'), compact('user', 'jobClassifications'));
     }
 
     public function storeJob(Request $request)
     {
         $user = Auth::user();
 
-        // Validate the form data
+        // Validate the form data - simplified for household employers
         $request->validate([
             'job_title' => 'required|string|max:255',
             'description' => 'required|string',
-            'requirements' => 'required|string',
-            'salary' => 'required|numeric|min:0',
+            'requirements' => 'nullable|string',
+            'salary' => 'nullable|numeric|min:0',
             'location' => 'required|string|max:255',
-            'employment_type' => 'required|in:full-time,part-time,contract,freelance,internship',
-            'classification' => 'required|string|max:255',
-            'job_type' => 'required|in:formal,informal',
+            'employment_type' => 'required|in:full_time,part_time,contract,temporary,internship',
+            'classification' => 'nullable|string',
+            'job_type' => 'nullable|in:formal,informal',
+            'positions_available' => 'nullable|integer|min:1',
+            'benefits' => 'nullable|string|max:1000',
         ]);
+
+        // Get classification name from select or default
+        $classificationName = 'Other';
+        if ($request->classification) {
+            $classification = \App\Models\Classification::find($request->classification);
+            $classificationName = $classification ? $classification->name : 'Other';
+        }
+
+        // Determine job type based on employer type
+        $jobType = 'informal';
+        if ($user->employerProfile && $user->employerProfile->employer_type === 'formal') {
+            $jobType = 'formal';
+        }
 
         // Create the job posting
         $user->jobs()->create([
             'job_title' => $request->job_title,
             'description' => $request->description,
-            'requirements' => $request->requirements,
-            'salary' => $request->salary,
+            'requirements' => $request->requirements ?? '',
+            'salary' => $request->salary ?? 0,
             'location' => $request->location,
             'employment_type' => $request->employment_type,
-            'classification' => $request->classification,
-            'job_type' => $request->job_type,
+            'classification' => $classificationName,
+            'job_type' => $jobType,
             'status' => 'open',
+            'positions_available' => $request->positions_available ?? 1,
+            'benefits' => $request->benefits,
         ]);
 
         return redirect()->route('employers.jobs.index')->with('success', 'Job posted successfully!');
@@ -165,7 +244,10 @@ class EmployerProfileController extends Controller
             abort(403, 'Unauthorized');
         }
         
-        return view($this->getViewPath('jobs.edit'), compact('user', 'job'));
+        $jobClassifications = \App\Models\Classification::active()->get();
+        $disabilities = \App\Models\Disability::active()->get();
+        
+        return view($this->getViewPath('jobs.edit'), compact('user', 'job', 'jobClassifications', 'disabilities'));
     }
 
     public function updateJob(Request $request, Jobs $job)
@@ -184,11 +266,17 @@ class EmployerProfileController extends Controller
             'requirements' => 'required|string',
             'salary' => 'required|numeric|min:0',
             'location' => 'required|string|max:255',
-            'employment_type' => 'required|in:full-time,part-time,contract,freelance,internship',
+            'employment_type' => 'required|in:full-time,part-time,contract,temporary,internship',
             'classification' => 'required|string|max:255',
             'job_type' => 'required|in:formal,informal',
             'status' => 'required|in:open,closed,filled',
+            'disability_restrictions' => 'nullable|array',
+            'disability_restrictions.*' => 'exists:disabilities,id',
+            'accessibility_notes' => 'nullable|string|max:1000',
         ]);
+
+        // Convert employment_type from hyphen to underscore format for database
+        $employmentType = str_replace('-', '_', $request->employment_type);
 
         // Update the job posting
         $job->update([
@@ -197,10 +285,12 @@ class EmployerProfileController extends Controller
             'requirements' => $request->requirements,
             'salary' => $request->salary,
             'location' => $request->location,
-            'employment_type' => $request->employment_type,
+            'employment_type' => $employmentType,
             'classification' => $request->classification,
             'job_type' => $request->job_type,
             'status' => $request->status,
+            'disability_restrictions' => $request->disability_restrictions ?: [],
+            'accessibility_notes' => $request->accessibility_notes,
         ]);
 
         return redirect()->route('employers.jobs.index')->with('success', 'Job updated successfully!');

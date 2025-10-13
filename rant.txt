@@ -5,15 +5,11 @@ ADMIN DASHBOARDS
 REPORT GENERATIONS
 
 
-1. Employer - In the job creation, add another field, for disability it might avoid of.  
-    (example Driving [disability isnt allowed, visual disability, hearing])
-    this require update onthe joblisting column
+
 
 2. Errors on employer navigations on Job posting
 
 3. on Employer's Database there are fields but werent field in edit, register, and update
-
-4. portioning the complete profile form and locking the email used in user table to the complete db
 
 
 7. i still havent grasped how the skills table accomodate formal and informal even though skills in each entity means differently,
@@ -24,8 +20,6 @@ REPORT GENERATIONS
 
 10. also i think in the job listing and application flow, after the employer accepted an application, 
         he can still let the application open to accomodate if number of vacancy they have is more than one
-
-11. I made sex field to radio with bugs that it can select 2 of them at once
 
 13. i found that formal jobseeker can see informal jobs when browse jobs is clicked. 
 

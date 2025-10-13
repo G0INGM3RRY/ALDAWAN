@@ -86,8 +86,13 @@ class Employer extends Model
      */
     public function getCompanySizeRangeAttribute(): ?string
     {
-        if ($this->company_size_min && $this->company_size_max) {
-            return $this->company_size_min . '-' . $this->company_size_max . ' employees';
+        $min = $this->company_size_min ?? null;
+        $max = $this->company_size_max ?? null;
+        
+        if ($min && $max) {
+            return $min . '-' . $max . ' employees';
+        } elseif ($min) {
+            return $min . '+ employees';
         }
         return null;
     }

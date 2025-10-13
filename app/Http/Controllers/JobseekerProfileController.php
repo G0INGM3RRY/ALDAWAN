@@ -43,7 +43,7 @@ class JobseekerProfileController extends Controller
             'province' => 'nullable|string',
             'religion' => 'nullable|string',
             'contactnumber' => 'nullable|string',
-            'email' => 'nullable|string',
+            // email should come from user table, not stored in profile
             'disabilities' => 'nullable|array',
             'is_4ps' => 'nullable',
             'employmentstatus' => 'nullable|string',
@@ -69,9 +69,9 @@ class JobseekerProfileController extends Controller
             $profile->user_id = $user->id;
         }
         
-        // Remove the old JSON fields from the data array before filling
+        // Remove the old JSON fields and email from the data array before filling
         $profileData = $data;
-        unset($profileData['disabilities'], $profileData['education'], $profileData['skills'], $profileData['formal_skills'], $profileData['skills_other']);
+        unset($profileData['disabilities'], $profileData['education'], $profileData['skills'], $profileData['formal_skills'], $profileData['skills_other'], $profileData['email']);
         
         $profile->fill($profileData);
         $profile->is_4ps = $request->has('is_4ps');
@@ -208,7 +208,7 @@ class JobseekerProfileController extends Controller
             'province' => 'nullable|string',
             'religion' => 'nullable|string',
             'contactnumber' => 'nullable|string',
-            'email' => 'nullable|string',
+            // email should come from user table, not stored in profile
             'disabilities' => 'nullable|array',
             'disabilities.*' => 'exists:disabilities,id',
             'is_4ps' => 'nullable',
@@ -238,8 +238,8 @@ class JobseekerProfileController extends Controller
         DB::beginTransaction();
         
         try {
-            // Remove relationship fields from data array for profile fill, but keep education fields
-            $relationshipFields = ['disabilities', 'skills', 'work'];
+            // Remove relationship fields and email from data array for profile fill, but keep education fields
+            $relationshipFields = ['disabilities', 'skills', 'work', 'email'];
             $profileData = collect($data)->except($relationshipFields)->toArray();
             
             // Handle education fields explicitly
@@ -404,7 +404,7 @@ class JobseekerProfileController extends Controller
             'municipality' => 'nullable|string',
             'province' => 'nullable|string',
             'contactnumber' => 'nullable|string',
-            'email' => 'nullable|string',
+            // email should come from user table, not stored in profile
             'is_4ps' => 'nullable',
             'employmentstatus' => 'nullable|string',
             'skills' => 'nullable|array',
@@ -502,7 +502,7 @@ class JobseekerProfileController extends Controller
             'municipality' => 'nullable|string',
             'province' => 'nullable|string',
             'contactnumber' => 'nullable|string',
-            'email' => 'nullable|string',
+            // email should come from user table, not stored in profile
             'disabilities' => 'nullable|array',
             'disabilities.*' => 'exists:disabilities,id',
             'is_4ps' => 'nullable',
@@ -530,8 +530,8 @@ class JobseekerProfileController extends Controller
         DB::beginTransaction();
         
         try {
-            // Remove relationship fields from data array
-            $relationshipFields = ['disabilities', 'informal_skills'];
+            // Remove relationship fields and email from data array
+            $relationshipFields = ['disabilities', 'informal_skills', 'email'];
             $profileData = collect($data)->except($relationshipFields)->toArray();
             
             $profile->fill($profileData);

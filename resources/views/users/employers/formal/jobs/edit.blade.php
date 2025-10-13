@@ -161,6 +161,69 @@
                             </div>
                         </div>
 
+                        <!-- Disability Restrictions Section -->
+                        <div class="mb-4">
+                            <h5 class="text-primary mb-3">
+                                <i class="fas fa-universal-access me-2"></i>Accessibility & Disability Considerations
+                            </h5>
+                            
+                            <div class="alert alert-info">
+                                <small>
+                                    <strong>Important:</strong> Select any disabilities that may prevent safe or effective performance of this job. 
+                                    This helps ensure job matches are appropriate and promotes workplace safety.
+                                </small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    Disability Restrictions <span class="text-muted">(Optional)</span>
+                                </label>
+                                <div class="form-text mb-2">
+                                    <small class="text-muted">
+                                        Select disabilities that may not be compatible with the essential functions of this position.
+                                    </small>
+                                </div>
+                                
+                                @if(isset($disabilities) && $disabilities->count() > 0)
+                                    <div class="row">
+                                        @foreach($disabilities as $disability)
+                                            <div class="col-md-6 col-lg-4 mb-2">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" 
+                                                           name="disability_restrictions[]" 
+                                                           value="{{ $disability->id }}" 
+                                                           id="edit_disability_{{ $disability->id }}"
+                                                           {{ in_array($disability->id, old('disability_restrictions', $job->disability_restrictions ?? [])) ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="edit_disability_{{ $disability->id }}">
+                                                        {{ $disability->name }}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @else
+                                    <p class="text-muted">No disabilities data available.</p>
+                                @endif
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="accessibility_notes" class="form-label">
+                                    Accessibility Notes <span class="text-muted">(Optional)</span>
+                                </label>
+                                <textarea class="form-control" 
+                                          id="accessibility_notes" 
+                                          name="accessibility_notes" 
+                                          rows="3" 
+                                          placeholder="Provide additional information about workplace accessibility, accommodations available, or specific requirements...">{{ old('accessibility_notes', $job->accessibility_notes) }}</textarea>
+                                <div class="form-text">
+                                    <small class="text-muted">
+                                        Example: "Office is wheelchair accessible", "Sign language interpreter available", 
+                                        "Job requires driving", "Heavy lifting required", etc.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Form Actions -->
                         <div class="d-flex justify-content-between">
                             <a href="{{ route('employers.jobs.index') }}" class="btn btn-secondary">Cancel</a>

@@ -45,6 +45,36 @@
                             @endif
                         </div>
 
+                        <!-- Employer Details Section -->
+                        <h3>Employer Information</h3>
+                        
+                        <div class="mb-3">
+                            <label for="company_description" class="form-label">About You / Services Needed</label>
+                            <textarea name="company_description" id="company_description" class="form-control w-75" rows="4" 
+                                      placeholder="Tell us about yourself and what kind of help you need (e.g., household worker, driver, gardener, etc.)">{{ old('company_description', $profile->company_description ?? '') }}</textarea>
+                            <div class="form-text">
+                                <small>Example: "Looking for a reliable house cleaner for our 3-bedroom home" or "Need a part-time driver for family errands"</small>
+                            </div>
+                            @error('company_description')<div class="text-danger">{{ $message }}</div>@enderror
+                        </div>
+
+                        @if($profile && $profile->is_verified)
+                            <div class="mb-3">
+                                <div class="alert alert-success">
+                                    <i class="fas fa-check-circle me-2"></i>
+                                    <strong>Verified Employer</strong> - Your identity has been verified by our team.
+                                </div>
+                            </div>
+                        @else
+                            <div class="mb-3">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <strong>Identity Verification Available</strong> - Complete your profile to apply for employer verification.
+                                    <small class="d-block mt-1">Required documents: Valid ID, Barangay Clearance, Proof of Address</small>
+                                </div>
+                            </div>
+                        @endif
+
                         <h3>Location</h3>
                         <div class="mb-3">
                             <label for="street"  class="form-label">Street</label>
@@ -68,8 +98,13 @@
                             <input type="text" name="contactnumber" id="contactnumber" class="form-control w-75" value="{{ old('contactnumber', $user->contactnumber ?? '') }}">
                         </div>
                         <div class="mb-3">
-                            <label for="email"  class="form-label">Email</label>
-                            <input type="email" name="email" id="email" class="form-control w-75" value="{{ old('email', $user->email ?? '') }}">
+                            <label for="email" class="form-label">Email <span class="text-muted">(Registered Email)</span></label>
+                            <input type="email" name="email" id="email" class="form-control w-75 bg-light" 
+                                   value="{{ Auth::user()->email }}" readonly>
+                            <div class="form-text text-muted">
+                                <i class="fas fa-lock me-1"></i>This is your registered email. 
+                                <a href="{{ route('profile.edit') }}" class="text-primary">Change email in account settings</a>
+                            </div>
                         </div>
                     </div>
 
