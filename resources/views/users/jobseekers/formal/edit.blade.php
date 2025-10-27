@@ -651,6 +651,118 @@
                                 Please check all that apply and add any other skills not listed. Use common terms to help employers find you more easily.<br>
                                 <i class="fas fa-info-circle text-primary"></i> <strong>Smart Skills Display:</strong> We show the 20 most popular and relevant skills. Custom skills you add will be included in future selections based on usage.
                             </small>
+
+                            <!-- Verification Documents Section -->
+                            <div class="mt-5">
+                                <h5 class="text-primary mb-3">
+                                    <i class="fas fa-file-upload me-2"></i>Document Verification
+                                    @if(auth()->user()->jobseekerProfile && auth()->user()->jobseekerProfile->formalVerification)
+                                        <span class="badge bg-{{ auth()->user()->jobseekerProfile->formalVerification->status === 'approved' ? 'success' : 
+                                                                 (auth()->user()->jobseekerProfile->formalVerification->status === 'rejected' ? 'danger' : 'warning') }}">
+                                            {{ ucfirst(auth()->user()->jobseekerProfile->formalVerification->status) }}
+                                        </span>
+                                    @else
+                                        <span class="badge bg-secondary">Not Submitted</span>
+                                    @endif
+                                </h5>
+                                
+                                @if(auth()->user()->jobseekerProfile && auth()->user()->jobseekerProfile->formalVerification)
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        <strong>Verification Status:</strong> 
+                                        @if(auth()->user()->jobseekerProfile->formalVerification->status === 'approved')
+                                            Your documents have been verified and approved.
+                                        @elseif(auth()->user()->jobseekerProfile->formalVerification->status === 'rejected')
+                                            Your documents were rejected. Please upload new documents.
+                                            @if(auth()->user()->jobseekerProfile->formalVerification->rejection_reason)
+                                                <br><strong>Reason:</strong> {{ auth()->user()->jobseekerProfile->formalVerification->rejection_reason }}
+                                            @endif
+                                        @else
+                                            Your documents are under review by our admin team.
+                                        @endif
+                                    </div>
+                                @else
+                                    <div class="alert alert-warning">
+                                        <i class="fas fa-exclamation-triangle me-2"></i>
+                                        <strong>Verification Recommended:</strong> Upload your verification documents to get verified and access more job opportunities.
+                                    </div>
+                                @endif
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">
+                                                <i class="fas fa-id-card me-1"></i>Government-issued ID 
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="file" name="government_id" class="form-control" accept=".jpg,.jpeg,.png,.pdf">
+                                            <div class="form-text">
+                                                Upload a clear photo of your government ID (Driver's License, UMID, SSS, etc.)
+                                            </div>
+                                            @if(auth()->user()->jobseekerProfile && auth()->user()->jobseekerProfile->formalVerification && auth()->user()->jobseekerProfile->formalVerification->government_id_path)
+                                                <small class="text-success">
+                                                    <i class="fas fa-check-circle me-1"></i>Current file uploaded
+                                                </small>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">
+                                                <i class="fas fa-graduation-cap me-1"></i>Educational Certificate/Diploma 
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="file" name="educational_document" class="form-control" accept=".jpg,.jpeg,.png,.pdf">
+                                            <div class="form-text">
+                                                Upload your highest educational attainment certificate or diploma
+                                            </div>
+                                            @if(auth()->user()->jobseekerProfile && auth()->user()->jobseekerProfile->formalVerification && auth()->user()->jobseekerProfile->formalVerification->educational_document_path)
+                                                <small class="text-success">
+                                                    <i class="fas fa-check-circle me-1"></i>Current file uploaded
+                                                </small>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">
+                                                <i class="fas fa-shield-alt me-1"></i>NBI Clearance 
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="file" name="nbi_clearance" class="form-control" accept=".jpg,.jpeg,.png,.pdf">
+                                            <div class="form-text">
+                                                Upload a valid NBI clearance for background verification
+                                            </div>
+                                            @if(auth()->user()->jobseekerProfile && auth()->user()->jobseekerProfile->formalVerification && auth()->user()->jobseekerProfile->formalVerification->nbi_clearance_path)
+                                                <small class="text-success">
+                                                    <i class="fas fa-check-circle me-1"></i>Current file uploaded
+                                                </small>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">
+                                                <i class="fas fa-certificate me-1"></i>Professional Skills Certificate 
+                                                <span class="text-muted">(Optional)</span>
+                                            </label>
+                                            <input type="file" name="skills_certificate" class="form-control" accept=".jpg,.jpeg,.png,.pdf">
+                                            <div class="form-text">
+                                                Upload any professional certification or skills certificate you have
+                                            </div>
+                                            @if(auth()->user()->jobseekerProfile && auth()->user()->jobseekerProfile->formalVerification && auth()->user()->jobseekerProfile->formalVerification->skills_certificate_path)
+                                                <small class="text-success">
+                                                    <i class="fas fa-check-circle me-1"></i>Current file uploaded
+                                                </small>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
                             
                             <div class="mt-4 d-flex justify-content-between">
                                 <button type="button" onclick="prevStep()" class="btn btn-secondary">Prev</button>

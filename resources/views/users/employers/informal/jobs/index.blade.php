@@ -38,7 +38,7 @@
                                                 {{ ucfirst($job->status) }}
                                             </span>
                                             @if($job->job_type)
-                                                <span class="badge bg-{{ $job->job_type === 'formal' ? 'primary' : 'warning' }} ms-1">
+                                                <span class="badge bg-{{ $job->job_type === 'formal' ? 'primary' : 'success' }} ms-1">
                                                     {{ ucfirst($job->job_type) }}
                                                 </span>
                                             @endif

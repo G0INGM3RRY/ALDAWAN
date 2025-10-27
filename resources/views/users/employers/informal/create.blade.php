@@ -4,11 +4,11 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card border-warning">
-                <div class="card-header bg-warning text-dark">
+            <div class="card border-success">
+                <div class="card-header bg-success text-white">
                     <h3 class="mb-0"><i class="fas fa-tools me-2"></i>Post a Job Opportunity</h3>
                     <div class="mt-2">
-                        <span class="badge bg-dark text-warning">
+                        <span class="badge bg-dark text-success">
                             <i class="me-1"></i>Informal Employer
                         </span>
                         <small class="text-dark ms-2">Create flexible work opportunities and contract-based jobs</small>
@@ -149,7 +149,7 @@
 
                         <!-- Disability Restrictions Section -->
                         <div class="mb-4">
-                            <h5 class="text-warning mb-3">
+                            <h5 class="text-success mb-3">
                                 <i class="fas fa-universal-access me-2"></i>Accessibility & Disability Considerations
                             </h5>
                             

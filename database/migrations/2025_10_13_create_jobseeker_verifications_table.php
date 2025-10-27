@@ -11,23 +11,48 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('jobseeker_verifications', function (Blueprint $table) {
+        // Formal jobseeker verification (Professional/Office jobs)
+        Schema::create('formal_jobseeker_verifications', function (Blueprint $table) {
             $table->id();
             $table->foreignId('jobseeker_id')->constrained('jobseeker_profiles')->onDelete('cascade');
-            $table->enum('status', ['pending', 'approved', 'rejected', 'requires_info'])->default('pending');
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             
-            // Identity Documents
-            $table->string('government_id_type')->nullable(); // Driver's License, UMID, SSS, etc.
-            $table->string('government_id_number')->nullable();
-            $table->string('government_id_path')->nullable(); // File path for ID photo
+            // Identity (Strict verification required)
+            $table->string('government_id_path'); // Government ID document
             
-            // Address Verification
-            $table->string('barangay_clearance_path')->nullable();
-            $table->string('proof_of_address_path')->nullable();
+            // Education/Skills (Required for formal positions)
+            $table->string('educational_document_path'); // Single diploma/certificate
+            $table->string('skills_certificate_path')->nullable(); // Professional certification
             
-            // Additional Documents (for skills verification)
-            $table->json('skill_certificates')->nullable(); // Array of certificate file paths
-            $table->string('nbi_clearance_path')->nullable(); // For household workers
+            // Background Check (Required for formal positions)
+            $table->string('nbi_clearance_path'); // NBI clearance
+            
+            // Admin Review
+            $table->text('verification_notes')->nullable();
+            $table->foreignId('verified_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->timestamp('verified_at')->nullable();
+            $table->timestamp('submitted_at')->useCurrent();
+            $table->text('rejection_reason')->nullable();
+            
+            $table->timestamps();
+            
+            $table->index(['jobseeker_id', 'status']);
+        });
+
+        // Informal jobseeker verification (Household/Manual labor jobs)
+        Schema::create('informal_jobseeker_verifications', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('jobseeker_id')->constrained('jobseeker_profiles')->onDelete('cascade');
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            
+            // Identity (Basic verification)
+            $table->string('basic_id_path'); // Any government-issued ID
+            
+            // Character Reference (Required for community trust)
+            $table->string('barangay_clearance_path'); // Community endorsement
+            
+            // Health Certificate (Job-specific, especially for household workers)
+            $table->string('health_certificate_path')->nullable();
             
             // Admin Review
             $table->text('verification_notes')->nullable();
@@ -47,6 +72,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('jobseeker_verifications');
+        Schema::dropIfExists('formal_jobseeker_verifications');
+        Schema::dropIfExists('informal_jobseeker_verifications');
     }
 };

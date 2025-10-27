@@ -5,8 +5,8 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <!-- Job Summary Card -->
-            <div class="card border-warning mb-4">
-                <div class="card-header bg-warning text-dark">
+            <div class="card border-info mb-4">
+                <div class="card-header bg-info text-white">
                     <h5 class="mb-0">
                         @if(isset($editMode) && $editMode)
                             Edit Application for Gig
@@ -17,7 +17,7 @@
                 </div>
                 <div class="card-body">
                     <h4 class="text-dark">{{ $job->job_title }}</h4>
-                    <h6 class="text-warning mb-2">{{ $job->classification }}</h6>
+                    <h6 class="text-info mb-2">{{ $job->classification }}</h6>
                     <div class="row g-2">
                         <div class="col-md-6">
                             <small class="text-muted">
@@ -41,7 +41,7 @@
             <!-- Application Form -->
             <div class="card border-0 shadow">
                 <div class="card-header bg-light">
-                    <h5 class="mb-0 text-warning">
+                    <h5 class="mb-0 text-info">
                         @if(isset($editMode) && $editMode)
                             Edit Your Application
                         @else
@@ -102,7 +102,7 @@
                             @if(isset($application) && $application->resume_file_path)
                                 <div class="mb-2">
                                     <small class="text-muted">Current resume:</small>
-                                    <a href="{{ Storage::url($application->resume_file_path) }}" target="_blank" class="d-block text-warning">
+                                    <a href="{{ Storage::url($application->resume_file_path) }}" target="_blank" class="d-block text-info">
                                         📄 {{ basename($application->resume_file_path) }}
                                     </a>
                                     <small class="text-muted">Upload a new file to replace the current one</small>
@@ -132,7 +132,7 @@
                                 <div class="mb-2">
                                     <small class="text-muted">Current documents:</small>
                                     @foreach($application->additional_documents as $doc)
-                                        <a href="{{ Storage::url($doc) }}" target="_blank" class="d-block text-warning">
+                                        <a href="{{ Storage::url($doc) }}" target="_blank" class="d-block text-info">
                                             📄 {{ basename($doc) }}
                                         </a>
                                     @endforeach

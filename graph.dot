@@ -1,0 +1,956 @@
+digraph G {
+	graph [bb="0,0,4216,4983",
+		bgcolor="#F7F7F7",
+		concentrate="",
+		dpi=150,
+		esep=1,
+		fontname="Helvetica Neue",
+		fontsize=12,
+		labelloc=t,
+		nodesep=2,
+		overlap="",
+		pad=1,
+		rankdir=LR,
+		ranksep=3,
+		size="20,15!",
+		splines=ortho,
+		style=filled
+	];
+	node [label="\N"];
+	appmodelsclassification	[fontname="Helvetica Neue",
+		height=4.1111,
+		label=<<table width="100%" height="100%" border="0" margin="0" cellborder="1" cellspacing="0" cellpadding="10">
+<tr width="100%"><td width="100%" bgcolor="#d3d3d3"><font color="#333333">Classification</font></td></tr>
+<tr width="100%"><td port="id" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >id (bigint)</font></td></tr>
+<tr width="100%"><td port="name" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >name (varchar)</font></td></tr>
+<tr width="100%"><td port="description" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >description (text)</font></td></tr>
+<tr width="100%"><td port="code" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >code (varchar)</font></td></tr>
+<tr width="100%"><td port="is_active" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >is_active (tinyint)</font></td></tr>
+<tr width="100%"><td port="created_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >created_at (timestamp)</font></td></tr>
+<tr width="100%"><td port="updated_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >updated_at (timestamp)</font></td></tr>
+</table>>,
+		margin=0,
+		pos="89.5,2188",
+		shape=rectangle,
+		width=2.4861];
+	job_classifications	[fontname="Helvetica Neue",
+		height=3.0833,
+		label=<<table width="100%" height="100%" border="0" margin="0" cellborder="1" cellspacing="0" cellpadding="10">
+<tr width="100%"><td width="100%" bgcolor="#d3d3d3"><font color="#333333">Pivot</font></td></tr>
+<tr width="100%"><td port="id" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >id (bigint)</font></td></tr>
+<tr width="100%"><td port="job_listing_id" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >job_listing_id (bigint)</font></td></tr>
+<tr width="100%"><td port="classification_id" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >classification_id (bigint)</font></td></tr>
+<tr width="100%"><td port="created_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >created_at (timestamp)</font></td></tr>
+<tr width="100%"><td port="updated_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >updated_at (timestamp)</font></td></tr>
+</table>>,
+		margin=0,
+		pos="488.5,2300",
+		shape=rectangle,
+		width=2.4861];
+	appmodelsclassification:id -> job_classifications:classification_id	[color="#003049",
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="289,2370.5",
+		penwidth=1.8,
+		pos="e,489.43,2238 90.573,2238 90.573,2238 479.43,2238 479.43,2238",
+		xlabel="BelongsToMany
+jobs",
+		xlp="232,2223"];
+	job_classifications:classification_id -> appmodelsclassification:id	[color="#003049",
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="289,2206.5",
+		penwidth=1.8,
+		pos="e,179.53,2287 399.46,2287 399.46,2287 189.53,2287 189.53,2287",
+		xlabel="BelongsToMany
+classifications",
+		xlp="241.49,2272"];
+	appmodelsjobs	[fontname="Helvetica Neue",
+		height=11.306,
+		label=<<table width="100%" height="100%" border="0" margin="0" cellborder="1" cellspacing="0" cellpadding="10">
+<tr width="100%"><td width="100%" bgcolor="#d3d3d3"><font color="#333333">Jobs</font></td></tr>
+<tr width="100%"><td port="id" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >id (bigint)</font></td></tr>
+<tr width="100%"><td port="created_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >created_at (timestamp)</font></td></tr>
+<tr width="100%"><td port="updated_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >updated_at (timestamp)</font></td></tr>
+<tr width="100%"><td port="job_title" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >job_title (varchar)</font></td></tr>
+<tr width="100%"><td port="description" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >description (text)</font></td></tr>
+<tr width="100%"><td port="company_id" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >company_id (bigint)</font></td></tr>
+<tr width="100%"><td port="location" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >location (varchar)</font></td></tr>
+<tr width="100%"><td port="salary" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >salary (decimal)</font></td></tr>
+<tr width="100%"><td port="requirements" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >requirements (text)</font></td></tr>
+<tr width="100%"><td port="posted_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >posted_at (timestamp)</font></td></tr>
+<tr width="100%"><td port="classification" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >classification (varchar)</font></td></tr>
+<tr width="100%"><td port="job_type" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >job_type (enum)</font></td></tr>
+<tr width="100%"><td port="status" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >status (enum)</font></td></tr>
+<tr width="100%"><td port="minimum_education_level_id" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >minimum_education_level_id (bigint)</font></td></tr>
+<tr width="100%"><td port="minimum_experience_years" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >minimum_experience_years (int)</font></td></tr>
+<tr width="100%"><td port="benefits" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >benefits (text)</font></td></tr>
+<tr width="100%"><td port="employment_type" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >employment_type (enum)</font></td></tr>
+<tr width="100%"><td port="remote_work_available" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >remote_work_available (tinyint)</font></td></tr>
+<tr width="100%"><td port="positions_available" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >positions_available (int)</font></td></tr>
+<tr width="100%"><td port="disability_restrictions" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >disability_restrictions (json)</font></td></tr>
+<tr width="100%"><td port="accessibility_notes" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >accessibility_notes (text)</font></td></tr>
+</table>>,
+		margin=0,
+		pos="929.5,1967",
+		shape=rectangle,
+		width=3.6528];
+	job_classifications:job_listing_id -> appmodelsjobs:id	[color="#003049",
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="688,2408.5",
+		penwidth=1.8,
+		pos="e,930.42,2250.7 489.58,2250.7 489.58,2250.7 920.42,2250.7 920.42,2250.7",
+		xlabel="BelongsToMany
+jobs",
+		xlp="652,2265.7"];
+	appmodelsjobs:id -> job_classifications:job_listing_id	[color="#003049",
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="688,2244.5",
+		penwidth=1.8,
+		pos="e,578.56,2312.3 798.48,2312.3 798.48,2312.3 588.56,2312.3 588.56,2312.3",
+		xlabel="BelongsToMany
+classifications",
+		xlp="640.52,2297.3"];
+	appmodelsemployer	[fontname="Helvetica Neue",
+		height=10.278,
+		label=<<table width="100%" height="100%" border="0" margin="0" cellborder="1" cellspacing="0" cellpadding="10">
+<tr width="100%"><td width="100%" bgcolor="#d3d3d3"><font color="#333333">Employer</font></td></tr>
+<tr width="100%"><td port="id" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >id (bigint)</font></td></tr>
+<tr width="100%"><td port="user_id" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >user_id (bigint)</font></td></tr>
+<tr width="100%"><td port="company_name" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >company_name (varchar)</font></td></tr>
+<tr width="100%"><td port="street" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >street (varchar)</font></td></tr>
+<tr width="100%"><td port="barangay" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >barangay (varchar)</font></td></tr>
+<tr width="100%"><td port="municipality" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >municipality (varchar)</font></td></tr>
+<tr width="100%"><td port="province" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >province (varchar)</font></td></tr>
+<tr width="100%"><td port="company_logo" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >company_logo (varchar)</font></td></tr>
+<tr width="100%"><td port="employer_type" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >employer_type (enum)</font></td></tr>
+<tr width="100%"><td port="created_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >created_at (timestamp)</font></td></tr>
+<tr width="100%"><td port="updated_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >updated_at (timestamp)</font></td></tr>
+<tr width="100%"><td port="company_type_id" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >company_type_id (bigint)</font></td></tr>
+<tr width="100%"><td port="company_description" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >company_description (text)</font></td></tr>
+<tr width="100%"><td port="website_url" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >website_url (varchar)</font></td></tr>
+<tr width="100%"><td port="linkedin_url" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >linkedin_url (varchar)</font></td></tr>
+<tr width="100%"><td port="company_size_min" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >company_size_min (int)</font></td></tr>
+<tr width="100%"><td port="company_size_max" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >company_size_max (int)</font></td></tr>
+<tr width="100%"><td port="founded_year" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >founded_year (year)</font></td></tr>
+<tr width="100%"><td port="is_verified" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >is_verified (tinyint)</font></td></tr>
+</table>>,
+		margin=0,
+		pos="3581,966",
+		shape=rectangle,
+		width=2.7917];
+	appmodelsjobs -> appmodelsemployer	[color="#003049",
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="2188.5,658.5",
+		penwidth=1.8,
+		pos="e,3480.1,785.33 956,1559.9 956,1218.2 956,785.33 956,785.33 956,785.33 3470.1,785.33 3470.1,785.33",
+		xlabel="HasOneThrough
+employerProfile",
+		xlp="1770.8,770.33"];
+	appmodelsuser	[fontname="Helvetica Neue",
+		height=8.7361,
+		label=<<table width="100%" height="100%" border="0" margin="0" cellborder="1" cellspacing="0" cellpadding="10">
+<tr width="100%"><td width="100%" bgcolor="#d3d3d3"><font color="#333333">User</font></td></tr>
+<tr width="100%"><td port="id" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >id (bigint)</font></td></tr>
+<tr width="100%"><td port="name" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >name (varchar)</font></td></tr>
+<tr width="100%"><td port="email" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >email (varchar)</font></td></tr>
+<tr width="100%"><td port="email_verified_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >email_verified_at (timestamp)</font></td></tr>
+<tr width="100%"><td port="password" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >password (varchar)</font></td></tr>
+<tr width="100%"><td port="remember_token" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >remember_token (varchar)</font></td></tr>
+<tr width="100%"><td port="created_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >created_at (timestamp)</font></td></tr>
+<tr width="100%"><td port="updated_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >updated_at (timestamp)</font></td></tr>
+<tr width="100%"><td port="role" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >role (varchar)</font></td></tr>
+<tr width="100%"><td port="verification_status" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >verification_status (enum)</font></td></tr>
+<tr width="100%"><td port="verification_submitted_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >verification_submitted_at (timestamp)</font></td></tr>
+<tr width="100%"><td port="verified_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >verified_at (timestamp)</font></td></tr>
+<tr width="100%"><td port="verified_by" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >verified_by (bigint)</font></td></tr>
+<tr width="100%"><td port="admin_level" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >admin_level (enum)</font></td></tr>
+<tr width="100%"><td port="assigned_region" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >assigned_region (varchar)</font></td></tr>
+<tr width="100%"><td port="account_status" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >account_status (enum)</font></td></tr>
+</table>>,
+		margin=0,
+		pos="3094,1688",
+		shape=rectangle,
+		width=3.7778];
+	appmodelsjobs:company_id -> appmodelsuser:id	[arrowhead=tee,
+		arrowtail=crow,
+		color="#F77F00",
+		dir=both,
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="1976,2122.5",
+		penwidth=1.8,
+		pos="s,3093.9,1686.9 e,930.6,1686.9 940.6,1686.9 940.6,1686.9 3088.9,1686.9 3088.9,1686.9",
+		xlabel="BelongsTo
+user",
+		xlp="1980.3,1671.9"];
+	appmodelseducationlevel	[fontname="Helvetica Neue",
+		height=4.1111,
+		label=<<table width="100%" height="100%" border="0" margin="0" cellborder="1" cellspacing="0" cellpadding="10">
+<tr width="100%"><td width="100%" bgcolor="#d3d3d3"><font color="#333333">EducationLevel</font></td></tr>
+<tr width="100%"><td port="id" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >id (bigint)</font></td></tr>
+<tr width="100%"><td port="name" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >name (varchar)</font></td></tr>
+<tr width="100%"><td port="description" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >description (text)</font></td></tr>
+<tr width="100%"><td port="level_order" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >level_order (int)</font></td></tr>
+<tr width="100%"><td port="is_active" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >is_active (tinyint)</font></td></tr>
+<tr width="100%"><td port="created_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >created_at (timestamp)</font></td></tr>
+<tr width="100%"><td port="updated_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >updated_at (timestamp)</font></td></tr>
+</table>>,
+		margin=0,
+		pos="3094,242",
+		shape=rectangle,
+		width=2.4861];
+	appmodelsjobs:minimum_education_level_id -> appmodelseducationlevel:id	[arrowhead=tee,
+		arrowtail=crow,
+		color="#F77F00",
+		dir=both,
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="1976,7.5",
+		penwidth=1.8,
+		pos="s,851,1818.9 e,3094.9,153.2 851,1808.9 851,1808.9 851,153.2 851,153.2 851,153.2 3089.9,153.2 3089.9,153.2",
+		xlabel="BelongsTo
+minimumEducationLevel",
+		xlp="1061.1,138.2"];
+	appmodelsjobapplication	[fontname="Helvetica Neue",
+		height=7.7083,
+		label=<<table width="100%" height="100%" border="0" margin="0" cellborder="1" cellspacing="0" cellpadding="10">
+<tr width="100%"><td width="100%" bgcolor="#d3d3d3"><font color="#333333">JobApplication</font></td></tr>
+<tr width="100%"><td port="id" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >id (bigint)</font></td></tr>
+<tr width="100%"><td port="user_id" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >user_id (bigint)</font></td></tr>
+<tr width="100%"><td port="job_id" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >job_id (bigint)</font></td></tr>
+<tr width="100%"><td port="status" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >status (enum)</font></td></tr>
+<tr width="100%"><td port="cover_letter" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >cover_letter (text)</font></td></tr>
+<tr width="100%"><td port="resume_file_path" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >resume_file_path (varchar)</font></td></tr>
+<tr width="100%"><td port="additional_documents" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >additional_documents (json)</font></td></tr>
+<tr width="100%"><td port="applied_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >applied_at (timestamp)</font></td></tr>
+<tr width="100%"><td port="reviewed_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >reviewed_at (timestamp)</font></td></tr>
+<tr width="100%"><td port="status_updated_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >status_updated_at (timestamp)</font></td></tr>
+<tr width="100%"><td port="employer_notes" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >employer_notes (text)</font></td></tr>
+<tr width="100%"><td port="rejection_reason" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >rejection_reason (text)</font></td></tr>
+<tr width="100%"><td port="created_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >created_at (timestamp)</font></td></tr>
+<tr width="100%"><td port="updated_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >updated_at (timestamp)</font></td></tr>
+</table>>,
+		margin=0,
+		pos="3581,3202",
+		shape=rectangle,
+		width=3.1389];
+	appmodelsjobs:id -> appmodelsjobapplication:job_id	[arrowhead=crow,
+		arrowtail=none,
+		color="#FCBF49",
+		dir=both,
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="2188.5,4975.5",
+		penwidth=1.8,
+		pos="e,3514,3330.8 1061.7,2318.9 1587.5,2318.9 3514,2318.9 3514,2318.9 3514,2318.9 3514,3320.8 3514,3320.8",
+		xlabel="HasMany
+applications",
+		xlp="2828.3,2333.9"];
+	appmodelsjobs:id -> appmodelsjobapplication:job_id	[arrowhead=crow,
+		arrowtail=none,
+		color="#FCBF49",
+		dir=both,
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="2188.5,3675.5",
+		penwidth=1.8,
+		pos="e,3559,3331 1061.7,2305.8 1593.4,2305.8 3559,2305.8 3559,2305.8 3559,2305.8 3559,3321 3559,3321",
+		xlabel="HasMany
+formalApplications",
+		xlp="2880,2290.8"];
+	appmodelsjobs:id -> appmodelsjobapplication:job_id	[arrowhead=crow,
+		arrowtail=none,
+		color="#FCBF49",
+		dir=both,
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="2188.5,4672.5",
+		penwidth=1.8,
+		pos="e,3604,3330.7 930.62,2292.7 951.35,2292.7 3604,2292.7 3604,2292.7 3604,2292.7 3604,3320.7 3604,3320.7",
+		xlabel="HasMany
+jobApplications",
+		xlp="2730.8,2277.7"];
+	job_skills	[fontname="Helvetica Neue",
+		height=4.1111,
+		label=<<table width="100%" height="100%" border="0" margin="0" cellborder="1" cellspacing="0" cellpadding="10">
+<tr width="100%"><td width="100%" bgcolor="#d3d3d3"><font color="#333333">Pivot</font></td></tr>
+<tr width="100%"><td port="id" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >id (bigint)</font></td></tr>
+<tr width="100%"><td port="job_listing_id" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >job_listing_id (bigint)</font></td></tr>
+<tr width="100%"><td port="skill_id" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >skill_id (bigint)</font></td></tr>
+<tr width="100%"><td port="required_level" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >required_level (enum)</font></td></tr>
+<tr width="100%"><td port="is_required" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >is_required (tinyint)</font></td></tr>
+<tr width="100%"><td port="created_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >created_at (timestamp)</font></td></tr>
+<tr width="100%"><td port="updated_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >updated_at (timestamp)</font></td></tr>
+</table>>,
+		margin=0,
+		pos="1370.5,2686",
+		shape=rectangle,
+		width=2.4861];
+	appmodelsjobs:id -> job_skills:job_listing_id	[color="#003049",
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="1171,2589.5",
+		penwidth=1.8,
+		pos="e,1341,2722.8 930.57,2360 936.89,2360 1341,2360 1341,2360 1341,2360 1341,2712.8 1341,2712.8",
+		xlabel="BelongsToMany
+requiredSkills",
+		xlp="1259.2,2345"];
+	appmodelscompanytype	[fontname="Helvetica Neue",
+		height=3.5972,
+		label=<<table width="100%" height="100%" border="0" margin="0" cellborder="1" cellspacing="0" cellpadding="10">
+<tr width="100%"><td width="100%" bgcolor="#d3d3d3"><font color="#333333">CompanyType</font></td></tr>
+<tr width="100%"><td port="id" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >id (bigint)</font></td></tr>
+<tr width="100%"><td port="name" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >name (varchar)</font></td></tr>
+<tr width="100%"><td port="description" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >description (text)</font></td></tr>
+<tr width="100%"><td port="is_active" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >is_active (tinyint)</font></td></tr>
+<tr width="100%"><td port="created_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >created_at (timestamp)</font></td></tr>
+<tr width="100%"><td port="updated_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >updated_at (timestamp)</font></td></tr>
+</table>>,
+		margin=0,
+		pos="4074,799",
+		shape=rectangle,
+		width=2.4861];
+	appmodelscompanytype:id -> appmodelsemployer:company_type_id	[arrowhead=crow,
+		arrowtail=none,
+		color="#FCBF49",
+		dir=both,
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="3822,962.5",
+		penwidth=1.8,
+		pos="e,3582.1,755.83 4074.9,755.83 4074.9,755.83 3592.1,755.83 3592.1,755.83",
+		xlabel="HasMany
+employers",
+		xlp="3798.5,740.83"];
+	appmodelsemployer:user_id -> appmodelsjobs:company_id	[arrowhead=crow,
+		arrowtail=none,
+		color="#FCBF49",
+		dir=both,
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="2188.5,961.5",
+		penwidth=1.8,
+		pos="e,1009,2114.8 3581.9,974.67 3561.9,974.67 1009,974.67 1009,974.67 1009,974.67 1009,2104.8 1009,2104.8",
+		xlabel="HasMany
+jobListings",
+		xlp="1694.4,959.67"];
+	appmodelsemployer:company_type_id -> appmodelscompanytype:id	[arrowhead=tee,
+		arrowtail=crow,
+		color="#F77F00",
+		dir=both,
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="3822,798.5",
+		penwidth=1.8,
+		pos="s,4074.9,842.17 e,3582.1,842.17 3592.1,842.17 3592.1,842.17 4069.9,842.17 4069.9,842.17",
+		xlabel="BelongsTo
+companyType",
+		xlp="3785,827.17"];
+	appmodelscompanyverification	[fontname="Helvetica Neue",
+		height=7.1944,
+		label=<<table width="100%" height="100%" border="0" margin="0" cellborder="1" cellspacing="0" cellpadding="10">
+<tr width="100%"><td width="100%" bgcolor="#d3d3d3"><font color="#333333">CompanyVerification</font></td></tr>
+<tr width="100%"><td port="id" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >id (bigint)</font></td></tr>
+<tr width="100%"><td port="employer_id" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >employer_id (bigint)</font></td></tr>
+<tr width="100%"><td port="status" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >status (enum)</font></td></tr>
+<tr width="100%"><td port="business_registration_number" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >business_registration_number (varchar)</font></td></tr>
+<tr width="100%"><td port="tax_id" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >tax_id (varchar)</font></td></tr>
+<tr width="100%"><td port="verification_document_path" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >verification_document_path (varchar)</font></td></tr>
+<tr width="100%"><td port="verification_notes" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >verification_notes (text)</font></td></tr>
+<tr width="100%"><td port="verified_by" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >verified_by (bigint)</font></td></tr>
+<tr width="100%"><td port="verified_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >verified_at (timestamp)</font></td></tr>
+<tr width="100%"><td port="submitted_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >submitted_at (timestamp)</font></td></tr>
+<tr width="100%"><td port="rejection_reason" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >rejection_reason (text)</font></td></tr>
+<tr width="100%"><td port="created_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >created_at (timestamp)</font></td></tr>
+<tr width="100%"><td port="updated_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >updated_at (timestamp)</font></td></tr>
+</table>>,
+		margin=0,
+		pos="4074,1679",
+		shape=rectangle,
+		width=3.9444];
+	appmodelsemployer:id -> appmodelscompanyverification:employer_id	[arrowhead=tee,
+		arrowtail=none,
+		color="#D62828",
+		dir=both,
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="3822,1853.5",
+		penwidth=1.8,
+		pos="e,3950,1826.7 3582.1,1200.2 3587.7,1200.2 3950,1200.2 3950,1200.2 3950,1200.2 3950,1821.7 3950,1821.7",
+		xlabel="HasOne
+verification",
+		xlp="3913,1312"];
+	appmodelsemployer:user_id -> appmodelsuser:id	[arrowhead=tee,
+		arrowtail=crow,
+		color="#F77F00",
+		dir=both,
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="3340,1536.5",
+		penwidth=1.8,
+		pos="s,3581.9,1221.3 e,3199,1928 3571.9,1221.3 3571.9,1221.3 3199,1221.3 3199,1221.3 3199,1221.3 3199,1923 3199,1923",
+		xlabel="BelongsTo
+user",
+		xlp="3233.5,1370.7"];
+	appmodelscompanyverification:employer_id -> appmodelsemployer:id	[arrowhead=tee,
+		arrowtail=crow,
+		color="#F77F00",
+		dir=both,
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="3822,1413.5",
+		penwidth=1.8,
+		pos="s,3967,1826.7 e,3582.1,1064.3 3967,1816.7 3967,1816.7 3967,1064.3 3967,1064.3 3967,1064.3 3587.1,1064.3 3587.1,1064.3",
+		xlabel="BelongsTo
+employer",
+		xlp="3932.5,1235.5"];
+	appmodelscompanyverification:verified_by -> appmodelsuser:id	[arrowhead=tee,
+		arrowtail=crow,
+		color="#F77F00",
+		dir=both,
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="3581,1631.5",
+		penwidth=1.8,
+		pos="s,3094.1,1639.8 e,3931.8,1639.8 3921.8,1639.8 3921.8,1639.8 3099.1,1639.8 3099.1,1639.8",
+		xlabel="BelongsTo
+verifier",
+		xlp="3475.9,1624.8"];
+	appmodelsuser:id -> appmodelsjobs:company_id	[arrowhead=crow,
+		arrowtail=none,
+		color="#FCBF49",
+		dir=both,
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="1976,1832.5",
+		penwidth=1.8,
+		pos="e,930.6,1765.8 3093.9,1765.8 3093.9,1765.8 940.6,1765.8 940.6,1765.8",
+		xlabel="HasMany
+jobs",
+		xlp="1986.2,1750.8"];
+	appmodelsuser:id -> appmodelsemployer:user_id	[arrowhead=tee,
+		arrowtail=none,
+		color="#D62828",
+		dir=both,
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="3340,1368.5",
+		penwidth=1.8,
+		pos="e,3581.9,1278.7 3215,1927.7 3215,1818.1 3215,1278.7 3215,1278.7 3215,1278.7 3576.9,1278.7 3576.9,1278.7",
+		xlabel="HasOne
+employerProfile",
+		xlp="3268,1407.2"];
+	appmodelsuser:verified_by -> appmodelsuser:id	[arrowhead=tee,
+		arrowtail=crow,
+		color="#F77F00",
+		dir=both,
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="3108.8,1353.5",
+		penwidth=1.8,
+		pos="s,3093.9,1420.4 e,3094.2,1389 3083.9,1420.4 3083.9,1420.4 2914,1420.4 2914,1420.4 2914,1420.4 2914,1361 2914,1361 2914,1361 3304,\
+1361 3304,1361 3304,1361 3304,1389 3304,1389 3304,1389 3099.2,1389 3099.2,1389",
+		xlabel="BelongsTo
+verifiedByAdmin",
+		xlp="3056.3,1346"];
+	appmodelsuser:id -> appmodelsuser:verified_by	[arrowhead=crow,
+		arrowtail=none,
+		color="#FCBF49",
+		dir=both,
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="3114.7,1341",
+		penwidth=1.8,
+		pos="e,3094.1,1404.5 3093.8,1467.3 3087.1,1467.3 2870,1467.3 2870,1467.3 2870,1467.3 2870,1348.5 2870,1348.5 2870,1348.5 3377,1348.5 \
+3377,1348.5 3377,1348.5 3377,1404.5 3377,1404.5 3377,1404.5 3104.1,1404.5 3104.1,1404.5",
+		xlabel="HasMany
+verifiedUsers",
+		xlp="3160.7,1333.5"];
+	appmodelsjobseekerprofile	[fontname="Helvetica Neue",
+		height=14.389,
+		label=<<table width="100%" height="100%" border="0" margin="0" cellborder="1" cellspacing="0" cellpadding="10">
+<tr width="100%"><td width="100%" bgcolor="#d3d3d3"><font color="#333333">JobseekerProfile</font></td></tr>
+<tr width="100%"><td port="id" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >id (bigint)</font></td></tr>
+<tr width="100%"><td port="user_id" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >user_id (bigint)</font></td></tr>
+<tr width="100%"><td port="job_seeker_type" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >job_seeker_type (varchar)</font></td></tr>
+<tr width="100%"><td port="first_name" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >first_name (varchar)</font></td></tr>
+<tr width="100%"><td port="middle_name" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >middle_name (varchar)</font></td></tr>
+<tr width="100%"><td port="last_name" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >last_name (varchar)</font></td></tr>
+<tr width="100%"><td port="suffix" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >suffix (varchar)</font></td></tr>
+<tr width="100%"><td port="birthday" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >birthday (date)</font></td></tr>
+<tr width="100%"><td port="sex" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >sex (varchar)</font></td></tr>
+<tr width="100%"><td port="photo" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >photo (varchar)</font></td></tr>
+<tr width="100%"><td port="civilstatus" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >civilstatus (varchar)</font></td></tr>
+<tr width="100%"><td port="street" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >street (varchar)</font></td></tr>
+<tr width="100%"><td port="barangay" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >barangay (varchar)</font></td></tr>
+<tr width="100%"><td port="municipality" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >municipality (varchar)</font></td></tr>
+<tr width="100%"><td port="province" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >province (varchar)</font></td></tr>
+<tr width="100%"><td port="religion" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >religion (varchar)</font></td></tr>
+<tr width="100%"><td port="contactnumber" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >contactnumber (varchar)</font></td></tr>
+<tr width="100%"><td port="email" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >email (varchar)</font></td></tr>
+<tr width="100%"><td port="is_4ps" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >is_4ps (tinyint)</font></td></tr>
+<tr width="100%"><td port="employmentstatus" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >employmentstatus (varchar)</font></td></tr>
+<tr width="100%"><td port="created_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >created_at (timestamp)</font></td></tr>
+<tr width="100%"><td port="updated_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >updated_at (timestamp)</font></td></tr>
+<tr width="100%"><td port="education_level_id" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >education_level_id (bigint)</font></td></tr>
+<tr width="100%"><td port="institution_name" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >institution_name (varchar)</font></td></tr>
+<tr width="100%"><td port="graduation_year" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >graduation_year (year)</font></td></tr>
+<tr width="100%"><td port="gpa" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >gpa (decimal)</font></td></tr>
+<tr width="100%"><td port="degree_field" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >degree_field (varchar)</font></td></tr>
+</table>>,
+		margin=0,
+		pos="2624.5,2850",
+		shape=rectangle,
+		width=2.9028];
+	appmodelsuser:id -> appmodelsjobseekerprofile:user_id	[arrowhead=tee,
+		arrowtail=none,
+		color="#D62828",
+		dir=both,
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="2848,2205.5",
+		penwidth=1.8,
+		pos="e,2573,3256.8 3093.9,1844.7 3085.9,1844.7 2573,1844.7 2573,1844.7 2573,1844.7 2573,3251.8 2573,3251.8",
+		xlabel="HasOne
+jobseekerProfile",
+		xlp="2519,2272.8"];
+	appmodelsuser:id -> appmodelsjobapplication:user_id	[arrowhead=crow,
+		arrowtail=none,
+		color="#FCBF49",
+		dir=both,
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="3340,2496.5",
+		penwidth=1.8,
+		pos="e,3580.9,2999.9 3206,1965.3 3206,2105.1 3206,2999.9 3206,2999.9 3206,2999.9 3570.9,2999.9 3570.9,2999.9",
+		xlabel="HasMany
+jobApplications",
+		xlp="3155.5,2650.1"];
+	appmodelsuser:id -> appmodelsjobapplication:user_id	[arrowhead=crow,
+		arrowtail=none,
+		color="#FCBF49",
+		dir=both,
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="3340,3885.5",
+		penwidth=1.8,
+		pos="e,3580.9,2981.1 3212,1965.4 3212,2104.1 3212,2981.1 3212,2981.1 3212,2981.1 3570.9,2981.1 3570.9,2981.1",
+		xlabel="HasMany
+formalJobApplications",
+		xlp="3284,2637.7"];
+	appmodelsjobpreference	[fontname="Helvetica Neue",
+		height=5.6528,
+		label=<<table width="100%" height="100%" border="0" margin="0" cellborder="1" cellspacing="0" cellpadding="10">
+<tr width="100%"><td width="100%" bgcolor="#d3d3d3"><font color="#333333">JobPreference</font></td></tr>
+<tr width="100%"><td port="id" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >id (bigint)</font></td></tr>
+<tr width="100%"><td port="user_id" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >user_id (bigint)</font></td></tr>
+<tr width="100%"><td port="preferred_job_title" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >preferred_job_title (varchar)</font></td></tr>
+<tr width="100%"><td port="preferred_classification" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >preferred_classification (varchar)</font></td></tr>
+<tr width="100%"><td port="min_salary" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >min_salary (decimal)</font></td></tr>
+<tr width="100%"><td port="max_salary" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >max_salary (decimal)</font></td></tr>
+<tr width="100%"><td port="preferred_location" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >preferred_location (varchar)</font></td></tr>
+<tr width="100%"><td port="preferred_employment_type" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >preferred_employment_type (enum)</font></td></tr>
+<tr width="100%"><td port="created_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >created_at (timestamp)</font></td></tr>
+<tr width="100%"><td port="updated_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >updated_at (timestamp)</font></td></tr>
+</table>>,
+		margin=0,
+		pos="3581,2063",
+		shape=rectangle,
+		width=3.6389];
+	appmodelsuser:id -> appmodelsjobpreference:user_id	[arrowhead=crow,
+		arrowtail=none,
+		color="#FCBF49",
+		dir=both,
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="3340,2181.5",
+		penwidth=1.8,
+		pos="e,3580.9,1907.2 3094.1,1907.2 3094.1,1907.2 3570.9,1907.2 3570.9,1907.2",
+		xlabel="HasMany
+jobPreferences",
+		xlp="3282.5,1892.2"];
+	appmodelsdisability	[fontname="Helvetica Neue",
+		height=4.1111,
+		label=<<table width="100%" height="100%" border="0" margin="0" cellborder="1" cellspacing="0" cellpadding="10">
+<tr width="100%"><td width="100%" bgcolor="#d3d3d3"><font color="#333333">Disability</font></td></tr>
+<tr width="100%"><td port="id" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >id (bigint)</font></td></tr>
+<tr width="100%"><td port="name" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >name (varchar)</font></td></tr>
+<tr width="100%"><td port="description" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >description (text)</font></td></tr>
+<tr width="100%"><td port="category" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >category (varchar)</font></td></tr>
+<tr width="100%"><td port="is_active" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >is_active (tinyint)</font></td></tr>
+<tr width="100%"><td port="created_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >created_at (timestamp)</font></td></tr>
+<tr width="100%"><td port="updated_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >updated_at (timestamp)</font></td></tr>
+</table>>,
+		margin=0,
+		pos="3581,4244",
+		shape=rectangle,
+		width=2.4861];
+	jobseeker_disabilities	[fontname="Helvetica Neue",
+		height=3.5972,
+		label=<<table width="100%" height="100%" border="0" margin="0" cellborder="1" cellspacing="0" cellpadding="10">
+<tr width="100%"><td width="100%" bgcolor="#d3d3d3"><font color="#333333">Pivot</font></td></tr>
+<tr width="100%"><td port="id" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >id (bigint)</font></td></tr>
+<tr width="100%"><td port="jobseeker_profile_id" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >jobseeker_profile_id (bigint)</font></td></tr>
+<tr width="100%"><td port="disability_id" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >disability_id (bigint)</font></td></tr>
+<tr width="100%"><td port="accommodation_needs" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >accommodation_needs (text)</font></td></tr>
+<tr width="100%"><td port="created_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >created_at (timestamp)</font></td></tr>
+<tr width="100%"><td port="updated_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >updated_at (timestamp)</font></td></tr>
+</table>>,
+		margin=0,
+		pos="3094,4318",
+		shape=rectangle,
+		width=2.9444];
+	appmodelsdisability:id -> jobseeker_disabilities:disability_id	[color="#003049",
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="3340,4262.5",
+		penwidth=1.8,
+		pos="e,3094.1,4256.3 3581.9,4256.3 3581.9,4256.3 3104.1,4256.3 3104.1,4256.3",
+		xlabel="BelongsToMany
+jobseekerProfiles",
+		xlp="3400.5,4241.3"];
+	jobseeker_disabilities:disability_id -> appmodelsdisability:id	[color="#003049",
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="3340,4426.5",
+		penwidth=1.8,
+		pos="e,3492,4324.2 3200.2,4324.2 3200.2,4324.2 3482,4324.2 3482,4324.2",
+		xlabel="BelongsToMany
+disabilities",
+		xlp="3288.1,4309.2"];
+	jobseeker_disabilities:jobseeker_profile_id -> appmodelsjobseekerprofile:id	[color="#003049",
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="2848,4200.5",
+		penwidth=1.8,
+		pos="e,2590,3331.2 2987.7,4361.2 2839.9,4361.2 2590,4361.2 2590,4361.2 2590,4361.2 2590,3341.2 2590,3341.2",
+		xlabel="BelongsToMany
+jobseekerProfiles",
+		xlp="2532.5,4035"];
+	appmodelsjobseekerprofile:user_id -> appmodelsuser:id	[arrowhead=tee,
+		arrowtail=crow,
+		color="#F77F00",
+		dir=both,
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="2848,2520.5",
+		penwidth=1.8,
+		pos="s,2625,3256.9 e,3093.9,1923.6 2625,3246.9 2625,3246.9 2625,1923.6 2625,1923.6 2625,1923.6 3088.9,1923.6 3088.9,1923.6",
+		xlabel="BelongsTo
+user",
+		xlp="2590.5,2338.3"];
+	appmodelsjobseekerprofile:id -> jobseeker_disabilities:jobseeker_profile_id	[color="#003049",
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="2848,4364.5",
+		penwidth=1.8,
+		pos="e,3093.9,4274.8 2660,3331.4 2660,3464.3 2660,4274.8 2660,4274.8 2660,4274.8 3083.9,4274.8 3083.9,4274.8",
+		xlabel="BelongsToMany
+disabilities",
+		xlp="2607,4000.1"];
+	appmodelsjobseekerprofile:education_level_id -> appmodelseducationlevel:id	[arrowhead=tee,
+		arrowtail=crow,
+		color="#F77F00",
+		dir=both,
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="2848,1044.5",
+		penwidth=1.8,
+		pos="s,2625.6,2529.5 e,3094.9,271.6 2635.6,2529.5 2635.6,2529.5 2782,2529.5 2782,2529.5 2782,2529.5 2782,271.6 2782,271.6 2782,271.6 \
+3089.9,271.6 3089.9,271.6",
+		xlabel="BelongsTo
+educationLevel",
+		xlp="2832,1304.8"];
+	appmodelsjobseekerprofile:id -> appmodelsjobapplication:jobseeker_profile_id	[arrowhead=crow,
+		arrowtail=none,
+		color="#FCBF49",
+		dir=both,
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="3094,2904.5",
+		penwidth=1.8,
+		pos="e,3468,3018.8 2625.5,3018.8 2625.5,3018.8 3458,3018.8 3458,3018.8",
+		xlabel="HasMany
+jobApplications",
+		xlp="2991.3,3003.8"];
+	appmodelsjobseekerprofile:id -> appmodelsjobpreference:jobseeker_profile_id	[arrowhead=crow,
+		arrowtail=none,
+		color="#FCBF49",
+		dir=both,
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="3094,2601.5",
+		penwidth=1.8,
+		pos="e,3449.6,2134.5 2677,3293.5 2677,3140.3 2677,2134.5 2677,2134.5 2677,2134.5 3439.6,2134.5 3439.6,2134.5",
+		xlabel="HasMany
+jobPreferences",
+		xlp="2727,2317.7"];
+	jobseeker_skills	[fontname="Helvetica Neue",
+		height=4.1111,
+		label=<<table width="100%" height="100%" border="0" margin="0" cellborder="1" cellspacing="0" cellpadding="10">
+<tr width="100%"><td width="100%" bgcolor="#d3d3d3"><font color="#333333">Pivot</font></td></tr>
+<tr width="100%"><td port="id" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >id (bigint)</font></td></tr>
+<tr width="100%"><td port="jobseeker_profile_id" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >jobseeker_profile_id (bigint)</font></td></tr>
+<tr width="100%"><td port="skill_id" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >skill_id (bigint)</font></td></tr>
+<tr width="100%"><td port="proficiency_level" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >proficiency_level (enum)</font></td></tr>
+<tr width="100%"><td port="years_experience" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >years_experience (int)</font></td></tr>
+<tr width="100%"><td port="created_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >created_at (timestamp)</font></td></tr>
+<tr width="100%"><td port="updated_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >updated_at (timestamp)</font></td></tr>
+</table>>,
+		margin=0,
+		pos="2188.5,3048",
+		shape=rectangle,
+		width=2.8472];
+	appmodelsjobseekerprofile:id -> jobseeker_skills:jobseeker_profile_id	[color="#003049",
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="2401,3315.5",
+		penwidth=1.8,
+		pos="e,2189.6,2998.7 2625.4,2998.7 2625.4,2998.7 2199.6,2998.7 2199.6,2998.7",
+		xlabel="BelongsToMany
+skills",
+		xlp="2359.5,2983.7"];
+	appmodelsworkexperience	[fontname="Helvetica Neue",
+		height=5.6528,
+		label=<<table width="100%" height="100%" border="0" margin="0" cellborder="1" cellspacing="0" cellpadding="10">
+<tr width="100%"><td width="100%" bgcolor="#d3d3d3"><font color="#333333">WorkExperience</font></td></tr>
+<tr width="100%"><td port="id" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >id (bigint)</font></td></tr>
+<tr width="100%"><td port="jobseeker_profile_id" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >jobseeker_profile_id (bigint)</font></td></tr>
+<tr width="100%"><td port="job_title" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >job_title (varchar)</font></td></tr>
+<tr width="100%"><td port="company_name" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >company_name (varchar)</font></td></tr>
+<tr width="100%"><td port="description" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >description (text)</font></td></tr>
+<tr width="100%"><td port="start_date" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >start_date (date)</font></td></tr>
+<tr width="100%"><td port="end_date" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >end_date (date)</font></td></tr>
+<tr width="100%"><td port="is_current" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >is_current (tinyint)</font></td></tr>
+<tr width="100%"><td port="created_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >created_at (timestamp)</font></td></tr>
+<tr width="100%"><td port="updated_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >updated_at (timestamp)</font></td></tr>
+</table>>,
+		margin=0,
+		pos="3094,3260",
+		shape=rectangle,
+		width=2.8472];
+	appmodelsjobseekerprofile:id -> appmodelsworkexperience:jobseeker_profile_id	[arrowhead=crow,
+		arrowtail=none,
+		color="#FCBF49",
+		dir=both,
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="2848,3267.5",
+		penwidth=1.8,
+		pos="e,3094.9,3160.3 2625.6,3160.3 2625.6,3160.3 3084.9,3160.3 3084.9,3160.3",
+		xlabel="HasMany
+workExperiences",
+		xlp="2798.3,3145.3"];
+	appmodelseducationlevel:id -> appmodelsjobs:minimum_education_level_id	[arrowhead=crow,
+		arrowtail=none,
+		color="#FCBF49",
+		dir=both,
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="1976,297.5",
+		penwidth=1.8,
+		pos="e,904,1818.8 3094.9,212.4 3077.9,212.4 904,212.4 904,212.4 904,212.4 904,1808.8 904,1808.8",
+		xlabel="HasMany
+jobsRequiringMinimum",
+		xlp="1122.8,197.4"];
+	appmodelseducationlevel:id -> appmodelsjobseekerprofile:education_level_id	[arrowhead=crow,
+		arrowtail=none,
+		color="#FCBF49",
+		dir=both,
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="2848,880.5",
+		penwidth=1.8,
+		pos="e,2625.6,2727 3004.7,330.8 2926.5,330.8 2826,330.8 2826,330.8 2826,330.8 2826,2727 2826,2727 2826,2727 2635.6,2727 2635.6,2727",
+		xlabel="HasMany
+jobseekerProfiles",
+		xlp="2883.5,1542.2"];
+	appmodelsjobapplication:job_id -> appmodelsjobs:id	[arrowhead=tee,
+		arrowtail=crow,
+		color="#F77F00",
+		dir=both,
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="2188.5,3978.5",
+		penwidth=1.8,
+		pos="s,3649,3331 e,930.62,2279.6 3649,3321 3649,3321 3649,2279.6 3649,2279.6 3649,2279.6 935.62,2279.6 935.62,2279.6",
+		xlabel="BelongsTo
+job",
+		xlp="2847.5,2264.6"];
+	appmodelsjobapplication:user_id -> appmodelsuser:id	[arrowhead=tee,
+		arrowtail=crow,
+		color="#F77F00",
+		dir=both,
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="3340,2660.5",
+		penwidth=1.8,
+		pos="s,3580.9,2962.2 e,3218,1965.1 3570.9,2962.2 3570.9,2962.2 3218,2962.2 3218,2962.2 3218,2962.2 3218,1970.1 3218,1970.1",
+		xlabel="BelongsTo
+user",
+		xlp="3252.5,2657.6"];
+	appmodelsjobapplication -> appmodelsuser	[color="#003049",
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="3340,2017.5",
+		penwidth=1.8,
+		pos="e,3224,2002.8 3467.6,2943.4 3363,2943.4 3224,2943.4 3224,2943.4 3224,2943.4 3224,2012.8 3224,2012.8",
+		xlabel="HasOneThrough
+employer",
+		xlp="3169,2584.8"];
+	appmodelsjobapplication -> appmodelsjobseekerprofile	[color="#003049",
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="3094,2298.5",
+		penwidth=1.8,
+		pos="e,2729.2,3037.6 3468,3037.6 3468,3037.6 2739.2,3037.6 2739.2,3037.6",
+		xlabel="HasOneThrough
+jobseekerProfile",
+		xlp="3158.6,3022.6"];
+	appmodelsjobpreference:user_id -> appmodelsuser:id	[arrowhead=tee,
+		arrowtail=crow,
+		color="#F77F00",
+		dir=both,
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="3340,1853.5",
+		penwidth=1.8,
+		pos="s,3230.1,1954.8 e,3580.9,1954.8 3570.9,1954.8 3570.9,1954.8 3235.1,1954.8 3235.1,1954.8",
+		xlabel="BelongsTo
+user",
+		xlp="3368.5,1939.8"];
+	job_skills:job_listing_id -> appmodelsjobs:id	[color="#003049",
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="1171,2345.5",
+		penwidth=1.8,
+		pos="e,930.59,2346 1401,2722.9 1401,2643.8 1401,2346 1401,2346 1401,2346 940.59,2346 940.59,2346",
+		xlabel="BelongsToMany
+jobs",
+		xlp="1412.2,2331"];
+	appmodelsskill	[fontname="Helvetica Neue",
+		height=6.1667,
+		label=<<table width="100%" height="100%" border="0" margin="0" cellborder="1" cellspacing="0" cellpadding="10">
+<tr width="100%"><td width="100%" bgcolor="#d3d3d3"><font color="#333333">Skill</font></td></tr>
+<tr width="100%"><td port="id" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >id (bigint)</font></td></tr>
+<tr width="100%"><td port="name" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >name (varchar)</font></td></tr>
+<tr width="100%"><td port="description" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >description (text)</font></td></tr>
+<tr width="100%"><td port="category" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >category (varchar)</font></td></tr>
+<tr width="100%"><td port="is_active" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >is_active (tinyint)</font></td></tr>
+<tr width="100%"><td port="usage_count" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >usage_count (int)</font></td></tr>
+<tr width="100%"><td port="is_custom" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >is_custom (tinyint)</font></td></tr>
+<tr width="100%"><td port="show_in_list" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >show_in_list (tinyint)</font></td></tr>
+<tr width="100%"><td port="last_used_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >last_used_at (timestamp)</font></td></tr>
+<tr width="100%"><td port="created_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >created_at (timestamp)</font></td></tr>
+<tr width="100%"><td port="updated_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >updated_at (timestamp)</font></td></tr>
+</table>>,
+		margin=0,
+		pos="1773,2706",
+		shape=rectangle,
+		width=2.5833];
+	job_skills:skill_id -> appmodelsskill:id	[color="#003049",
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="1570,2713.5",
+		penwidth=1.8,
+		pos="e,1772.9,2636.7 1371.6,2636.7 1371.6,2636.7 1762.9,2636.7 1762.9,2636.7",
+		xlabel="BelongsToMany
+requiredSkills",
+		xlp="1514.3,2621.7"];
+	appmodelsskill:id -> job_skills:skill_id	[color="#003049",
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="1570,2879.5",
+		penwidth=1.8,
+		pos="e,1371.6,2735.3 1772.9,2735.3 1772.9,2735.3 1381.6,2735.3 1381.6,2735.3",
+		xlabel="BelongsToMany
+jobs",
+		xlp="1524.2,2750.3"];
+	appmodelsskill:id -> jobseeker_skills:skill_id	[color="#003049",
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="1976,2880.5",
+		penwidth=1.8,
+		pos="e,2189.4,2909.3 1773.1,2909.3 1773.1,2909.3 2179.4,2909.3 2179.4,2909.3",
+		xlabel="BelongsToMany
+jobseekerProfiles",
+		xlp="2033.8,2894.3"];
+	jobseeker_skills:jobseeker_profile_id -> appmodelsjobseekerprofile:id	[color="#003049",
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="2401,3111.5",
+		penwidth=1.8,
+		pos="e,2625.4,3097.3 2291.7,3097.3 2291.7,3097.3 2615.4,3097.3 2615.4,3097.3",
+		xlabel="BelongsToMany
+jobseekerProfiles",
+		xlp="2396,3082.3"];
+	jobseeker_skills:skill_id -> appmodelsskill:id	[color="#003049",
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="1976,3054.5",
+		penwidth=1.8,
+		pos="e,1773.1,2918.7 2189.4,2918.7 2189.4,2918.7 1783.1,2918.7 1783.1,2918.7",
+		xlabel="BelongsToMany
+skills",
+		xlp="1933.2,2933.7"];
+	appmodelsworkexperience:jobseeker_profile_id -> appmodelsjobseekerprofile:id	[arrowhead=tee,
+		arrowtail=crow,
+		color="#F77F00",
+		dir=both,
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="2848,3431.5",
+		penwidth=1.8,
+		pos="s,2625.6,3264.2 e,3094.9,3264.2 3084.9,3264.2 3084.9,3264.2 2630.6,3264.2 2630.6,3264.2",
+		xlabel="BelongsTo
+jobseekerProfile",
+		xlp="2911.7,3249.2"];
+	appmodelsmessage	[fontname="Helvetica Neue",
+		height=6.1667,
+		label=<<table width="100%" height="100%" border="0" margin="0" cellborder="1" cellspacing="0" cellpadding="10">
+<tr width="100%"><td width="100%" bgcolor="#d3d3d3"><font color="#333333">Message</font></td></tr>
+<tr width="100%"><td port="id" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >id (bigint)</font></td></tr>
+<tr width="100%"><td port="sender_id" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >sender_id (bigint)</font></td></tr>
+<tr width="100%"><td port="receiver_id" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >receiver_id (bigint)</font></td></tr>
+<tr width="100%"><td port="message_content" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >message_content (text)</font></td></tr>
+<tr width="100%"><td port="sent_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >sent_at (timestamp)</font></td></tr>
+<tr width="100%"><td port="read_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >read_at (timestamp)</font></td></tr>
+<tr width="100%"><td port="is_deleted_by_sender" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >is_deleted_by_sender (tinyint)</font></td></tr>
+<tr width="100%"><td port="is_deleted_by_receiver" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >is_deleted_by_receiver (tinyint)</font></td></tr>
+<tr width="100%"><td port="message_type" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >message_type (varchar)</font></td></tr>
+<tr width="100%"><td port="created_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >created_at (timestamp)</font></td></tr>
+<tr width="100%"><td port="updated_at" align="left" width="100%"  bgcolor="#ffffff"><font color="#333333" >updated_at (timestamp)</font></td></tr>
+</table>>,
+		margin=0,
+		pos="2624.5,1386",
+		shape=rectangle,
+		width=3.1528];
+	appmodelsmessage:sender_id -> appmodelsuser:id	[arrowhead=tee,
+		arrowtail=crow,
+		color="#F77F00",
+		dir=both,
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="2848,1717.5",
+		penwidth=1.8,
+		pos="s,3093.8,1514.2 e,2738.6,1514.2 2748.6,1514.2 2748.6,1514.2 3088.8,1514.2 3088.8,1514.2",
+		xlabel="BelongsTo
+sender",
+		xlp="2884.2,1499.2"];
+	appmodelsmessage:receiver_id -> appmodelsuser:id	[arrowhead=tee,
+		arrowtail=crow,
+		color="#F77F00",
+		dir=both,
+		fontname="Helvetica Neue",
+		label=" ",
+		lp="2848,1509.5",
+		penwidth=1.8,
+		pos="s,3093.9,1561.1 e,2625.6,1561.1 2635.6,1561.1 2635.6,1561.1 3088.9,1561.1 3088.9,1561.1",
+		xlabel="BelongsTo
+receiver",
+		xlp="2827.8,1576.1"];
+}

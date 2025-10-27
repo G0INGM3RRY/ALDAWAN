@@ -130,6 +130,10 @@ class User extends Authenticatable
         });
     }
 
+    public function employer(){
+        return $this->hasOne(Employer::class);
+    }
+
     /**
      * The attributes that are mass assignable.
      *

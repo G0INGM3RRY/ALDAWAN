@@ -1,0 +1,169 @@
+/* ALDAWAN Job Portal - Bootstrap Standards */
+/* Unified design system using Bootstrap only */
+
+/* ========================================
+   FONT STANDARDIZATION
+======================================== */
+
+/* Use Bootstrap's native font stack - no external fonts */
+body, html {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !important;
+}
+
+/* Remove any custom font imports */
+* {
+    font-family: inherit;
+}
+
+/* ========================================
+   COLOR STANDARDIZATION - BOOTSTRAP ONLY
+======================================== */
+
+/* Use only Bootstrap's semantic colors */
+:root {
+    /* Bootstrap color system - do not override */
+    --bs-primary: #0d6efd;
+    --bs-secondary: #6c757d; 
+    --bs-success: #198754;
+    --bs-info: #0dcaf0;
+    --bs-warning: #ffc107;
+    --bs-danger: #dc3545;
+    --bs-light: #f8f9fa;
+    --bs-dark: #212529;
+}
+
+/* ========================================
+   ROLE-BASED COLOR SYSTEM (Bootstrap Classes Only)
+======================================== */
+
+/* 
+ * STANDARDIZED COLOR SCHEME (October 2025):
+ * - Formal Employers: Primary Blue (#0d6efd) - Professional corporate jobs
+ * - Informal Employers: Success Green (#198754) - Gig economy & household services
+ * - All Job Seekers: Info Blue (#0dcaf0) - Unified seeker experience
+ * - Admin Users: Dark (#212529) - Administrative interface
+ * - Job Type Badges: Formal = Primary Blue, Informal = Success Green
+ */
+
+/* Formal Employers: Primary Blue */
+.formal-theme {
+    --theme-color: var(--bs-primary);
+    --theme-bg: bg-primary;
+    --theme-text: text-primary;
+    --theme-border: border-primary;
+}
+
+/* Informal Employers: Success Green */
+.informal-theme {
+    --theme-color: var(--bs-success);
+    --theme-bg: bg-success;
+    --theme-text: text-success;
+    --theme-border: border-success;
+}
+
+/* Admin: Dark Theme */
+.admin-theme {
+    --theme-color: var(--bs-dark);
+    --theme-bg: bg-dark;
+    --theme-text: text-dark;
+    --theme-border: border-dark;
+}
+
+/* All Job Seekers: Info Blue (Unified) */
+.jobseeker-theme {
+    --theme-color: var(--bs-info);
+    --theme-bg: bg-info;
+    --theme-text: text-info;
+    --theme-border: border-info;
+}
+
+/* ========================================
+   REMOVE TAILWIND CONFLICTS
+======================================== */
+
+/* Override any Tailwind classes with Bootstrap equivalents */
+.text-gray-900 { color: var(--bs-dark) !important; }
+.text-gray-800 { color: var(--bs-secondary) !important; }
+.text-gray-600 { color: var(--bs-secondary) !important; }
+.text-gray-500 { color: var(--bs-secondary) !important; }
+.bg-gray-100 { background-color: var(--bs-light) !important; }
+.bg-gray-800 { background-color: var(--bs-dark) !important; }
+.bg-gray-900 { background-color: var(--bs-dark) !important; }
+
+/* ========================================
+   ADMIN DASHBOARD BOOTSTRAP ALIGNMENT
+======================================== */
+
+/* Admin dashboard custom colors using Bootstrap palette */
+.border-left-primary { border-left: 0.25rem solid var(--bs-primary) !important; }
+.border-left-success { border-left: 0.25rem solid var(--bs-success) !important; }
+.border-left-info { border-left: 0.25rem solid var(--bs-info) !important; }
+.border-left-warning { border-left: 0.25rem solid var(--bs-warning) !important; }
+
+.text-gray-800 { color: var(--bs-dark) !important; }
+.text-gray-300 { color: var(--bs-secondary) !important; }
+
+/* ========================================
+   CONSISTENT COMPONENT STYLING
+======================================== */
+
+/* Standardize all badges */
+.badge {
+    font-weight: 500;
+    font-size: 0.75em;
+}
+
+/* Standardize all buttons */
+.btn {
+    font-weight: 500;
+    border-radius: 0.375rem;
+}
+
+/* Standardize all cards */
+.card {
+    border-radius: 0.5rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+/* Standardize form inputs */
+.form-control, .form-select {
+    border-radius: 0.375rem;
+    border-color: #dee2e6;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+/* ========================================
+   UTILITY CLASSES FOR CONSISTENCY
+======================================== */
+
+/* Remove any custom font sizes - use Bootstrap typography */
+.h1, .h2, .h3, .h4, .h5, .h6,
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 500;
+    line-height: 1.2;
+}
+
+/* Text utilities */
+.text-muted {
+    color: var(--bs-secondary) !important;
+}
+
+/* Background utilities */
+.bg-light {
+    background-color: var(--bs-light) !important;
+}
+
+/* ========================================
+   PRINT STYLES
+======================================== */
+
+@media print {
+    * {
+        color: black !important;
+        background: white !important;
+    }
+}

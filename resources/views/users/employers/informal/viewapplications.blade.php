@@ -40,11 +40,11 @@
                     
                     <!-- Job Type Badge -->
                     <div class="mb-3">
-                        <span class="badge bg-warning text-dark">{{ ucfirst($job->job_type ?? 'informal') }} Gig</span>
+                        <span class="badge bg-success text-white">{{ ucfirst($job->job_type ?? 'informal') }} Gig</span>
                     </div>
                     
                     <!-- Job Classification -->
-                    <h6 class="text-warning fw-semibold mb-2">{{ $job->jobClassification->name ?? 'General Labor' }}</h6>
+                    <h6 class="text-success fw-semibold mb-2">{{ $job->jobClassification->name ?? 'General Labor' }}</h6>
                     
                     <!-- Description -->
                     <p class="card-text text-muted mb-3">

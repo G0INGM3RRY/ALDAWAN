@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class JobseekerProfile extends Model
 {
@@ -77,6 +78,62 @@ class JobseekerProfile extends Model
         return $this->belongsToMany(Disability::class, 'jobseeker_disabilities')
                     ->withPivot('accommodation_needs')
                     ->withTimestamps();
+    }
+
+    /**
+     * Formal verification record for this jobseeker
+     */
+    public function formalVerification(): HasOne
+    {
+        return $this->hasOne(FormalJobseekerVerification::class, 'jobseeker_id');
+    }
+
+    /**
+     * Informal verification record for this jobseeker
+     */
+    public function informalVerification(): HasOne
+    {
+        return $this->hasOne(InformalJobseekerVerification::class, 'jobseeker_id');
+    }
+
+    /**
+     * Get the appropriate verification record based on job seeker type
+     */
+    public function verification()
+    {
+        if ($this->job_seeker_type === 'formal') {
+            return $this->formalVerification();
+        } elseif ($this->job_seeker_type === 'informal') {
+            return $this->informalVerification();
+        }
+        
+        return null;
+    }
+
+    /**
+     * Check if jobseeker has a verification record
+     */
+    public function hasVerificationRecord(): bool
+    {
+        if ($this->job_seeker_type === 'formal') {
+            return $this->formalVerification !== null;
+        } elseif ($this->job_seeker_type === 'informal') {
+            return $this->informalVerification !== null;
+        }
+        
+        return false;
+    }
+
+    /**
+     * Get verification status
+     */
+    public function getVerificationStatus(): ?string
+    {
+        $verification = $this->job_seeker_type === 'formal' 
+            ? $this->formalVerification 
+            : $this->informalVerification;
+            
+        return $verification?->status;
     }
 
     /**

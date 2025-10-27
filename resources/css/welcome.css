@@ -1,9 +1,78 @@
-/* Welcome page styles for ALDAWAN job portal */
+/* Welcome page styles for ALDAWAN job portal - Clean Split Layout */
 
+/* Hero Section Split Layout */
 .hero-section {
-    background-color: #f8f9fa;
-    padding: 60px 0;
-    min-height: 80vh;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.hero-content {
+    max-width: 500px;
+}
+
+/* Simple button styles */
+.btn-lg {
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-lg:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Hero Image Container */
+.hero-image-container {
+    text-align: center;
+}
+
+.hero-image-container img {
+    transition: all 0.3s ease;
+}
+
+.hero-image-container img:hover {
+    transform: scale(1.02);
+}
+
+/* Feature Icons */
+.bg-primary.bg-opacity-10,
+.bg-success.bg-opacity-10,
+.bg-info.bg-opacity-10 {
+    transition: all 0.3s ease;
+}
+
+.bg-primary.bg-opacity-10:hover,
+.bg-success.bg-opacity-10:hover,
+.bg-info.bg-opacity-10:hover {
+    transform: scale(1.05);
+}
+
+/* Typography */
+.display-4 {
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+/* Responsive Design */
+@media (max-width: 991px) {
+    .col-lg-6:first-child {
+        text-align: center;
+        padding-bottom: 2rem;
+    }
+    
+    .hero-image-container img {
+        max-width: 350px;
+    }
+}
+
+@media (max-width: 768px) {
+    .display-4 {
+        font-size: 2.5rem;
+    }
+    
+    .btn-lg {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
 }
 
 .min-vh-75 {

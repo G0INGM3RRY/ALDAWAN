@@ -8,9 +8,12 @@ use App\Models\JobPreference;
 use App\Models\Skill;
 use App\Models\Disability;
 use App\Models\EducationLevel;
+use App\Models\FormalJobseekerVerification;
+use App\Models\InformalJobseekerVerification;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Jobs;
 
 class JobseekerProfileController extends Controller
@@ -141,6 +144,14 @@ class JobseekerProfileController extends Controller
                 }
             }
         }
+
+        // Handle optional document verification for formal job seekers
+        if ($request->hasFile('government_id') || $request->hasFile('educational_document') || 
+            $request->hasFile('nbi_clearance') || $request->hasFile('skills_certificate')) {
+            
+            $this->handleFormalVerificationDocuments($request, $profile);
+        }
+
          return redirect()->route('dashboard')->with('success', 'Profile saved!');
     }  
     
@@ -218,6 +229,11 @@ class JobseekerProfileController extends Controller
             'skills' => 'nullable|array',
             'skills.*' => 'exists:skills,id',
             'skills_other' => 'nullable|string',
+            // Verification documents for formal job seekers
+            'government_id' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:5120',
+            'educational_document' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:5120',
+            'nbi_clearance' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:5120',
+            'skills_certificate' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:5120',
         ]);
 
            //photo logic
@@ -345,6 +361,11 @@ class JobseekerProfileController extends Controller
                 }
             }
 
+            // Handle verification documents for formal job seekers
+            if ($profile->job_seeker_type === 'formal') {
+                $this->handleFormalVerificationDocuments($request, $profile);
+            }
+
             DB::commit();
             
             return redirect()->route('dashboard')->with('success', 'Profile updated successfully!');
@@ -467,6 +488,13 @@ class JobseekerProfileController extends Controller
             $profile->skills()->sync(array_unique($skillIds));
         }
 
+        // Handle optional document verification for informal job seekers
+        if ($request->hasFile('basic_id') || $request->hasFile('barangay_clearance') || 
+            $request->hasFile('health_certificate')) {
+            
+            $this->handleInformalVerificationDocuments($request, $profile);
+        }
+
         return redirect()->route('dashboard')->with('success', 'Profile completed successfully!');
     }
 
@@ -511,6 +539,11 @@ class JobseekerProfileController extends Controller
             'informal_skills.*' => 'exists:skills,id',
             'skills_other' => 'nullable|string',
             'work_experience' => 'nullable|string',
+            // Verification documents for informal job seekers
+            'government_id' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:5120',
+            'barangay_clearance' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:5120',
+            'health_certificate' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:5120',
+            'character_reference' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:5120',
         ]);
 
         // Handle file upload
@@ -597,6 +630,9 @@ class JobseekerProfileController extends Controller
                 \Log::info('No informal skills to insert');
             }
 
+            // Handle verification documents for informal job seekers
+            $this->handleInformalVerificationDocuments($request, $profile);
+
             DB::commit();
             
             return redirect()->route('dashboard')->with('success', 'Profile updated successfully!');
@@ -605,6 +641,88 @@ class JobseekerProfileController extends Controller
             DB::rollBack();
             \Log::error('Informal profile update failed: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Failed to update profile. Please try again.');
+        }
+    }
+
+    /**
+     * Handle formal jobseeker verification document uploads
+     */
+    private function handleFormalVerificationDocuments(Request $request, JobseekerProfile $profile)
+    {
+        $verificationData = ['jobseeker_id' => $profile->id];
+        
+        // Handle government ID upload
+        if ($request->hasFile('government_id')) {
+            $file = $request->file('government_id');
+            $filename = 'formal_gov_id_' . $profile->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs('verification_documents/formal', $filename, 'public');
+            $verificationData['government_id_path'] = $path;
+        }
+        
+        // Handle educational document upload
+        if ($request->hasFile('educational_document')) {
+            $file = $request->file('educational_document');
+            $filename = 'formal_edu_' . $profile->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs('verification_documents/formal', $filename, 'public');
+            $verificationData['educational_document_path'] = $path;
+        }
+        
+        // Handle NBI clearance upload
+        if ($request->hasFile('nbi_clearance')) {
+            $file = $request->file('nbi_clearance');
+            $filename = 'formal_nbi_' . $profile->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs('verification_documents/formal', $filename, 'public');
+            $verificationData['nbi_clearance_path'] = $path;
+        }
+        
+        // Handle skills certificate upload (optional)
+        if ($request->hasFile('skills_certificate')) {
+            $file = $request->file('skills_certificate');
+            $filename = 'formal_skills_' . $profile->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs('verification_documents/formal', $filename, 'public');
+            $verificationData['skills_certificate_path'] = $path;
+        }
+        
+        // Only create verification record if at least one document was uploaded
+        if (count($verificationData) > 1) {
+            FormalJobseekerVerification::create($verificationData);
+        }
+    }
+    
+    /**
+     * Handle informal jobseeker verification document uploads
+     */
+    private function handleInformalVerificationDocuments(Request $request, JobseekerProfile $profile)
+    {
+        $verificationData = ['jobseeker_id' => $profile->id];
+        
+        // Handle basic ID upload
+        if ($request->hasFile('basic_id')) {
+            $file = $request->file('basic_id');
+            $filename = 'informal_id_' . $profile->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs('verification_documents/informal', $filename, 'public');
+            $verificationData['basic_id_path'] = $path;
+        }
+        
+        // Handle barangay clearance upload
+        if ($request->hasFile('barangay_clearance')) {
+            $file = $request->file('barangay_clearance');
+            $filename = 'informal_brgy_' . $profile->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs('verification_documents/informal', $filename, 'public');
+            $verificationData['barangay_clearance_path'] = $path;
+        }
+        
+        // Handle health certificate upload (optional)
+        if ($request->hasFile('health_certificate')) {
+            $file = $request->file('health_certificate');
+            $filename = 'informal_health_' . $profile->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs('verification_documents/informal', $filename, 'public');
+            $verificationData['health_certificate_path'] = $path;
+        }
+        
+        // Only create verification record if at least one document was uploaded
+        if (count($verificationData) > 1) {
+            InformalJobseekerVerification::create($verificationData);
         }
     }
 

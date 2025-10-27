@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             // Then call existing seeders
             UserSeeder::class,
             JobSeeder::class,
+            AdminUserSeeder::class,
         ]);
     }
 }

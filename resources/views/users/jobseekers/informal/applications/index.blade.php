@@ -19,7 +19,7 @@
 
     <div class="row mb-4">
         <div class="col-12">
-            <h1 class="h3 text-warning fw-bold">My Applications</h1>
+            <h1 class="h3 text-info fw-bold">My Applications</h1>
             <p class="text-muted">Track your gig applications and their status</p>
         </div>
     </div>
@@ -40,7 +40,7 @@
                     <!-- Job Details -->
                     <div class="mb-3">
                         <h5 class="fw-bold text-dark mb-2">{{ $application->job->job_title }}</h5>
-                        <h6 class="text-warning mb-2">{{ $application->job->classification }}</h6>
+                        <h6 class="text-info mb-2">{{ $application->job->classification }}</h6>
                         
                         <!-- Job Info -->
                         <div class="row g-2 mb-3">
@@ -131,7 +131,7 @@
         <div class="col-12">
             <div class="text-center py-5">
                 <div class="mb-4">
-                    <div class="text-warning display-1" style="opacity: 0.3;">📋</div>
+                    <div class="text-info display-1" style="opacity: 0.3;">📋</div>
                 </div>
                 <h5 class="text-muted">No applications yet</h5>
                 <p class="text-muted">Start applying for gigs to see your applications here.</p>

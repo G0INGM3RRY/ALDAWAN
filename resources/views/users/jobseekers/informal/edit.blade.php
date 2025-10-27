@@ -264,6 +264,127 @@
                                 </div>
                             </div>
 
+                            <!-- Verification Documents Section -->
+                            <div class="mt-5">
+                                <h5 class="text-primary mb-3">
+                                    <i class="fas fa-file-upload me-2"></i>Document Verification
+                                    @if(auth()->user()->jobseekerProfile && auth()->user()->jobseekerProfile->informalVerification)
+                                        <span class="badge bg-{{ auth()->user()->jobseekerProfile->informalVerification->status === 'approved' ? 'success' : 
+                                                                 (auth()->user()->jobseekerProfile->informalVerification->status === 'rejected' ? 'danger' : 'warning') }}">
+                                            {{ ucfirst(auth()->user()->jobseekerProfile->informalVerification->status) }}
+                                        </span>
+                                    @else
+                                        <span class="badge bg-secondary">Not Submitted</span>
+                                    @endif
+                                </h5>
+                                
+                                @if(auth()->user()->jobseekerProfile && auth()->user()->jobseekerProfile->informalVerification)
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        <strong>Verification Status:</strong> 
+                                        @if(auth()->user()->jobseekerProfile->informalVerification->status === 'approved')
+                                            Your documents have been verified and approved.
+                                        @elseif(auth()->user()->jobseekerProfile->informalVerification->status === 'rejected')
+                                            Your documents were rejected. Please upload new documents.
+                                            @if(auth()->user()->jobseekerProfile->informalVerification->rejection_reason)
+                                                <br><strong>Reason:</strong> {{ auth()->user()->jobseekerProfile->informalVerification->rejection_reason }}
+                                            @endif
+                                        @else
+                                            Your documents are under review by our admin team.
+                                        @endif
+                                    </div>
+                                @else
+                                    <div class="alert alert-warning">
+                                        <i class="fas fa-exclamation-triangle me-2"></i>
+                                        <strong>Verification Recommended:</strong> Upload your verification documents to get verified and access more job opportunities.
+                                    </div>
+                                @endif
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">
+                                                <i class="fas fa-id-card me-1"></i>Government-issued ID 
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="file" name="government_id" class="form-control" accept=".jpg,.jpeg,.png,.pdf">
+                                            <div class="form-text">
+                                                Upload a clear photo of your government ID
+                                            </div>
+                                            @if(auth()->user()->jobseekerProfile && auth()->user()->jobseekerProfile->informalVerification && auth()->user()->jobseekerProfile->informalVerification->government_id_path)
+                                                <small class="text-success">
+                                                    <i class="fas fa-check-circle me-1"></i>Current file uploaded
+                                                </small>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">
+                                                <i class="fas fa-home me-1"></i>Barangay Clearance 
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="file" name="barangay_clearance" class="form-control" accept=".jpg,.jpeg,.png,.pdf">
+                                            <div class="form-text">
+                                                Upload your barangay clearance for community verification
+                                            </div>
+                                            @if(auth()->user()->jobseekerProfile && auth()->user()->jobseekerProfile->informalVerification && auth()->user()->jobseekerProfile->informalVerification->barangay_clearance_path)
+                                                <small class="text-success">
+                                                    <i class="fas fa-check-circle me-1"></i>Current file uploaded
+                                                </small>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">
+                                                <i class="fas fa-heartbeat me-1"></i>Health Certificate 
+                                                <span class="text-muted">(Optional - Required for food/health jobs)</span>
+                                            </label>
+                                            <input type="file" name="health_certificate" class="form-control" accept=".jpg,.jpeg,.png,.pdf">
+                                            <div class="form-text">
+                                                Upload medical certificate for food service, caregiving, or health-related jobs
+                                            </div>
+                                            @if(auth()->user()->jobseekerProfile && auth()->user()->jobseekerProfile->informalVerification && auth()->user()->jobseekerProfile->informalVerification->health_certificate_path)
+                                                <small class="text-success">
+                                                    <i class="fas fa-check-circle me-1"></i>Current file uploaded
+                                                </small>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">
+                                                <i class="fas fa-star me-1"></i>Character Reference Letter 
+                                                <span class="text-muted">(Optional)</span>
+                                            </label>
+                                            <input type="file" name="character_reference" class="form-control" accept=".jpg,.jpeg,.png,.pdf">
+                                            <div class="form-text">
+                                                Reference letter from previous employer, neighbor, or community leader
+                                            </div>
+                                            @if(auth()->user()->jobseekerProfile && auth()->user()->jobseekerProfile->informalVerification && auth()->user()->jobseekerProfile->informalVerification->character_reference_path)
+                                                <small class="text-success">
+                                                    <i class="fas fa-check-circle me-1"></i>Current file uploaded
+                                                </small>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="alert alert-light">
+                                    <h6 class="mb-2"><i class="fas fa-lightbulb me-1"></i>Verification Benefits:</h6>
+                                    <ul class="small mb-0">
+                                        <li>✅ <strong>Verified badge</strong> on your profile</li>
+                                        <li>✅ <strong>Increased trust</strong> from employers and clients</li>
+                                        <li>✅ <strong>Better job matches</strong> based on your location</li>
+                                        <li>✅ <strong>Higher response rates</strong> for applications</li>
+                                    </ul>
+                                </div>
+                            </div>
+
                             <div class="mt-4 d-flex justify-content-between">
                                 <button type="button" onclick="prevStep()" class="btn btn-secondary">Prev</button>
                                 <button type="submit" class="btn btn-success btn-lg">Update Profile</button>

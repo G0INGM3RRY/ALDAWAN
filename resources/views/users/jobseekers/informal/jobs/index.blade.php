@@ -40,7 +40,7 @@
                                             <span class="badge bg-secondary">{{ $job->classification }}</span>
                                         @endif
                                         @if($job->job_type)
-                                            <span class="badge bg-{{ $job->job_type === 'formal' ? 'success' : 'warning' }}">
+                                            <span class="badge bg-{{ $job->job_type === 'formal' ? 'primary' : 'success' }}">
                                                 {{ ucfirst($job->job_type) }} Position
                                             </span>
                                         @endif

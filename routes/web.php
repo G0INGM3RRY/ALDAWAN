@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('welcome');
 
 /*
 |--------------------------------------------------------------------------
@@ -44,7 +44,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', function () {
         $user = Auth::user();
         
-        if ($user->role === 'employer') {
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        } elseif ($user->role === 'employer') {
             return redirect()->route('employers.dashboard');
         } else {
             return redirect()->route('jobseekers.dashboard');
@@ -78,3 +80,6 @@ require __DIR__.'/jobseeker.php';
 
 // Load job and application routes
 require __DIR__.'/jobs.php';
+
+// Load admin routes
+require __DIR__.'/admin.php';

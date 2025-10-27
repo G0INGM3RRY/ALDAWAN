@@ -20,11 +20,12 @@
                     <h3 class="mb-0 text-center">Complete Your Profile Information</h3>
                     <!-- Progress Steps -->
                     <div class="progress mt-3">
-                        <div class="progress-bar" role="progressbar" style="width: 50%" id="progress-bar"></div>
+                        <div class="progress-bar" role="progressbar" style="width: 33%" id="progress-bar"></div>
                     </div>
                     <div class="step-indicators d-flex justify-content-between mt-2">
                         <span class="step-indicator active" id="step-1">1. Personal Info</span>
                         <span class="step-indicator" id="step-2">2. Work Preferences</span>
+                        <span class="step-indicator" id="step-3">3. Document Verification</span>
                     </div>
                 </div>
                 <div class="card-body">
@@ -316,7 +317,84 @@
 
                             <div class="mt-4 d-flex justify-content-between">
                                 <button type="button" onclick="prevStep()" class="btn btn-secondary">Previous</button>
-                                <button type="submit" class="btn btn-success btn-lg">Complete Profile</button>
+                                <button type="button" onclick="nextStep()" class="btn btn-primary">Next</button>
+                            </div>
+                        </div>
+
+                        <!-- Section 3: Document Verification (Optional) -->
+                        <div id="section-document-verification" class="form-step">
+                            <h4 class="mb-4 text-primary">
+                                <i class="fas fa-file-upload me-2"></i>Document Verification (Optional)
+                            </h4>
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Optional Step:</strong> Upload your verification documents now to get verified faster, 
+                                or you can submit them later from your dashboard.
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">
+                                            <i class="fas fa-id-card me-1"></i>Government-issued ID 
+                                            <span class="text-muted">(Required for verification)</span>
+                                        </label>
+                                        <input type="file" name="basic_id" class="form-control" accept=".jpg,.jpeg,.png,.pdf">
+                                        <div class="form-text">
+                                            Upload a clear photo of any government ID (Driver's License, UMID, SSS, Voter's ID, etc.)
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">
+                                            <i class="fas fa-home me-1"></i>Barangay Clearance 
+                                            <span class="text-muted">(Required for verification)</span>
+                                        </label>
+                                        <input type="file" name="barangay_clearance" class="form-control" accept=".jpg,.jpeg,.png,.pdf">
+                                        <div class="form-text">
+                                            Upload your barangay clearance or certificate of good moral character
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">
+                                            <i class="fas fa-heart-pulse me-1"></i>Health Certificate 
+                                            <span class="text-success">(Optional - for household/food handling jobs)</span>
+                                        </label>
+                                        <input type="file" name="health_certificate" class="form-control" accept=".jpg,.jpeg,.png,.pdf">
+                                        <div class="form-text">
+                                            Upload a health certificate if you plan to work in household services or food handling
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="alert alert-light">
+                                        <h6 class="mb-2"><i class="fas fa-lightbulb me-1"></i>Why these documents?</h6>
+                                        <ul class="small mb-0">
+                                            <li><strong>ID:</strong> Verify your identity</li>
+                                            <li><strong>Barangay Clearance:</strong> Character reference from your community</li>
+                                            <li><strong>Health Certificate:</strong> Safety for household and food-related work</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                <strong>Note:</strong> All documents will be reviewed by our admin team. 
+                                You can complete your profile now and submit documents later if needed.
+                            </div>
+
+                            <div class="mt-4 d-flex justify-content-between">
+                                <button type="button" onclick="prevStep()" class="btn btn-secondary">Previous</button>
+                                <button type="submit" class="btn btn-success btn-lg">
+                                    <i class="fas fa-check me-2"></i>Complete Profile
+                                </button>
                             </div>
                         </div>
                     </form>

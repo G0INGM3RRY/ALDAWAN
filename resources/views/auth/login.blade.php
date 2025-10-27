@@ -19,14 +19,14 @@
             @csrf
 
             <div class="mb-3">
-              <label for="email" class="form-label">Email</label>
-              <input type="email" name="email" class="form-control" required autofocus autocomplete="username" value="{{ old('email') }}">
+              <label for="email" id="email-label" class="form-label">Email</label>
+              <input type="email" id="email" name="email" class="form-control" required autofocus autocomplete="username" value="{{ old('email') }}">
               @error('email')<div class="text-danger">{{ $message }}</div>@enderror
             </div>
 
             <div class="mb-3">
-              <label for="password" class="form-label">Password</label>
-              <input type="password" name="password" class="form-control" required autocomplete="current-password">
+              <label for="password" id="password-label" class="form-label">Password</label>
+              <input type="password" id="password" name="password" class="form-control" required autocomplete="current-password">
               @error('password')<div class="text-danger">{{ $message }}</div>@enderror
             </div>
 

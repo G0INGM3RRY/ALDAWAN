@@ -20,12 +20,13 @@
                     <h3 class="mb-0 text-center">Complete your personal profile</h3>
                     <!-- Progress Steps -->
                     <div class="progress mt-3">
-                        <div class="progress-bar" role="progressbar" style="width: 33%" id="progress-bar"></div>
+                        <div class="progress-bar" role="progressbar" style="width: 25%" id="progress-bar"></div>
                     </div>
                     <div class="step-indicators d-flex justify-content-between mt-2">
                         <span class="step-indicator active" id="step-1">1. Personal Info</span>
                         <span class="step-indicator" id="step-2">2. Employment Status</span>
                         <span class="step-indicator" id="step-3">3. Job Preferences</span>
+                        <span class="step-indicator" id="step-4">4. Document Verification</span>
                     </div>
                 </div>
                 <div class="card-body">
@@ -320,7 +321,86 @@
 
                             <div class="mt-4 d-flex justify-content-between">
                                 <button type="button" onclick="prevStep()" class="btn btn-secondary">Previous</button>
-                                <button type="submit" class="btn btn-success btn-lg">Complete Profile</button>
+                                <button type="button" onclick="nextStep()" class="btn btn-primary">Next</button>
+                            </div>
+                        </div>
+
+                        <!-- Section 4: Document Verification (Optional) -->
+                        <div id="section-document-verification" class="form-step">
+                            <h4 class="mb-4 text-primary">
+                                <i class="fas fa-file-upload me-2"></i>Document Verification (Optional)
+                            </h4>
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Optional Step:</strong> Upload your verification documents now to get verified faster, 
+                                or you can submit them later from your dashboard.
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">
+                                            <i class="fas fa-id-card me-1"></i>Government-issued ID 
+                                            <span class="text-muted">(Required for verification)</span>
+                                        </label>
+                                        <input type="file" name="government_id" class="form-control" accept=".jpg,.jpeg,.png,.pdf">
+                                        <div class="form-text">
+                                            Upload a clear photo of your government ID (Driver's License, UMID, SSS, etc.)
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">
+                                            <i class="fas fa-graduation-cap me-1"></i>Educational Certificate/Diploma 
+                                            <span class="text-muted">(Required for verification)</span>
+                                        </label>
+                                        <input type="file" name="educational_document" class="form-control" accept=".jpg,.jpeg,.png,.pdf">
+                                        <div class="form-text">
+                                            Upload your highest educational attainment certificate or diploma
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">
+                                            <i class="fas fa-shield-alt me-1"></i>NBI Clearance 
+                                            <span class="text-muted">(Required for verification)</span>
+                                        </label>
+                                        <input type="file" name="nbi_clearance" class="form-control" accept=".jpg,.jpeg,.png,.pdf">
+                                        <div class="form-text">
+                                            Upload a valid NBI clearance for background verification
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">
+                                            <i class="fas fa-certificate me-1"></i>Professional Skills Certificate 
+                                            <span class="text-success">(Optional)</span>
+                                        </label>
+                                        <input type="file" name="skills_certificate" class="form-control" accept=".jpg,.jpeg,.png,.pdf">
+                                        <div class="form-text">
+                                            Upload any professional certification or skills certificate you have
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                <strong>Note:</strong> All documents will be reviewed by our admin team. 
+                                You can complete your profile now and submit documents later if needed.
+                            </div>
+
+                            <div class="mt-4 d-flex justify-content-between">
+                                <button type="button" onclick="prevStep()" class="btn btn-secondary">Previous</button>
+                                <button type="submit" class="btn btn-success btn-lg">
+                                    <i class="fas fa-check me-2"></i>Complete Profile
+                                </button>
                             </div>
                         </div>
                     </form>
