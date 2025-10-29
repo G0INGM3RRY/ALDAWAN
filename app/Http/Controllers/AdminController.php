@@ -46,10 +46,16 @@ class AdminController extends Controller
     /**
      * User Management - List all users
      */
-    public function users()
+    public function users(Request $request)
     {
-        $users = User::with(['employer', 'jobseekerProfile'])
-            ->paginate(20);
+        $query = User::with(['employer', 'jobseekerProfile']);
+        
+        // Check if we should show archived users
+        if ($request->has('archived') && $request->archived == 'true') {
+            $query->onlyTrashed();
+        }
+        
+        $users = $query->paginate(20);
 
         return view('admin.users.index', compact('users'));
     }
@@ -103,13 +109,24 @@ class AdminController extends Controller
     }
 
     /**
-     * Delete user
+     * Delete user (soft delete - archive)
      */
     public function deleteUser(User $user)
     {
         $user->delete();
         
-        return redirect()->route('admin.users.index')->with('success', 'User deleted successfully');
+        return redirect()->route('admin.users.index')->with('success', 'User archived successfully');
+    }
+    
+    /**
+     * Restore archived user
+     */
+    public function restoreUser($id)
+    {
+        $user = User::onlyTrashed()->findOrFail($id);
+        $user->restore();
+        
+        return redirect()->route('admin.users.index')->with('success', 'User restored successfully');
     }
 
     /**
