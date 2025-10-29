@@ -57,7 +57,8 @@ class UserController extends Controller
                 $skills = \App\Models\Skill::getLimitedSkillsForDisplay('formal', 20);
                 $disabilities = \App\Models\Disability::orderBy('name')->get();
                 $educationLevels = \App\Models\EducationLevel::all();
-                return view('users.jobseekers.formal.complete', compact('user', 'job_seeker_type', 'skills', 'disabilities', 'educationLevels'));
+                $jobClassifications = \App\Models\Classification::orderBy('name')->get();
+                return view('users.jobseekers.formal.complete', compact('user', 'job_seeker_type', 'skills', 'disabilities', 'educationLevels', 'jobClassifications'));
             }
         }elseif($user->role === 'employer'){
             return view('users.employers.complete', compact('user'));

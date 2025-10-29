@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -23,10 +24,30 @@ use Illuminate\Notifications\Notifiable;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  */
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
+    
+    /**
+     * Boot the model and add event listeners
+     */
+    protected static function boot()
+    {
+        parent::boot();
+        
+        // When user is soft deleted (archived), hard delete their jobs
+        static::deleting(function ($user) {
+            // Only delete jobs if this is a soft delete (user being archived)
+            if (!$user->isForceDeleting()) {
+                $user->jobs()->delete();
+            }
+        });
+        
+        // When user is restored, we can't restore jobs (they're gone)
+        // Jobs need to be recreated manually if needed
+    }
+    
     // Relationship: User has many Jobs (for employers posting jobs)
     public function jobs()
     {
@@ -37,6 +58,12 @@ class User extends Authenticatable
     public function employerProfile()
     {
         return $this->hasOne(Employer::class);
+    }
+
+    // Relationship: User has one Company Verification (for employers)
+    public function companyVerification()
+    {
+        return $this->hasOne(CompanyVerification::class, 'employer_id');
     }
 
     // Relationship: User has one Jobseeker profile
@@ -89,6 +116,12 @@ class User extends Authenticatable
 
     // Helper method: Check if user is verified
     public function isVerified()
+    {
+        return $this->verification_status === 'verified';
+    }
+
+    // Accessor: is_verified attribute (allows $user->is_verified in views)
+    public function getIsVerifiedAttribute()
     {
         return $this->verification_status === 'verified';
     }

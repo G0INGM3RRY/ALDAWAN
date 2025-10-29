@@ -152,9 +152,10 @@
                                 </p>
                             @endif
                             
-                            @if($profile->gpa)
+                            @if(!is_null($profile->gpa) && $profile->gpa !== '')
                                 <p class="mb-2">
-                                    <strong>GPA:</strong> {{ number_format($profile->gpa, 2) }}
+                                    <strong>GPA:</strong>
+                                    {{ is_numeric($profile->gpa) ? number_format((float) $profile->gpa, 2) : e($profile->gpa) }}
                                 </p>
                             @endif
                         </div>

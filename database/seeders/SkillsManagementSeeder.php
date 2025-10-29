@@ -1,8 +1,7 @@
-<?php<?php
+<?php
 
 
-
-namespace Database\Seeders;namespace Database\Seeders;
+namespace Database\Seeders;
 
 
 
