@@ -10,7 +10,7 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- Bootstrap Standards CSS -->
-    <link href="{{ asset('css/bootstrap-standards.css') }}" rel="stylesheet">
+    @vite('resources/css/bootstrap-standards.css')
     <!-- Custom Admin CSS -->
     <style>
         .sidebar {

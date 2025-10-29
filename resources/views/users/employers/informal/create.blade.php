@@ -15,6 +15,7 @@
                     </div>
                 </div>
                 <div class="card-body">
+                    <p class="text-muted mb-4"><span class="text-danger">*</span> Required field</p>
                     <form action="{{ route('employers.jobs.store') }}" method="POST">
                         @csrf
                         

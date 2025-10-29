@@ -155,6 +155,36 @@ class EmployerProfileController extends Controller
             $data
         );
 
+        // Handle company verification document submission (optional)
+        if ($request->filled('business_registration_number') || 
+            $request->filled('tax_id') || 
+            $request->hasFile('verification_document') ||
+            $request->filled('verification_notes')) {
+            
+            $verificationData = [
+                'employer_id' => $user->id,
+                'status' => 'pending',
+                'business_registration_number' => $request->business_registration_number,
+                'tax_id' => $request->tax_id,
+                'verification_notes' => $request->verification_notes,
+                'submitted_at' => now(),
+            ];
+
+            // Handle verification document upload
+            if ($request->hasFile('verification_document')) {
+                $file = $request->file('verification_document');
+                $filename = time() . '_verification_' . $file->getClientOriginalName();
+                $filePath = $file->storeAs('company_verifications', $filename, 'public');
+                $verificationData['verification_document_path'] = $filePath;
+            }
+
+            // Create or update verification record
+            \App\Models\CompanyVerification::updateOrCreate(
+                ['employer_id' => $user->id],
+                $verificationData
+            );
+        }
+
          return redirect()->route('dashboard')->with('success', 'Profile saved!');
     }
 

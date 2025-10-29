@@ -2,32 +2,58 @@
 
 @section('content')
     <h1>Edit Your Profile - Informal Worker</h1>
+    
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+    
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-10">
             <div class="card">
                 <div class="card-header">
                     <h3 class="mb-0 text-center">Update Your Profile</h3>
+                    <!-- Progress Steps -->
+                    <div class="progress mt-3">
+                        <div class="progress-bar bg-warning" role="progressbar" style="width: 33%" id="progress-bar"></div>
+                    </div>
+                    <div class="step-indicators d-flex justify-content-between mt-2">
+                        <span class="step-indicator active" id="step-1">1. Personal Info</span>
+                        <span class="step-indicator" id="step-2">2. Work Status</span>
+                        <span class="step-indicator" id="step-3">3. Skills & Verification</span>
+                    </div>
                 </div>
                 <div class="card-body">
                     <form action="{{ route('jobseekers.informal.update') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                 
-                        <!-- Personal Information -->
+                        <!-- Section 1: Personal Information -->
                         <div id="section-personal-information" class="form-step active">
-                            <h4 class="mb-3">Personal Information</h4>
+                            <h4 class="mb-4">Personal Information</h4>
+                            <p class="text-muted mb-4"><span class="text-danger">*</span> Required field</p>
                             
                             <!-- Display job seeker type as readonly -->
                             <div class="mb-3">
                                 <label class="form-label">Job Seeker Type</label>
-                                <p class="text-muted">Informal Worker - This cannot be changed after registration</p>
-                                <input type="hidden" name="job_seeker_type" value="informal">
+                                <div>
+                                    <span class="badge bg-warning text-dark fs-6">Informal Worker</span>
+                                    <input type="hidden" name="job_seeker_type" value="informal">
+                                    <div class="form-text">
+                                        <small class="text-muted">This cannot be changed after registration</small>
+                                    </div>
+                                </div>
                             </div>
                         
                             <div class="row">
                                 <div class="col-md-3">
                                     <div class="mb-3">
-                                        <label for="first_name" class="form-label">First Name</label>
+                                        <label for="first_name" class="form-label">First Name <span class="text-danger">*</span></label>
                                         <input type="text" name="first_name" class="form-control" value="{{ old('first_name', $profile->first_name ?? '') }}" required>
                                         @error('first_name')<div class="text-danger">{{ $message }}</div>@enderror
                                     </div>
@@ -40,7 +66,7 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="mb-3">
-                                        <label for="last_name" class="form-label">Last Name</label>
+                                        <label for="last_name" class="form-label">Last Name <span class="text-danger">*</span></label>
                                         <input type="text" name="last_name" class="form-control" value="{{ old('last_name', $profile->last_name ?? '') }}" required>
                                         @error('last_name')<div class="text-danger">{{ $message }}</div>@enderror
                                     </div>
@@ -99,68 +125,72 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="photo" class="form-label">Photo</label>
-                                        <input type="file" name="photo" id="photo" class="form-control">
+                                        <input type="file" name="photo" id="photo" class="form-control" accept="image/*">
                                         <small class="form-text text-muted">Upload your profile photo (JPG, PNG, max 2MB)</small>
+                                        @if($profile && $profile->photo)
+                                            <div class="mt-2">
+                                                <img src="{{ asset('storage/' . $profile->photo) }}" alt="Current Photo" class="img-thumbnail" style="max-width: 200px;" id="current-photo">
+                                                <small class="text-muted d-block">Current photo</small>
+                                            </div>
+                                        @endif
                                     </div>
-                                </div>
-                                <div class="col-md-6">
-                                    @if($profile && $profile->photo)
-                                         <div class="mt-2">
-                                             <img src="{{ asset('storage/' . $profile->photo) }}" alt="Current Photo" class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
-                                            <small class="text-muted d-block">Current: {{ $profile->photo }}</small>
-                                         </div>
-                                    @endif
                                 </div>
                             </div>
                         
                             
-                            <div class="d-flex">
-                                <div class="mb-3">
-                                    <label for="street" class="form-label">Street</label>
-                                    <input type="text" name="street" id="street" class="form-control w-100" value="{{ old('street', $profile->street ?? '') }}">
-                                </div>
-                            
-                                <div class="mb-3">
-                                    <label for="barangay" class="form-label">Barangay</label>
-                                    <input type="text" name="barangay" id="barangay" class="form-control w-100" value="{{ old('barangay', $profile->barangay ?? '') }}">
-                                </div>
-                            </div>
-                            
-                            <div class="d-flex">
-                                <div class="mb-3">
-                                    <label for="municipality" class="form-label">Municipality</label>
-                                    <input type="text" name="municipality" id="municipality" class="form-control w-100" value="{{ old('municipality', $profile->municipality ?? '') }}">
-                                </div>
-                            
-                                <div class="mb-3">
-                                    <label for="province" class="form-label">Province</label>
-                                    <input type="text" name="province" id="province" class="form-control w-100" value="{{ old('province', $profile->province ?? '') }}">
-                                </div>
-                            </div>
-                            
-                            <div class="d-flex">
-                                <div class="mb-3">
-                                    <label for="contactnumber" class="form-label">Contact Number</label>
-                                    <input type="text" name="contactnumber" id="contactnumber" class="form-control w-100" value="{{ old('contactnumber', $profile->contactnumber ?? '') }}">
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="religion" class="form-label">Religion</label>
-                                    <input type="text" name="religion" id="religion" class="form-control w-100">
-                                </div>
-                            </div>
-                            
-                            <div class="d-flex justify-content-center">
-                                <div class="mb-3">
-                                    <label for="email" class="form-label">Email <span class="text-muted">(Registered Email)</span></label>
-                                    <input type="email" name="email" id="email" class="form-control w-100 bg-light" 
-                                           value="{{ Auth::user()->email }}" readonly>
-                                    <div class="form-text text-muted">
-                                        <i class="fas fa-lock me-1"></i>This is your registered email. 
-                                        <a href="{{ route('profile.edit') }}" class="text-primary">Change email in account settings</a>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="street" class="form-label">Street</label>
+                                        <input type="text" name="street" id="street" class="form-control" value="{{ old('street', $profile->street ?? '') }}">
                                     </div>
-                                 </div>
-                                 
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="barangay" class="form-label">Barangay</label>
+                                        <input type="text" name="barangay" id="barangay" class="form-control" value="{{ old('barangay', $profile->barangay ?? '') }}">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="municipality" class="form-label">Municipality</label>
+                                        <input type="text" name="municipality" id="municipality" class="form-control" value="{{ old('municipality', $profile->municipality ?? '') }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="province" class="form-label">Province</label>
+                                        <input type="text" name="province" id="province" class="form-control" value="{{ old('province', $profile->province ?? '') }}">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="contactnumber" class="form-label">Contact Number</label>
+                                        <input type="text" name="contactnumber" id="contactnumber" class="form-control" value="{{ old('contactnumber', $profile->contactnumber ?? '') }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="religion" class="form-label">Religion</label>
+                                        <input type="text" name="religion" id="religion" class="form-control" value="{{ old('religion', $profile->religion ?? '') }}">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email <span class="text-muted">(Registered Email)</span></label>
+                                <input type="email" name="email" id="email" class="form-control bg-light" 
+                                       value="{{ Auth::user()->email }}" readonly>
+                                <div class="form-text text-muted">
+                                    <i class="fas fa-lock me-1"></i>This is your registered email. 
+                                    <a href="{{ route('profile.edit') }}" class="text-primary">Change email in account settings</a>
+                                </div>
                             </div>
 
                             <div class="mt-4 text-end">
@@ -169,30 +199,32 @@
                         </div>   
                        
 
-                        <!-- Basic Work Information -->
+                        <!-- Section 2: Work Status & Benefits -->
                         <div id="section-work-status" class="form-step">
-                            <h4 class="mb-3 mt-4">Work Status & Benefits</h4>
+                            <h4 class="mb-4">Work Status & Benefits</h4>
+                            <p class="text-muted mb-4"><span class="text-danger">*</span> Required field</p>
                             
                             <div class="mb-3">
                                 <label class="form-label">Disability (if any)</label>
-                                <div class="mt-2">
-                                    <small class="text-muted">Select all that apply for appropriate workplace accommodations.</small>
-                                </div>
-                                <br>
+                                <small class="text-muted d-block mb-2">Select all that apply for appropriate workplace accommodations.</small>
+                                
                                 @php
                                     $userDisabilities = $profile && $profile->disabilities ? $profile->disabilities->pluck('id')->toArray() : [];
                                 @endphp
-                                @foreach($disabilities as $disability)
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" name="disabilities[]" 
-                                               id="disability_{{ $disability->id }}" value="{{ $disability->id }}" 
-                                               {{ in_array($disability->id, $userDisabilities) ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="disability_{{ $disability->id }}">{{ $disability->name }}</label>
-                                    </div>
-                                @endforeach
-                                
-
                                 <div class="row">
+                                    @foreach($disabilities as $disability)
+                                        <div class="col-md-6 mb-2">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="disabilities[]" 
+                                                       id="disability_{{ $disability->id }}" value="{{ $disability->id }}" 
+                                                       {{ in_array($disability->id, $userDisabilities) ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="disability_{{ $disability->id }}">{{ $disability->name }}</label>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+
+                                <div class="row mt-3">
                                     <div class="col-md-8">
                                         <div class="mb-3">
                                             <label for="other_disabilities" class="form-label">Other disabilities (not listed above):</label>
@@ -228,9 +260,10 @@
                             </div>
                         </div>
 
-                        <!-- Basic Skills -->
+                        <!-- Section 3: Skills & Experience -->
                         <div id="section-skills" class="form-step">
-                            <h4 class="mb-3 mt-4">Skills & Experience</h4>
+                            <h4 class="mb-4">Skills & Experience</h4>
+                            <p class="text-muted mb-4"><span class="text-danger">*</span> Required field</p>
                             
                             <div class="mb-3">
                                 <label class="form-label">Basic Skills (Select all that apply)</label><br>
@@ -405,12 +438,23 @@
         .form-step.active{
             display: block;
         }
+        .step-indicator {
+            font-size: 0.9rem;
+            color: #6c757d;
+            font-weight: 500;
+        }
+        .step-indicator.active {
+            color: #ffc107;
+            font-weight: 700;
+        }
     </style>
 
     <script>
         //step by step 
         let currentStep = 0;
         const steps = document.querySelectorAll(".form-step");
+        const progressBar = document.getElementById("progress-bar");
+        const stepIndicators = document.querySelectorAll(".step-indicator");
 
         function showStep(step){
             steps.forEach((s, i)=> {
@@ -419,12 +463,26 @@
                     s.classList.add("active");
                 }
             });
+            
+            // Update progress bar
+            const progress = ((step + 1) / steps.length) * 100;
+            progressBar.style.width = progress + "%";
+            
+            // Update step indicators
+            stepIndicators.forEach((indicator, i) => {
+                if (i <= step) {
+                    indicator.classList.add("active");
+                } else {
+                    indicator.classList.remove("active");
+                }
+            });
         }
 
         function prevStep(){
             if(currentStep > 0){
                 currentStep--;
                 showStep(currentStep);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         }
 
@@ -432,6 +490,7 @@
             if(currentStep < steps.length-1){
                 currentStep++;
                 showStep(currentStep);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         }
         showStep(currentStep);

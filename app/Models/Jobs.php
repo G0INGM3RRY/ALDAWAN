@@ -148,6 +148,33 @@ class Jobs extends Model
     }
 
     /**
+     * Scope for filtering jobs by jobseeker type (formal/informal)
+     */
+    public function scopeForJobseekerType($query, $jobSeekerType)
+    {
+        if (in_array($jobSeekerType, ['formal', 'informal'])) {
+            return $query->where('job_type', $jobSeekerType);
+        }
+        return $query; // Return unfiltered if invalid type
+    }
+
+    /**
+     * Scope for formal jobs only
+     */
+    public function scopeFormalJobs($query)
+    {
+        return $query->where('job_type', 'formal');
+    }
+
+    /**
+     * Scope for informal jobs only
+     */
+    public function scopeInformalJobs($query)
+    {
+        return $query->where('job_type', 'informal');
+    }
+
+    /**
      * Check if a specific disability is restricted for this job
      */
     public function hasDisabilityRestriction(int $disabilityId): bool

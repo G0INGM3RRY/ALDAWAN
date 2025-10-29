@@ -529,6 +529,7 @@ class JobseekerProfileController extends Controller
             'barangay' => 'nullable|string',
             'municipality' => 'nullable|string',
             'province' => 'nullable|string',
+            'religion' => 'nullable|string',
             'contactnumber' => 'nullable|string',
             // email should come from user table, not stored in profile
             'disabilities' => 'nullable|array',

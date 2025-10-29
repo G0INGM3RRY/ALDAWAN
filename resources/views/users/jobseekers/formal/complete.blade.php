@@ -36,6 +36,7 @@
                         <!-- Section 1: Personal Information -->
                         <div id="section-personal-information" class="form-step active">
                             <h4 class="mb-4">Personal Information</h4>
+                            <p class="text-muted mb-4"><span class="text-danger">*</span> Required field</p>
                             
                             <div class="mb-3">
                                 <label class="form-label">Job Seeker Type</label>
@@ -46,7 +47,7 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <div class="mb-3">
-                                        <label for="first_name" class="form-label">First Name</label>
+                                        <label for="first_name" class="form-label">First Name <span class="text-danger">*</span></label>
                                         <input type="text" name="first_name" class="form-control" required>
                                     </div>
                                 </div>
@@ -58,7 +59,7 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="mb-3">
-                                        <label for="last_name" class="form-label">Last Name</label>
+                                        <label for="last_name" class="form-label">Last Name <span class="text-danger">*</span></label>
                                         <input type="text" name="last_name" class="form-control" required>
                                     </div>
                                 </div>
