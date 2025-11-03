@@ -61,7 +61,7 @@
                                     
                                     <div class="d-flex justify-content-between">
                                         <small class="text-muted">
-                                            Posted: {{ $job->created_at->format('M d, Y') }}
+                                            Posted: {{ $job->created_at ? $job->created_at->format('M d, Y') : 'N/A' }}
                                         </small>
                                         <div>
                                             <a href="{{ route('employers.jobs.edit', $job->id) }}" class="btn btn-sm btn-outline-primary">Edit</a>

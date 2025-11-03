@@ -6,6 +6,7 @@
     <title>Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     @vite(['resources/css/bootstrap-standards.css', 'resources/css/dashboard.css'])
 </head>
 <body>
@@ -35,6 +36,18 @@
           <a class="nav-link" href="{{ route('jobseekers.applications') }}" style="color: #ffffff !important; font-weight: 500;">My Applications</a>
         </li>
         @endif
+        
+        <!-- Messages Link (All Users) -->
+        <li class="nav-item">
+          <a class="nav-link position-relative" href="{{ route('messages.inbox') }}" style="color: #ffffff !important; font-weight: 500;">
+            <i class="fas fa-envelope me-1"></i>Messages
+            @if(Auth::user()->unreadMessagesCount() > 0)
+              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                {{ Auth::user()->unreadMessagesCount() }}
+              </span>
+            @endif
+          </a>
+        </li>
         
         @if(Auth::user()->role === 'employer')
         <li class="nav-item">

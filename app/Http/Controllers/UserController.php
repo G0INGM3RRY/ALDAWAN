@@ -47,18 +47,21 @@ class UserController extends Controller
             // Get the job_seeker_type from the request or session
             $job_seeker_type = $request->session()->get('job_seeker_type', $request->job_seeker_type);
             
+            // Get existing profile if it exists (for photo display)
+            $profile = $user->jobseekerProfile;
+            
             if ($job_seeker_type === 'informal') {
                 // Get lookup data for informal complete form
                 $informalSkills = \App\Models\Skill::getLimitedSkillsForDisplay('informal', 20);
                 $disabilities = \App\Models\Disability::orderBy('name')->get();
-                return view('users.jobseekers.informal.complete', compact('user', 'job_seeker_type', 'informalSkills', 'disabilities'));
+                return view('users.jobseekers.informal.complete', compact('user', 'profile', 'job_seeker_type', 'informalSkills', 'disabilities'));
             } else {
                 // Get lookup data for formal complete form  
                 $skills = \App\Models\Skill::getLimitedSkillsForDisplay('formal', 20);
                 $disabilities = \App\Models\Disability::orderBy('name')->get();
                 $educationLevels = \App\Models\EducationLevel::all();
                 $jobClassifications = \App\Models\Classification::orderBy('name')->get();
-                return view('users.jobseekers.formal.complete', compact('user', 'job_seeker_type', 'skills', 'disabilities', 'educationLevels', 'jobClassifications'));
+                return view('users.jobseekers.formal.complete', compact('user', 'profile', 'job_seeker_type', 'skills', 'disabilities', 'educationLevels', 'jobClassifications'));
             }
         }elseif($user->role === 'employer'){
             return view('users.employers.complete', compact('user'));

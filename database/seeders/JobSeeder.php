@@ -14,6 +14,12 @@ class JobSeeder extends Seeder
      */
     public function run(): void
     {
+        // Check if jobs already exist - if so, skip seeding
+        if (DB::table('job_listings')->count() > 0) {
+            $this->command->info('Jobs already exist. Skipping job seeding.');
+            return;
+        }
+
         // Get some employer users (role = 'employer')
         $employers = User::where('role', 'employer')->get();
         
@@ -27,6 +33,7 @@ class JobSeeder extends Seeder
                 'email_verified_at' => now(),
             ]);
             $employers = collect([$employer]);
+            $this->command->info('Created sample employer for job seeding.');
         }
 
         // Sample job data

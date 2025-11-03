@@ -25,7 +25,7 @@
                             <h4 class="text-dark">{{ $application->job->job_title }}</h4>
                             <p class="text-muted mb-2">{{ $application->job->jobClassification->name ?? 'Not specified' }}</p>
                             <small class="text-muted">
-                                Applied on: {{ $application->applied_at->format('F j, Y \a\t g:i A') }}
+                                Applied on: {{ $application->applied_at ? $application->applied_at->format('F j, Y \a\t g:i A') : 'N/A' }}
                             </small>
                         </div>
                         <div class="col-md-4 text-end">
@@ -122,7 +122,7 @@
                         <div class="mt-2">
                             <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
                                 <span class="small">Applied</span>
-                                <span class="small text-muted">{{ $application->applied_at->format('M j, Y') }}</span>
+                                <span class="small text-muted">{{ $application->applied_at ? $application->applied_at->format('M j, Y') : 'N/A' }}</span>
                             </div>
                             @if($application->reviewed_at)
                                 <div class="d-flex justify-content-between align-items-center py-2 border-bottom">

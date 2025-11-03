@@ -52,7 +52,7 @@
               @error('role')<div class="text-danger">{{ $message }}</div>@enderror
             </div>
 
-            <div class="mb-3" id="employerTypeContainer" style="display: none;">
+            <div class="mb-3" id="employerTypeContainer">
               <label for="employer_type" class="form-label">Employer Type</label>
               <select name="employer_type" id="employer_type" class="form-control">
                 <option value="">Select Type</option>
@@ -70,9 +70,13 @@
               <label for="job_seeker_type" class="form-label">Job Seeker Type</label>
               <select name="job_seeker_type" id="job_seeker_type" class="form-control">
                 <option value="">Select Type</option>
-                <option value="formal">Formal</option>
-                <option value="informal">Informal</option>
+                <option value="formal">Formal Job Seeker</option>
+                <option value="informal">Informal Job Seeker</option>
               </select>
+              <small class="form-text text-muted">
+                <strong>Formal:</strong> Seeking professional jobs (office work, corporate positions, skilled labor)<br>
+                <strong>Informal:</strong> Seeking domestic/household work (maid, driver, caregiver, helper)
+              </small>
               @error('job_seeker_type')<div class="text-danger">{{ $message }}</div>@enderror
             </div>
 

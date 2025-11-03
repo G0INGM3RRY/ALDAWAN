@@ -24,8 +24,9 @@ class DatabaseSeeder extends Seeder
             
             // Then call existing seeders
             UserSeeder::class,
-            JobSeeder::class,
             AdminUserSeeder::class,
+            EmployerSeeder::class,  // Create sample employers before jobs
+            JobSeeder::class,        // Jobs will be distributed among employers
         ]);
     }
 }

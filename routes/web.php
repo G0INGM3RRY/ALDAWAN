@@ -83,3 +83,6 @@ require __DIR__.'/jobs.php';
 
 // Load admin routes
 require __DIR__.'/admin.php';
+
+// Load messaging routes
+require __DIR__.'/messages.php';

@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -23,10 +24,10 @@ use Illuminate\Notifications\Notifiable;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  */
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
     // Relationship: User has many Jobs (for employers posting jobs)
     public function jobs()
     {
@@ -138,6 +139,27 @@ class User extends Authenticatable
 
     public function employer(){
         return $this->hasOne(Employer::class);
+    }
+
+    // Relationship: Messages sent by this user
+    public function sentMessages()
+    {
+        return $this->hasMany(Message::class, 'sender_id');
+    }
+
+    // Relationship: Messages received by this user
+    public function receivedMessages()
+    {
+        return $this->hasMany(Message::class, 'receiver_id');
+    }
+
+    // Helper method: Get unread message count
+    public function unreadMessagesCount()
+    {
+        return $this->receivedMessages()
+            ->whereNull('read_at')
+            ->where('is_deleted_by_receiver', false)
+            ->count();
     }
 
     /**

@@ -125,14 +125,21 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="photo" class="form-label">Photo</label>
-                                        <input type="file" name="photo" id="photo" class="form-control" accept="image/*">
+                                        <input type="file" name="photo" id="photo" class="form-control" accept="image/jpeg,image/png,image/jpg">
                                         <small class="form-text text-muted">Upload your profile photo (JPG, PNG, max 2MB)</small>
-                                        @if($profile && $profile->photo)
-                                            <div class="mt-2">
-                                                <img src="{{ asset('storage/' . $profile->photo) }}" alt="Current Photo" class="img-thumbnail" style="max-width: 200px;" id="current-photo">
-                                                <small class="text-muted d-block">Current photo</small>
-                                            </div>
-                                        @endif
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    @if($profile && $profile->photo)
+                                        <div class="mt-2" id="current-photo">
+                                            <img src="{{ asset('storage/' . $profile->photo) }}" alt="Current Photo" class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
+                                            <small class="text-muted d-block">Current photo</small>
+                                        </div>
+                                    @endif
+                                    <!-- Photo preview for newly selected image -->
+                                    <div class="mt-2" id="photo-preview-container" style="display: none;">
+                                        <img id="photo-preview" src="" alt="Photo Preview" class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
+                                        <small class="text-muted d-block">New Photo Preview</small>
                                     </div>
                                 </div>
                             </div>
@@ -494,5 +501,45 @@
             }
         }
         showStep(currentStep);
+
+        // Photo upload real-time preview
+        document.getElementById('photo').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Validate file type
+                if (!file.type.match('image/jpeg') && !file.type.match('image/png') && !file.type.match('image/jpg')) {
+                    alert('Please select a valid image file (JPG or PNG)');
+                    e.target.value = '';
+                    return;
+                }
+                
+                // Validate file size (2MB max)
+                if (file.size > 2 * 1024 * 1024) {
+                    alert('File size must be less than 2MB');
+                    e.target.value = '';
+                    return;
+                }
+                
+                // Show preview
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('photo-preview').src = e.target.result;
+                    document.getElementById('photo-preview-container').style.display = 'block';
+                    // Hide current photo if exists
+                    const currentPhoto = document.getElementById('current-photo');
+                    if (currentPhoto) {
+                        currentPhoto.style.display = 'none';
+                    }
+                };
+                reader.readAsDataURL(file);
+            } else {
+                // If file is cleared, hide preview and show current photo again
+                document.getElementById('photo-preview-container').style.display = 'none';
+                const currentPhoto = document.getElementById('current-photo');
+                if (currentPhoto) {
+                    currentPhoto.style.display = 'block';
+                }
+            }
+        });
     </script>
 @endsection

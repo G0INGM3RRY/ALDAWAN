@@ -213,7 +213,8 @@ class EmployerProfileController extends Controller
     {
         $user = Auth::user();
         $jobClassifications = \App\Models\Classification::active()->get();
-        return view($this->getViewPath('jobs.create'), compact('user', 'jobClassifications'));
+        $disabilities = \App\Models\Disability::orderBy('name')->get();
+        return view($this->getViewPath('jobs.create'), compact('user', 'jobClassifications', 'disabilities'));
     }
 
     public function storeJob(Request $request)

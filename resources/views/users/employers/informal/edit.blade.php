@@ -63,16 +63,27 @@
                                 @error('company_name')<div class="text-danger">{{ $message }}</div>@enderror
                             </div>
                            
-                            <div class="mb-3">
-                                <label for="company_logo" class="form-label">Profile Photo</label>
-                                <input type="file" name="company_logo" id="company_logo" class="form-control" accept="image/*">
-                                <small class="form-text text-muted">Upload a profile photo (JPG, PNG, max 2MB)</small>
-                                @if($profile && $profile->company_logo)
-                                    <div class="mt-2">
-                                        <img src="{{ asset('storage/' . $profile->company_logo) }}" alt="Profile Photo" class="img-thumbnail" style="max-width: 200px;" id="current-logo">
-                                        <small class="text-muted d-block">Current photo</small>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="company_logo" class="form-label">Profile Photo</label>
+                                        <input type="file" name="company_logo" id="company_logo" class="form-control" accept="image/jpeg,image/png,image/jpg">
+                                        <small class="form-text text-muted">Upload a profile photo (JPG, PNG, max 2MB)</small>
                                     </div>
-                                @endif
+                                </div>
+                                <div class="col-md-6">
+                                    @if($profile && $profile->company_logo)
+                                        <div class="mt-2" id="current-logo">
+                                            <img src="{{ asset('storage/' . $profile->company_logo) }}" alt="Profile Photo" class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
+                                            <small class="text-muted d-block">Current photo</small>
+                                        </div>
+                                    @endif
+                                    <!-- Photo preview for newly selected image -->
+                                    <div class="mt-2" id="logo-preview-container" style="display: none;">
+                                        <img id="logo-preview" src="" alt="Photo Preview" class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
+                                        <small class="text-muted d-block">New Photo Preview</small>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="mb-3">
@@ -307,5 +318,45 @@
 
         // Initialize
         showStep(currentStep);
+
+        // Profile photo upload real-time preview
+        document.getElementById('company_logo').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Validate file type
+                if (!file.type.match('image/jpeg') && !file.type.match('image/png') && !file.type.match('image/jpg')) {
+                    alert('Please select a valid image file (JPG or PNG)');
+                    e.target.value = '';
+                    return;
+                }
+                
+                // Validate file size (2MB max)
+                if (file.size > 2 * 1024 * 1024) {
+                    alert('File size must be less than 2MB');
+                    e.target.value = '';
+                    return;
+                }
+                
+                // Show preview
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('logo-preview').src = e.target.result;
+                    document.getElementById('logo-preview-container').style.display = 'block';
+                    // Hide current logo if exists
+                    const currentLogo = document.getElementById('current-logo');
+                    if (currentLogo) {
+                        currentLogo.style.display = 'none';
+                    }
+                };
+                reader.readAsDataURL(file);
+            } else {
+                // If file is cleared, hide preview and show current logo again
+                document.getElementById('logo-preview-container').style.display = 'none';
+                const currentLogo = document.getElementById('current-logo');
+                if (currentLogo) {
+                    currentLogo.style.display = 'block';
+                }
+            }
+        });
     </script>
 @endsection
