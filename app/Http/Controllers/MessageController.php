@@ -26,7 +26,7 @@ class MessageController extends Controller
                 $query->where('receiver_id', $userId)
                       ->where('is_deleted_by_receiver', false);
             })
-            ->with(['sender', 'receiver'])
+            ->with(['sender.employer', 'receiver.employer'])
             ->orderBy('sent_at', 'desc')
             ->get();
         
@@ -41,6 +41,14 @@ class MessageController extends Controller
             if (!isset($conversationsMap[$otherUserId])) {
                 $otherUser = ($message->sender_id === $userId) ? $message->receiver : $message->sender;
                 
+                // Determine display name based on role and viewer
+                $displayName = $otherUser->name;
+                
+                // If the other user is an employer, show company name instead
+                if ($otherUser->role === 'employer' && $otherUser->employer) {
+                    $displayName = $otherUser->employer->company_name;
+                }
+                
                 // Count unread messages from this user
                 $unreadCount = Message::where('sender_id', $otherUserId)
                     ->where('receiver_id', $userId)
@@ -50,7 +58,7 @@ class MessageController extends Controller
                 
                 $conversationsMap[$otherUserId] = (object)[
                     'id' => $otherUser->id,
-                    'name' => $otherUser->name,
+                    'name' => $displayName,
                     'email' => $otherUser->email,
                     'role' => $otherUser->role,
                     'last_message' => $message->message_content,
@@ -68,20 +76,37 @@ class MessageController extends Controller
 
     /**
      * Display conversation with a specific user
+     * Only allows messaging between users who have interacted (employer-applicant relationship)
      */
     public function show($userId)
     {
-        $currentUser = Auth::id();
-        $otherUser = User::findOrFail($userId);
+        $currentUser = Auth::user();
+        $otherUser = User::with('employer')->findOrFail($userId);
+        
+        // Prevent messaging yourself
+        if ($currentUser->id == $userId) {
+            return redirect()->route('messages.inbox')->with('error', 'You cannot message yourself.');
+        }
+        
+        // Check if users have an existing relationship (application interaction)
+        $hasRelationship = $this->checkUserRelationship($currentUser, $otherUser);
+        
+        // Check if they already have a conversation
+        $hasConversation = Message::conversation($currentUser->id, $userId)->exists();
+        
+        // Only allow messaging if they have a relationship OR existing conversation
+        if (!$hasRelationship && !$hasConversation) {
+            return redirect()->route('messages.inbox')->with('error', 'You can only message users you have interacted with through job applications.');
+        }
         
         // Get all messages in conversation
-        $messages = Message::conversation($currentUser, $userId)
+        $messages = Message::conversation($currentUser->id, $userId)
             ->where(function($query) use ($currentUser, $userId) {
                 $query->where(function($q) use ($currentUser) {
-                    $q->where('sender_id', $currentUser)
+                    $q->where('sender_id', $currentUser->id)
                       ->where('is_deleted_by_sender', false);
                 })->orWhere(function($q) use ($currentUser) {
-                    $q->where('receiver_id', $currentUser)
+                    $q->where('receiver_id', $currentUser->id)
                       ->where('is_deleted_by_receiver', false);
                 });
             })
@@ -91,11 +116,43 @@ class MessageController extends Controller
         
         // Mark all unread messages from other user as read
         Message::where('sender_id', $userId)
-            ->where('receiver_id', $currentUser)
+            ->where('receiver_id', $currentUser->id)
             ->whereNull('read_at')
             ->update(['read_at' => now()]);
         
-        return view('messages.conversation', compact('messages', 'otherUser'));
+        // Determine display name - use company name for employers
+        $displayName = $otherUser->name;
+        if ($otherUser->role === 'employer' && $otherUser->employer) {
+            $displayName = $otherUser->employer->company_name;
+        }
+        
+        return view('messages.conversation', compact('messages', 'otherUser', 'displayName'));
+    }
+    
+    /**
+     * Check if two users have a relationship through job applications
+     */
+    private function checkUserRelationship($user1, $user2)
+    {
+        // If user1 is employer, check if user2 has applied to their jobs
+        if ($user1->role === 'employer') {
+            $hasApplicant = \App\Models\JobApplication::whereHas('job', function($query) use ($user1) {
+                $query->where('company_id', $user1->id);
+            })->where('user_id', $user2->id)->exists();
+            
+            if ($hasApplicant) return true;
+        }
+        
+        // If user1 is seeker, check if they applied to user2's jobs
+        if ($user1->role === 'seeker') {
+            $hasAppliedTo = \App\Models\JobApplication::whereHas('job', function($query) use ($user2) {
+                $query->where('company_id', $user2->id);
+            })->where('user_id', $user1->id)->exists();
+            
+            if ($hasAppliedTo) return true;
+        }
+        
+        return false;
     }
 
     /**
@@ -108,20 +165,33 @@ class MessageController extends Controller
             'message_content' => 'required|string|max:5000',
         ]);
 
+        $currentUser = Auth::user();
+        $receiverId = $request->receiver_id;
+
         // Prevent sending messages to self
-        if ($request->receiver_id == Auth::id()) {
+        if ($receiverId == $currentUser->id) {
             return back()->with('error', 'You cannot send messages to yourself.');
         }
 
+        $receiver = User::findOrFail($receiverId);
+        
+        // Check if users have relationship or existing conversation
+        $hasRelationship = $this->checkUserRelationship($currentUser, $receiver);
+        $hasConversation = Message::conversation($currentUser->id, $receiverId)->exists();
+        
+        if (!$hasRelationship && !$hasConversation) {
+            return back()->with('error', 'You can only message users you have interacted with through job applications.');
+        }
+
         $message = Message::create([
-            'sender_id' => Auth::id(),
-            'receiver_id' => $request->receiver_id,
+            'sender_id' => $currentUser->id,
+            'receiver_id' => $receiverId,
             'message_content' => $request->message_content,
             'sent_at' => now(),
             'message_type' => 'text'
         ]);
 
-        return redirect()->route('messages.show', $request->receiver_id)
+        return redirect()->route('messages.show', $receiverId)
             ->with('success', 'Message sent successfully!');
     }
 

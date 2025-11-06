@@ -20,12 +20,13 @@
                     <h3 class="mb-0 text-center">Update Your Profile</h3>
                     <!-- Progress Steps -->
                     <div class="progress mt-3">
-                        <div class="progress-bar bg-warning" role="progressbar" style="width: 33%" id="progress-bar"></div>
+                        <div class="progress-bar bg-primary" role="progressbar" style="width: 25%" id="progress-bar"></div>
                     </div>
                     <div class="step-indicators d-flex justify-content-between mt-2">
                         <span class="step-indicator active" id="step-1">1. Personal Info</span>
                         <span class="step-indicator" id="step-2">2. Work Status</span>
-                        <span class="step-indicator" id="step-3">3. Skills & Verification</span>
+                        <span class="step-indicator" id="step-3">3. Education</span>
+                        <span class="step-indicator" id="step-4">4. Skills & Verification</span>
                     </div>
                 </div>
                 <div class="card-body">
@@ -42,7 +43,7 @@
                             <div class="mb-3">
                                 <label class="form-label">Job Seeker Type</label>
                                 <div>
-                                    <span class="badge bg-warning text-dark fs-6">Informal Worker</span>
+                                    <span class="badge bg-primary text-white fs-6">Informal Worker</span>
                                     <input type="hidden" name="job_seeker_type" value="informal">
                                     <div class="form-text">
                                         <small class="text-muted">This cannot be changed after registration</small>
@@ -179,7 +180,10 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="contactnumber" class="form-label">Contact Number</label>
-                                        <input type="text" name="contactnumber" id="contactnumber" class="form-control" value="{{ old('contactnumber', $profile->contactnumber ?? '') }}">
+                                        <input type="tel" name="contactnumber" id="contactnumber" class="form-control" 
+                                               value="{{ old('contactnumber', $profile->contactnumber ?? '') }}"
+                                               pattern="[0-9]{10,11}" placeholder="09XXXXXXXXX" 
+                                               title="Enter 10 or 11 digit phone number">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -213,14 +217,14 @@
                             
                             <div class="mb-3">
                                 <label class="form-label">Disability (if any)</label>
-                                <small class="text-muted d-block mb-2">Select all that apply for appropriate workplace accommodations.</small>
+                                <small class="text-muted d-block mb-2">Select all disabilities that apply to you for appropriate workplace accommodations.</small>
                                 
                                 @php
                                     $userDisabilities = $profile && $profile->disabilities ? $profile->disabilities->pluck('id')->toArray() : [];
                                 @endphp
                                 <div class="row">
                                     @foreach($disabilities as $disability)
-                                        <div class="col-md-6 mb-2">
+                                        <div class="col-md-3 mb-2">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" name="disabilities[]" 
                                                        id="disability_{{ $disability->id }}" value="{{ $disability->id }}" 
@@ -232,7 +236,7 @@
                                 </div>
 
                                 <div class="row mt-3">
-                                    <div class="col-md-8">
+                                    <div class="col-md-12">
                                         <div class="mb-3">
                                             <label for="other_disabilities" class="form-label">Other disabilities (not listed above):</label>
                                             <input type="text" name="other_disabilities" id="other_disabilities" class="form-control" placeholder="Type other disabilities here, separated by commas">
@@ -267,10 +271,62 @@
                             </div>
                         </div>
 
-                        <!-- Section 3: Skills & Experience -->
+                        <!-- Section 3: Education -->
+                        <div id="section-education" class="form-step">
+                            <h4 class="mb-4">Education</h4>
+                            <p class="text-muted mb-4"><span class="text-danger">*</span> Required field</p>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Highest Education Level Attained <span class="text-muted">(Optional)</span></label>
+                                    <select name="education_level_id" class="form-select">
+                                        <option value="">Select your highest education level...</option>
+                                        @foreach($educationLevels as $level)
+                                            <option value="{{ $level->id }}" 
+                                                {{ old('education_level_id', $profile->education_level_id ?? '') == $level->id ? 'selected' : '' }}>
+                                                {{ $level->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">School Name <span class="text-danger">*</span></label>
+                                    <input type="text" name="institution_name" class="form-control" 
+                                           value="{{ old('institution_name', $profile->institution_name ?? '') }}" 
+                                           placeholder="Enter the name of your school" required>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Year Graduated/Last Attended <span class="text-danger">*</span></label>
+                                    <input type="number" name="graduation_year" class="form-control" 
+                                           value="{{ old('graduation_year', $profile->graduation_year ?? '') }}" 
+                                           placeholder="e.g., 2020" min="1950" max="{{ date('Y') + 1 }}" required
+                                           title="Enter year between 1950 and {{ date('Y') + 1 }}">
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Course/Strand (if applicable)</label>
+                                    <input type="text" name="degree_field" class="form-control" 
+                                           value="{{ old('degree_field', $profile->degree_field ?? '') }}" 
+                                           placeholder="e.g., STEM, ABM, Welding, etc.">
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4 d-flex justify-content-between">
+                                <button type="button" onclick="prevStep()" class="btn btn-secondary">Prev</button>
+                                <button type="button" onclick="nextStep()" class="btn btn-primary">Next</button>
+                            </div>
+                        </div>
+
+                        <!-- Section 4: Skills & Experience -->
                         <div id="section-skills" class="form-step">
                             <h4 class="mb-4">Skills & Experience</h4>
                             <p class="text-muted mb-4"><span class="text-danger">*</span> Required field</p>
+                            
+                            <h5 class="mb-3">Skills</h5>
                             
                             <div class="mb-3">
                                 <label class="form-label">Basic Skills (Select all that apply)</label><br>
@@ -310,7 +366,7 @@
                                     <i class="fas fa-file-upload me-2"></i>Document Verification
                                     @if(auth()->user()->jobseekerProfile && auth()->user()->jobseekerProfile->informalVerification)
                                         <span class="badge bg-{{ auth()->user()->jobseekerProfile->informalVerification->status === 'approved' ? 'success' : 
-                                                                 (auth()->user()->jobseekerProfile->informalVerification->status === 'rejected' ? 'danger' : 'warning') }}">
+                                                                 (auth()->user()->jobseekerProfile->informalVerification->status === 'rejected' ? 'danger' : 'primary') }}">
                                             {{ ucfirst(auth()->user()->jobseekerProfile->informalVerification->status) }}
                                         </span>
                                     @else
@@ -334,8 +390,8 @@
                                         @endif
                                     </div>
                                 @else
-                                    <div class="alert alert-warning">
-                                        <i class="fas fa-exclamation-triangle me-2"></i>
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle me-2"></i>
                                         <strong>Verification Recommended:</strong> Upload your verification documents to get verified and access more job opportunities.
                                     </div>
                                 @endif
@@ -344,8 +400,7 @@
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label class="form-label">
-                                                <i class="fas fa-id-card me-1"></i>Government-issued ID 
-                                                <span class="text-danger">*</span>
+                                                <i class="fas fa-id-card me-1"></i>Government-issued ID
                                             </label>
                                             <input type="file" name="government_id" class="form-control" accept=".jpg,.jpeg,.png,.pdf">
                                             <div class="form-text">
@@ -361,8 +416,7 @@
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label class="form-label">
-                                                <i class="fas fa-home me-1"></i>Barangay Clearance 
-                                                <span class="text-danger">*</span>
+                                                <i class="fas fa-home me-1"></i>Barangay Clearance
                                             </label>
                                             <input type="file" name="barangay_clearance" class="form-control" accept=".jpg,.jpeg,.png,.pdf">
                                             <div class="form-text">
@@ -451,7 +505,7 @@
             font-weight: 500;
         }
         .step-indicator.active {
-            color: #ffc107;
+            color: #0d6efd;
             font-weight: 700;
         }
     </style>
@@ -538,6 +592,69 @@
                 const currentPhoto = document.getElementById('current-photo');
                 if (currentPhoto) {
                     currentPhoto.style.display = 'block';
+                }
+            }
+        });
+
+        // Form submission validation
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const requiredFields = this.querySelectorAll('[required]');
+            const emptyFields = [];
+            const sectionNames = {
+                'section-personal-information': 'Section 1: Personal Information',
+                'section-work-status': 'Section 2: Work Status',
+                'section-education': 'Section 3: Education',
+                'section-skills-verification': 'Section 4: Skills & Verification'
+            };
+
+            requiredFields.forEach(field => {
+                // Check if field is visible and empty
+                const isVisible = field.offsetParent !== null;
+                const isEmpty = !field.value || field.value.trim() === '';
+                
+                if (isVisible && isEmpty) {
+                    // Find which section this field belongs to
+                    const section = field.closest('.form-step');
+                    const sectionId = section ? section.id : 'unknown';
+                    const sectionName = sectionNames[sectionId] || 'Unknown Section';
+                    const fieldLabel = field.closest('.mb-3')?.querySelector('label')?.textContent.replace('*', '').trim() || field.name;
+                    
+                    emptyFields.push({
+                        section: sectionName,
+                        field: fieldLabel,
+                        element: field
+                    });
+                }
+            });
+
+            if (emptyFields.length > 0) {
+                e.preventDefault();
+                
+                // Group by section
+                const groupedFields = {};
+                emptyFields.forEach(item => {
+                    if (!groupedFields[item.section]) {
+                        groupedFields[item.section] = [];
+                    }
+                    groupedFields[item.section].push(item.field);
+                });
+
+                // Create message
+                let message = 'Please fill in the following required fields:\n\n';
+                Object.keys(groupedFields).forEach(section => {
+                    message += `${section}:\n`;
+                    groupedFields[section].forEach(field => {
+                        message += `  • ${field}\n`;
+                    });
+                    message += '\n';
+                });
+
+                alert(message);
+
+                // Scroll to first empty field
+                if (emptyFields[0].element) {
+                    emptyFields[0].element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    emptyFields[0].element.focus();
                 }
             }
         });

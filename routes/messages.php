@@ -15,10 +15,7 @@ Route::middleware(['auth', 'verified'])->prefix('messages')->name('messages.')->
     // Inbox - List all conversations
     Route::get('/', [MessageController::class, 'inbox'])->name('inbox');
     
-    // Compose new message
-    Route::get('/compose', [MessageController::class, 'compose'])->name('compose');
-    
-    // View conversation with specific user
+    // View conversation with specific user (opens conversation or creates if doesn't exist)
     Route::get('/{userId}', [MessageController::class, 'show'])->name('show');
     
     // Send message

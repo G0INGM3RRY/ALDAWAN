@@ -46,7 +46,7 @@
                         @endif
                         
                         <div>
-                            <h5 class="mb-0 fw-bold">{{ $otherUser->name }}</h5>
+                            <h5 class="mb-0 fw-bold">{{ $displayName }}</h5>
                             <small class="text-muted">
                                 @if($otherUser->role === 'employer')
                                     <span class="badge bg-success-subtle text-success">Employer</span>

@@ -14,28 +14,20 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create admin user
-        $adminUser = User::create([
-            'name' => 'Admin User',
-            'email' => 'admin@aldawan.com',
-            'email_verified_at' => now(),
-            'password' => Hash::make('admin123'),
-            'role' => 'admin' // Set role to admin
-        ]);
+        // Create admin user - simple approach, just set role to 'admin'
+        $adminUser = User::firstOrCreate(
+            ['email' => 'admin@aldawan.com'],
+            [
+                'name' => 'Admin User',
+                'email_verified_at' => now(),
+                'password' => Hash::make('admin123'),
+                'role' => 'admin'
+            ]
+        );
 
-        // Add to admin_users table
-        DB::table('admin_users')->insert([
-            'user_id' => $adminUser->id,
-            'admin_level' => 'admin',
-            'is_active' => true,
-            'department' => 'Administration',
-            'notes' => 'Initial admin user created via seeder',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
-
-        $this->command->info('Admin user created successfully!');
+        $this->command->info('Admin user created/verified successfully!');
         $this->command->info('Email: admin@aldawan.com');
         $this->command->info('Password: admin123');
+        $this->command->info('Role: admin');
     }
 }

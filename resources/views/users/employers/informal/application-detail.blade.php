@@ -6,14 +6,14 @@
         <!-- Application Header -->
         <div class="col-12 mb-4">
             <div class="card border-0 shadow-sm">
-                <div class="card-header bg-light border-bottom">
+                <div class="card-header bg-primary text-white border-0">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h5 class="mb-0 text-dark">Gig Application Review</h5>
-                            <small class="text-muted">Verify worker credentials and qualifications</small>
+                            <h5 class="mb-0">📝 Gig Application Review</h5>
+                            <small class="text-white-50">Verify worker credentials and qualifications</small>
                         </div>
                         <div class="text-end">
-                            <span class="badge bg-secondary">
+                            <span class="badge bg-white text-primary">
                                 Status: {{ ucfirst($application->status) }}
                             </span>
                         </div>
@@ -32,6 +32,9 @@
                             <a href="{{ route('employers.viewapplications', $application->job->id) }}" class="btn btn-outline-secondary btn-sm">
                                 ← Back to Applications
                             </a>
+                            <a href="{{ route('messages.show', $application->user_id) }}" class="btn btn-primary btn-sm ms-2">
+                                <i class="bi bi-chat-dots me-1"></i>Message Applicant
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -41,12 +44,12 @@
         <!-- Worker Profile Information -->
         <div class="col-md-6 mb-4">
             <div class="card h-100 border-0 shadow-sm">
-                <div class="card-header bg-light border-bottom">
-                    <h6 class="mb-0 text-dark">Worker Profile</h6>
+                <div class="card-header bg-primary text-white border-0">
+                    <h6 class="mb-0">👤 Worker Profile</h6>
                 </div>
                 <div class="card-body">
                     <div class="d-flex align-items-center mb-3">
-                        <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px; font-size: 20px;">
+                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px; font-size: 20px;">
                             {{ strtoupper(substr($application->user->name, 0, 1)) }}
                         </div>
                         <div>
@@ -97,8 +100,8 @@
         <!-- Application Details -->
         <div class="col-md-6 mb-4">
             <div class="card h-100 border-0 shadow-sm">
-                <div class="card-header bg-light border-bottom">
-                    <h6 class="mb-0 text-dark">Application Details</h6>
+                <div class="card-header bg-primary text-white border-0">
+                    <h6 class="mb-0">📋 Application Details</h6>
                 </div>
                 <div class="card-body">
                     <!-- Cover Message -->
@@ -145,33 +148,31 @@
         <!-- Documents Section -->
         <div class="col-12 mb-4">
             <div class="card border-0 shadow-sm">
-                <div class="card-header bg-light border-bottom">
-                    <h6 class="mb-0 text-dark">📄 Worker Documentation</h6>
-                    <small class="text-muted">Verify credentials and work samples</small>
+                <div class="card-header bg-primary text-white border-0">
+                    <h6 class="mb-0">📄 Worker Documentation</h6>
+                    <small class="text-white-50">Verify credentials and work samples</small>
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <!-- Resume/Portfolio -->
                         <div class="col-md-6 mb-4">
-                            <h6 class="text-dark">Resume/Portfolio</h6>
+                            <h6 class="text-primary fw-bold">📑 Resume/Portfolio</h6>
                             @if($application->resume_file_path)
-                                <div class="border rounded p-3 bg-light">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <span class="text-dark">📄 {{ basename($application->resume_file_path) }}</span>
-                                            <br>
-                                            <small class="text-muted">
-                                                Size: {{ number_format(Storage::disk('public')->size($application->resume_file_path) / 1024, 1) }} KB
-                                            </small>
-                                        </div>
-                                        <div>
-                                            <a href="{{ Storage::url($application->resume_file_path) }}" target="_blank" class="btn btn-dark btn-sm">
-                                                View
-                                            </a>
-                                            <a href="{{ Storage::url($application->resume_file_path) }}" download class="btn btn-outline-dark btn-sm">
-                                                Download
-                                            </a>
-                                        </div>
+                                <div class="border border-primary rounded p-3 bg-light">
+                                    <div class="mb-2">
+                                        <span class="text-dark fw-semibold">📄 {{ basename($application->resume_file_path) }}</span>
+                                        <br>
+                                        <small class="text-muted">
+                                            Size: {{ number_format(Storage::disk('public')->size($application->resume_file_path) / 1024, 1) }} KB
+                                        </small>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <a href="{{ Storage::url($application->resume_file_path) }}" target="_blank" class="btn btn-primary btn-sm flex-fill">
+                                            <i class="bi bi-eye"></i> View
+                                        </a>
+                                        <a href="{{ Storage::url($application->resume_file_path) }}" download class="btn btn-outline-primary btn-sm flex-fill">
+                                            <i class="bi bi-download"></i> Download
+                                        </a>
                                     </div>
                                 </div>
                             @else
@@ -183,24 +184,24 @@
 
                         <!-- Certificates & Work Samples -->
                         <div class="col-md-6 mb-4">
-                            <h6 class="text-dark">Certificates & Work Samples</h6>
+                            <h6 class="text-primary fw-bold">📎 Certificates & Work Samples</h6>
                             @if($application->additional_documents && count($application->additional_documents) > 0)
-                                <div class="border rounded p-3 bg-light">
+                                <div class="border border-primary rounded p-3 bg-light">
                                     @foreach($application->additional_documents as $document)
-                                        <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
-                                            <div>
-                                                <span class="text-dark">📄 {{ basename($document) }}</span>
+                                        <div class="mb-3 pb-3 border-bottom">
+                                            <div class="mb-2">
+                                                <span class="text-dark fw-semibold">📄 {{ basename($document) }}</span>
                                                 <br>
                                                 <small class="text-muted">
                                                     Size: {{ number_format(Storage::disk('public')->size($document) / 1024, 1) }} KB
                                                 </small>
                                             </div>
-                                            <div>
-                                                <a href="{{ Storage::url($document) }}" target="_blank" class="btn btn-dark btn-sm">
-                                                    View
+                                            <div class="d-flex gap-2">
+                                                <a href="{{ Storage::url($document) }}" target="_blank" class="btn btn-primary btn-sm flex-fill">
+                                                    <i class="bi bi-eye"></i> View
                                                 </a>
-                                                <a href="{{ Storage::url($document) }}" download class="btn btn-outline-dark btn-sm">
-                                                    Download
+                                                <a href="{{ Storage::url($document) }}" download class="btn btn-outline-primary btn-sm flex-fill">
+                                                    <i class="bi bi-download"></i> Download
                                                 </a>
                                             </div>
                                         </div>
@@ -220,8 +221,8 @@
         <!-- Action Buttons and Notes -->
         <div class="col-12">
             <div class="card border-0 shadow-sm">
-                <div class="card-header bg-light border-bottom">
-                    <h6 class="mb-0 text-dark">Worker Assessment & Actions</h6>
+                <div class="card-header bg-primary text-white border-0">
+                    <h6 class="mb-0">⚖️ Worker Assessment & Actions</h6>
                 </div>
                 <div class="card-body">
                     <!-- Current Notes -->

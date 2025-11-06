@@ -7,12 +7,22 @@
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Font Awesome (Updated to latest version) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
     <!-- Bootstrap Standards CSS -->
     @vite('resources/css/bootstrap-standards.css')
     <!-- Custom Admin CSS -->
     <style>
+        /* Ensure Font Awesome icons display properly */
+        .fas, .far, .fab, .fa {
+            font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
+            font-weight: 900 !important;
+            font-style: normal !important;
+            display: inline-block !important;
+        }
+        
         .sidebar {
             min-height: 100vh;
             box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
@@ -49,51 +59,22 @@
     </style>
 </head>
 <body>
-    <!-- Admin Navigation Bar -->
+    <!-- Admin Top Header (Simplified) -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="background-color: #212529 !important;">
         <div class="container-fluid">
             <!-- Admin Logo/Brand -->
             <a class="navbar-brand" href="{{ route('admin.dashboard') }}" style="color: #ffffff !important; font-weight: bold;">
-                <i class="fas fa-cogs me-2"></i>ALDAWAN Admin
+                <i class="fas fa-cogs me-2"></i>ALDAWAN Admin Panel
             </a>
 
-            <!-- Navigation Toggle for Mobile -->
+            <!-- Mobile Toggle -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNavbar" aria-controls="adminNavbar" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <!-- Navigation Links -->
+            <!-- User Menu Only -->
             <div class="collapse navbar-collapse" id="adminNavbar">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('admin.dashboard') }}" style="color: #ffffff !important; font-weight: 500;">
-                            <i class="fas fa-tachometer-alt me-1"></i>Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('admin.users.index') }}" style="color: #ffffff !important; font-weight: 500;">
-                            <i class="fas fa-users me-1"></i>Users
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('admin.verifications') }}" style="color: #ffffff !important; font-weight: 500;">
-                            <i class="fas fa-check-circle me-1"></i>Verifications
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('admin.jobs') }}" style="color: #ffffff !important; font-weight: 500;">
-                            <i class="fas fa-briefcase me-1"></i>Jobs
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('admin.reports') }}" style="color: #ffffff !important; font-weight: 500;">
-                            <i class="fas fa-chart-bar me-1"></i>Reports
-                        </a>
-                    </li>
-                </ul>
-
-                <!-- Admin User Menu -->
-                <ul class="navbar-nav">
+                <ul class="navbar-nav ms-auto">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: #ffffff !important; font-weight: 500;">
                             <i class="fas fa-user-shield me-1"></i>{{ auth()->user()->name }}
@@ -170,7 +151,6 @@
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                     <h1 class="h2">@yield('page-title', 'Dashboard')</h1>
                     
-                    <!-- TODO: Add page actions (buttons, etc.) -->
                     <div class="btn-toolbar mb-2 mb-md-0">
                         @yield('page-actions')
                     </div>

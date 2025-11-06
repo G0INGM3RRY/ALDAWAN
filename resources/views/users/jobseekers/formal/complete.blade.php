@@ -20,7 +20,7 @@
                     <h3 class="mb-0 text-center">Complete your personal profile</h3>
                     <!-- Progress Steps -->
                     <div class="progress mt-3">
-                        <div class="progress-bar" role="progressbar" style="width: 25%" id="progress-bar"></div>
+                        <div class="progress-bar bg-primary" role="progressbar" style="width: 25%" id="progress-bar"></div>
                     </div>
                     <div class="step-indicators d-flex justify-content-between mt-2">
                         <span class="step-indicator active" id="step-1">1. Personal Info</span>
@@ -165,7 +165,9 @@
                                 <div class="col-md-4">
                                     <div class="mb-3">
                                         <label for="contactnumber" class="form-label">Contact Number</label>
-                                        <input type="text" name="contactnumber" id="contactnumber" class="form-control">
+                                        <input type="tel" name="contactnumber" id="contactnumber" class="form-control"
+                                               pattern="[0-9]{10,11}" placeholder="09XXXXXXXXX" 
+                                               title="Enter 10 or 11 digit phone number">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -199,22 +201,29 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="mb-3">
-                                        <label class="form-label">Disability (Check all that apply)</label><br>
-                                        @if(isset($disabilities))
-                                            @foreach($disabilities as $disability)
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="checkbox" name="disabilities[]" 
-                                                           id="disability_{{ $disability->id }}" value="{{ $disability->id }}">
-                                                    <label class="form-check-label" for="disability_{{ $disability->id }}">{{ $disability->name }}</label>
+                                        <label class="form-label">Disability</label>
+                                        <small class="text-muted d-block mb-2">Select all disabilities that apply to you for appropriate workplace accommodations.</small>
+                                        <div class="row">
+                                            @if(isset($disabilities))
+                                                @foreach($disabilities as $disability)
+                                                    <div class="col-md-3 mb-2">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" name="disabilities[]" 
+                                                                   id="disability_{{ $disability->id }}" value="{{ $disability->id }}">
+                                                            <label class="form-check-label" for="disability_{{ $disability->id }}">{{ $disability->name }}</label>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            @else
+                                                <div class="col-md-3 mb-2">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="disabilities[]" 
+                                                               id="disability_none" value="none">
+                                                        <label class="form-check-label" for="disability_none">None</label>
+                                                    </div>
                                                 </div>
-                                            @endforeach
-                                        @else
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="checkbox" name="disabilities[]" 
-                                                       id="disability_none" value="none">
-                                                <label class="form-check-label" for="disability_none">None</label>
-                                            </div>
-                                        @endif
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -283,13 +292,13 @@
                                         <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label class="form-label">Min Salary (PHP)</label>
-                                                <input type="number" name="job_preferences[0][min_salary]" class="form-control" step="0.01" placeholder="15000">
+                                                <input type="number" name="job_preferences[0][min_salary]" class="form-control" step="0.01" placeholder="15000" min="0" title="Enter minimum salary amount">
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label class="form-label">Max Salary (PHP)</label>
-                                                <input type="number" name="job_preferences[0][max_salary]" class="form-control" step="0.01" placeholder="25000">
+                                                <input type="number" name="job_preferences[0][max_salary]" class="form-control" step="0.01" placeholder="25000" min="0" title="Enter maximum salary amount">
                                             </div>
                                         </div>
                                         <div class="col-md-4">
@@ -509,13 +518,13 @@
                         <div class="col-md-4">
                             <div class="mb-3">
                                 <label class="form-label">Min Salary (PHP)</label>
-                                <input type="number" name="job_preferences[${preferenceCount}][min_salary]" class="form-control" step="0.01" placeholder="15000">
+                                <input type="number" name="job_preferences[${preferenceCount}][min_salary]" class="form-control" step="0.01" placeholder="15000" min="0" title="Enter minimum salary amount">
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="mb-3">
                                 <label class="form-label">Max Salary (PHP)</label>
-                                <input type="number" name="job_preferences[${preferenceCount}][max_salary]" class="form-control" step="0.01" placeholder="25000">
+                                <input type="number" name="job_preferences[${preferenceCount}][max_salary]" class="form-control" step="0.01" placeholder="25000" min="0" title="Enter maximum salary amount">
                             </div>
                         </div>
                         <div class="col-md-4">

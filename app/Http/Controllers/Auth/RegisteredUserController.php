@@ -35,6 +35,7 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'role' => ['required', 'string'],
             'job_seeker_type' => $request->role === 'seeker' ? ['required', 'string', 'in:formal,informal'] : ['nullable'],
+            'employer_type' => $request->role === 'employer' ? ['required', 'string', 'in:formal,informal'] : ['nullable'],
         ]);
 
         $user = User::create([
@@ -55,6 +56,12 @@ class RegisteredUserController extends Controller
                 session()->put('job_seeker_type', $request->job_seeker_type);
             }
             return redirect()->route('users.complete', ['user' => $user->id]);
+        } elseif ($user->role === 'employer') {
+            // Store employer_type in session for employer profile completion
+            if ($request->has('employer_type')) {
+                session()->put('employer_type', $request->employer_type);
+            }
+            return redirect()->route('employers.complete');
         }
         return redirect(route('dashboard', absolute: false));
     }

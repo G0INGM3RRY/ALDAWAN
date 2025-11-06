@@ -1,0 +1,88 @@
+/* ========================================
+   ALDAWAN - Unified Loading Animation System
+   ======================================== */
+
+/* Global Page Loading Overlay */
+#page-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+#page-loader.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Form Submission Loading State */
+.btn-loading {
+    position: relative;
+    color: transparent !important;
+    pointer-events: none;
+}
+
+.btn-loading::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    left: 50%;
+    margin-left: -8px;
+    margin-top: -8px;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spinner 0.6s linear infinite;
+}
+
+.btn-loading.btn-outline-primary::after,
+.btn-loading.btn-outline-secondary::after {
+    border-color: #0d6efd;
+    border-top-color: transparent;
+}
+
+/* Spinner Animation */
+@keyframes spinner {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Content Loading Skeleton (Optional) */
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s ease-in-out infinite;
+    border-radius: 4px;
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Inline Spinner (for AJAX requests) */
+.spinner-inline {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spinner 0.6s linear infinite;
+    vertical-align: middle;
+}

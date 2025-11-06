@@ -20,7 +20,16 @@ class EmployerProfileController extends Controller
     private function getViewPath($basePath)
     {
         $user = Auth::user();
-        if ($user && $user->employerProfile && $user->employerProfile->employer_type === 'informal') {
+        
+        // Check employer type from profile first, then session, then default to formal
+        $employerType = null;
+        if ($user && $user->employerProfile && $user->employerProfile->employer_type) {
+            $employerType = $user->employerProfile->employer_type;
+        } elseif (session()->has('employer_type')) {
+            $employerType = session('employer_type');
+        }
+        
+        if ($employerType === 'informal') {
             return "users.employers.informal.{$basePath}";
         } else {
             return "users.employers.formal.{$basePath}";
@@ -31,7 +40,11 @@ class EmployerProfileController extends Controller
         $user = Auth::user();
         $profile = $user->employerProfile;
         $companyTypes = \App\Models\CompanyType::where('is_active', true)->get();
-        return view($this->getViewPath('complete'), compact('user', 'profile', 'companyTypes'));
+        
+        // Get employer type from session
+        $employerType = session('employer_type', 'formal');
+        
+        return view($this->getViewPath('complete'), compact('user', 'profile', 'companyTypes', 'employerType'));
     }
 
     public function show()
@@ -150,40 +163,72 @@ class EmployerProfileController extends Controller
             $data['company_logo'] = $filePath;
         }
 
-        $user->employerProfile()->updateOrCreate(
+        $employer = $user->employerProfile()->updateOrCreate(
             ['user_id' => $user->id],
             $data
         );
 
-        // Handle company verification document submission (optional)
+        // Handle verification document submission (optional) - different tables for formal vs informal
         if ($request->filled('business_registration_number') || 
             $request->filled('tax_id') || 
             $request->hasFile('verification_document') ||
             $request->filled('verification_notes')) {
             
-            $verificationData = [
-                'employer_id' => $user->id,
-                'status' => 'pending',
-                'business_registration_number' => $request->business_registration_number,
-                'tax_id' => $request->tax_id,
-                'verification_notes' => $request->verification_notes,
-                'submitted_at' => now(),
-            ];
+            // Check employer type to use the correct verification table
+            $employerType = $employer->employer_type;
+            
+            if ($employerType === 'formal') {
+                // FORMAL EMPLOYER - use company_verifications table
+                $verificationData = [
+                    'employer_id' => $employer->id, // Use employer ID, not user ID
+                    'status' => 'pending',
+                    'business_registration_number' => $request->business_registration_number,
+                    'tax_id' => $request->tax_id,
+                    'verification_notes' => $request->verification_notes,
+                    'submitted_at' => now(),
+                ];
 
-            // Handle verification document upload
-            if ($request->hasFile('verification_document')) {
-                $file = $request->file('verification_document');
-                $filename = time() . '_verification_' . $file->getClientOriginalName();
-                $filePath = $file->storeAs('company_verifications', $filename, 'public');
-                $verificationData['verification_document_path'] = $filePath;
+                // Handle verification document upload
+                if ($request->hasFile('verification_document')) {
+                    $file = $request->file('verification_document');
+                    $filename = time() . '_verification_' . $file->getClientOriginalName();
+                    $filePath = $file->storeAs('company_verifications', $filename, 'public');
+                    $verificationData['verification_document_path'] = $filePath;
+                }
+
+                // Create or update verification record for formal employer
+                \App\Models\CompanyVerification::updateOrCreate(
+                    ['employer_id' => $employer->id],
+                    $verificationData
+                );
+            } elseif ($employerType === 'informal') {
+                // INFORMAL EMPLOYER - use informal_employer_verifications table
+                $verificationData = [
+                    'employer_id' => $employer->id, // Use employer ID, not user ID
+                    'status' => 'pending',
+                    'verification_notes' => $request->verification_notes,
+                    'submitted_at' => now(),
+                ];
+
+                // Handle verification document upload - map to appropriate field
+                if ($request->hasFile('verification_document')) {
+                    $file = $request->file('verification_document');
+                    $filename = time() . '_verification_' . $file->getClientOriginalName();
+                    $filePath = $file->storeAs('informal_employer_verifications', $filename, 'public');
+                    // Use valid_id_path for informal employers
+                    $verificationData['valid_id_path'] = $filePath;
+                }
+
+                // Create or update verification record for informal employer
+                \App\Models\InformalEmployerVerification::updateOrCreate(
+                    ['employer_id' => $employer->id],
+                    $verificationData
+                );
             }
-
-            // Create or update verification record
-            \App\Models\CompanyVerification::updateOrCreate(
-                ['employer_id' => $user->id],
-                $verificationData
-            );
         }
+
+        // Clear employer_type from session after saving profile
+        session()->forget('employer_type');
 
          return redirect()->route('dashboard')->with('success', 'Profile saved!');
     }

@@ -19,8 +19,8 @@
 
     <div class="row mb-4">
         <div class="col-12">
-            <h1 class="h3 text-info fw-bold">My Applications</h1>
-            <p class="text-muted">Track your gig applications and their status</p>
+            <h1 class="h3 text-primary fw-bold">My Applications</h1>
+            <p class="text-muted">Track your job applications and their status</p>
         </div>
     </div>
 
@@ -31,7 +31,7 @@
                 <div class="card-body">
                     <!-- Application Status Badge -->
                     <div class="d-flex justify-content-between align-items-start mb-3">
-                        <span class="badge bg-{{ $application->status == 'pending' ? 'warning' : ($application->status == 'accepted' ? 'success' : ($application->status == 'rejected' ? 'danger' : 'secondary')) }} fs-6">
+                        <span class="badge bg-{{ $application->status == 'pending' ? 'primary' : ($application->status == 'accepted' ? 'success' : ($application->status == 'rejected' ? 'danger' : 'secondary')) }} fs-6">
                             {{ ucfirst($application->status) }}
                         </span>
                         <small class="text-muted">{{ $application->applied_at->format('M d, Y') }}</small>
@@ -40,7 +40,7 @@
                     <!-- Job Details -->
                     <div class="mb-3">
                         <h5 class="fw-bold text-dark mb-2">{{ $application->job->job_title }}</h5>
-                        <h6 class="text-info mb-2">{{ $application->job->classification }}</h6>
+                        <h6 class="text-primary mb-2">{{ $application->job->classification }}</h6>
                         
                         <!-- Job Info -->
                         <div class="row g-2 mb-3">
@@ -107,11 +107,14 @@
 
                     <!-- Action Buttons -->
                     <div class="d-flex gap-2">
-                        <a href="{{ route('jobs.show', $application->job->id) }}" class="btn btn-sm btn-outline-warning flex-fill">
-                            View Gig
+                        <a href="{{ route('jobs.show', $application->job->id) }}" class="btn btn-sm btn-outline-primary flex-fill">
+                            View Job
                         </a>
-                        <a href="{{ route('jobseekers.applications.show', $application->id) }}" class="btn btn-sm btn-outline-primary flex-fill">
+                        <a href="{{ route('jobseekers.applications.show', $application->id) }}" class="btn btn-sm btn-outline-info flex-fill">
                             Details
+                        </a>
+                        <a href="{{ route('messages.show', $application->job->company_id) }}" class="btn btn-sm btn-primary flex-fill">
+                            <i class="bi bi-chat-dots me-1"></i>Message
                         </a>
                         @if($application->status == 'pending')
                         <form method="POST" action="{{ route('jobseekers.applications.withdraw', $application->id) }}" class="flex-fill">
@@ -131,12 +134,12 @@
         <div class="col-12">
             <div class="text-center py-5">
                 <div class="mb-4">
-                    <div class="text-info display-1" style="opacity: 0.3;">📋</div>
+                    <div class="text-primary display-1" style="opacity: 0.3;">📋</div>
                 </div>
                 <h5 class="text-muted">No applications yet</h5>
-                <p class="text-muted">Start applying for gigs to see your applications here.</p>
-                <a href="{{ route('jobs.index') }}" class="btn btn-warning">
-                    Browse Gigs
+                <p class="text-muted">Start applying for jobs to see your applications here.</p>
+                <a href="{{ route('jobs.index') }}" class="btn btn-primary">
+                    Browse Jobs
                 </a>
             </div>
         </div>

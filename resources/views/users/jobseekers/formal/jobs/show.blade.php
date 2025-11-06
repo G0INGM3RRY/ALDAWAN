@@ -68,6 +68,11 @@
                                         <i class="fas fa-bookmark me-2"></i>Save Job
                                     </button>
                                 @endif
+                                
+                                <!-- Message Employer Button -->
+                                <a href="{{ route('messages.show', $job->company_id) }}" class="btn btn-outline-primary btn-lg ms-2">
+                                    <i class="bi bi-chat-dots me-2"></i>Message Employer
+                                </a>
                             </div>
                         @elseif(auth()->user()->role === 'seeker' && $job->status !== 'open')
                             <div class="alert alert-warning mb-4">

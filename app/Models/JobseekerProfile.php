@@ -7,6 +7,35 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
+/**
+ * @property int $id
+ * @property int $user_id
+ * @property string|null $job_seeker_type
+ * @property string|null $first_name
+ * @property string|null $middle_name
+ * @property string|null $last_name
+ * @property string|null $suffix
+ * @property \Illuminate\Support\Carbon|null $birthday
+ * @property string|null $sex
+ * @property string|null $photo
+ * @property string|null $civilstatus
+ * @property string|null $street
+ * @property string|null $barangay
+ * @property string|null $municipality
+ * @property string|null $province
+ * @property string|null $religion
+ * @property string|null $contactnumber
+ * @property string|null $email
+ * @property bool|null $is_4ps
+ * @property string|null $employmentstatus
+ * @property int|null $education_level_id
+ * @property string|null $institution_name
+ * @property int|null $graduation_year
+ * @property float|null $gpa
+ * @property string|null $degree_field
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ */
 class JobseekerProfile extends Model
 {
     protected $fillable = [
@@ -29,12 +58,14 @@ class JobseekerProfile extends Model
         'email',
         'is_4ps',
         'employmentstatus',
-        // New normalized fields
+        // New normalized fields (for informal - single education record)
         'education_level_id',
         'institution_name',
         'graduation_year',
         'gpa',
         'degree_field',
+        // JSON field (for formal - multiple education records)
+        'education',
     ];
 
     protected $casts = [
@@ -42,6 +73,7 @@ class JobseekerProfile extends Model
         'is_4ps' => 'boolean',
         'graduation_year' => 'integer',
         'gpa' => 'decimal:2',
+        'education' => 'array', // JSON array for formal jobseekers
     ];
 
     /**
@@ -177,6 +209,28 @@ class JobseekerProfile extends Model
         return $this->workExperiences->sum(function ($experience) {
             return $experience->duration_in_months / 12;
         });
+    }
+
+    /**
+     * Get education records for formal jobseekers (sorted by level)
+     * Returns collection of education entries from elementary to latest
+     */
+    public function getEducationRecords()
+    {
+        if ($this->job_seeker_type === 'formal' && $this->education) {
+            return collect($this->education)->sortBy('level_order');
+        }
+        return collect();
+    }
+
+    /**
+     * Check if formal jobseeker has education records
+     */
+    public function hasEducationRecords(): bool
+    {
+        return $this->job_seeker_type === 'formal' && 
+               $this->education && 
+               count($this->education) > 0;
     }
 
     /**

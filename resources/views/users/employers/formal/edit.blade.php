@@ -222,9 +222,10 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="contactnumber" class="form-label">Contact Number</label>
-                                        <input type="text" name="contactnumber" id="contactnumber" class="form-control" 
+                                        <input type="tel" name="contactnumber" id="contactnumber" class="form-control" 
                                                value="{{ old('contactnumber', $user->contactnumber ?? '') }}" 
-                                               placeholder="+63 XXX XXX XXXX">
+                                               placeholder="09XXXXXXXXX" pattern="[0-9]{10,11}"
+                                               title="Enter 10 or 11 digit phone number">
                                     </div>
                                 </div>
                                 <div class="col-md-6">

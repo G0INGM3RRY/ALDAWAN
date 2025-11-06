@@ -19,7 +19,7 @@
 
     <!-- Header -->
     <div class="row mb-4">
-        <div class="col-md-8">
+        <div class="col-12">
             <h1 class="h3 fw-bold text-primary">
                 @if(Auth::user()->role === 'employer')
                     <span class="text-success">Messages</span>
@@ -29,12 +29,7 @@
                     <span class="text-primary">Messages</span>
                 @endif
             </h1>
-            <p class="text-muted">Your conversations with other users</p>
-        </div>
-        <div class="col-md-4 text-end">
-            <a href="{{ route('messages.compose') }}" class="btn btn-primary">
-                <i class="bi bi-pencil-square"></i> New Message
-            </a>
+            <p class="text-muted">Your conversations with employers and job seekers</p>
         </div>
     </div>
 
@@ -116,10 +111,13 @@
                                 <div class="text-muted display-1" style="opacity: 0.3;">💬</div>
                             </div>
                             <h5 class="text-muted">No messages yet</h5>
-                            <p class="text-muted">Start a conversation by sending a new message.</p>
-                            <a href="{{ route('messages.compose') }}" class="btn btn-primary mt-3">
-                                <i class="bi bi-pencil-square"></i> Compose Message
-                            </a>
+                            <p class="text-muted">
+                                @if(Auth::user()->role === 'employer')
+                                    Messages from applicants will appear here. Visit your job applications to message candidates.
+                                @else
+                                    Messages from employers will appear here. Apply for jobs to start conversations with employers.
+                                @endif
+                            </p>
                         </div>
                     @endforelse
                 </div>

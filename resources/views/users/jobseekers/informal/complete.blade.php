@@ -20,12 +20,13 @@
                     <h3 class="mb-0 text-center">Complete Your Profile Information</h3>
                     <!-- Progress Steps -->
                     <div class="progress mt-3">
-                        <div class="progress-bar" role="progressbar" style="width: 33%" id="progress-bar"></div>
+                        <div class="progress-bar bg-primary" role="progressbar" style="width: 25%" id="progress-bar"></div>
                     </div>
                     <div class="step-indicators d-flex justify-content-between mt-2">
                         <span class="step-indicator active" id="step-1">1. Personal Info</span>
-                        <span class="step-indicator" id="step-2">2. Work Preferences</span>
-                        <span class="step-indicator" id="step-3">3. Document Verification</span>
+                        <span class="step-indicator" id="step-2">2. Education</span>
+                        <span class="step-indicator" id="step-3">3. Work Preferences</span>
+                        <span class="step-indicator" id="step-4">4. Document Verification</span>
                     </div>
                 </div>
                 <div class="card-body">
@@ -167,7 +168,9 @@
                                 <div class="col-md-4">
                                     <div class="mb-3">
                                         <label for="contactnumber" class="form-label">Contact Number</label>
-                                        <input type="text" name="contactnumber" id="contactnumber" class="form-control">
+                                        <input type="tel" name="contactnumber" id="contactnumber" class="form-control" 
+                                               pattern="[0-9]{10,11}" placeholder="09XXXXXXXXX" 
+                                               title="Enter 10 or 11 digit phone number">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -194,7 +197,55 @@
                             </div>
                         </div>
 
-                        <!-- Section 2: Skills and Work Preferences -->
+                        <!-- Section 2: Education -->
+                        <div id="section-education" class="form-step">
+                            <h4 class="mb-4">Education</h4>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Highest Education Level Attained <span class="text-muted">(Optional)</span></label>
+                                    <select name="education_level_id" class="form-select">
+                                        <option value="">Select your highest education level...</option>
+                                        @foreach($educationLevels as $level)
+                                            <option value="{{ $level->id }}" {{ old('education_level_id') == $level->id ? 'selected' : '' }}>
+                                                {{ $level->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">School Name <span class="text-danger">*</span></label>
+                                    <input type="text" name="institution_name" class="form-control" 
+                                           value="{{ old('institution_name') }}" 
+                                           placeholder="Enter the name of your school" required>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Year Graduated/Last Attended <span class="text-danger">*</span></label>
+                                    <input type="number" name="graduation_year" class="form-control" 
+                                           value="{{ old('graduation_year') }}" 
+                                           placeholder="e.g., 2020" min="1950" max="{{ date('Y') + 1 }}" required
+                                           title="Enter year between 1950 and {{ date('Y') + 1 }}">
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Course/Strand (if applicable)</label>
+                                    <input type="text" name="degree_field" class="form-control" 
+                                           value="{{ old('degree_field') }}" 
+                                           placeholder="e.g., STEM, ABM, Welding, etc.">
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4 d-flex justify-content-between">
+                                <button type="button" onclick="prevStep()" class="btn btn-secondary">Previous</button>
+                                <button type="button" onclick="nextStep()" class="btn btn-primary">Next</button>
+                            </div>
+                        </div>
+
+                        <!-- Section 3: Skills and Work Preferences -->
                         <div id="section-work-preferences" class="form-step">
                             <h4 class="mb-4">Skills & Work Preferences</h4>
                             
@@ -322,7 +373,7 @@
                             </div>
                         </div>
 
-                        <!-- Section 3: Document Verification (Optional) -->
+                        <!-- Section 4: Document Verification (Optional) -->
                         <div id="section-document-verification" class="form-step">
                             <h4 class="mb-4 text-primary">
                                 <i class="fas fa-file-upload me-2"></i>Document Verification (Optional)
@@ -473,5 +524,62 @@
 
         // Initialize
         showStep(currentStep);
+
+        // Form submission validation
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const requiredFields = this.querySelectorAll('[required]');
+            const emptyFields = [];
+            const sectionNames = {
+                'section-personal-information': 'Section 1: Personal Information',
+                'section-education': 'Section 2: Education',
+                'section-skills-verification': 'Section 3: Skills & Verification'
+            };
+
+            requiredFields.forEach(field => {
+                const isVisible = field.offsetParent !== null;
+                const isEmpty = !field.value || field.value.trim() === '';
+                
+                if (isVisible && isEmpty) {
+                    const section = field.closest('.form-step');
+                    const sectionId = section ? section.id : 'unknown';
+                    const sectionName = sectionNames[sectionId] || 'Unknown Section';
+                    const fieldLabel = field.closest('.mb-3')?.querySelector('label')?.textContent.replace('*', '').trim() || field.name;
+                    
+                    emptyFields.push({
+                        section: sectionName,
+                        field: fieldLabel,
+                        element: field
+                    });
+                }
+            });
+
+            if (emptyFields.length > 0) {
+                e.preventDefault();
+                
+                const groupedFields = {};
+                emptyFields.forEach(item => {
+                    if (!groupedFields[item.section]) {
+                        groupedFields[item.section] = [];
+                    }
+                    groupedFields[item.section].push(item.field);
+                });
+
+                let message = 'Please fill in the following required fields:\n\n';
+                Object.keys(groupedFields).forEach(section => {
+                    message += `${section}:\n`;
+                    groupedFields[section].forEach(field => {
+                        message += `  • ${field}\n`;
+                    });
+                    message += '\n';
+                });
+
+                alert(message);
+
+                if (emptyFields[0].element) {
+                    emptyFields[0].element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    emptyFields[0].element.focus();
+                }
+            }
+        });
     </script>
 @endsection

@@ -147,8 +147,7 @@ document.getElementById('message_content').addEventListener('input', function() 
     const currentLength = this.value.length;
     const remaining = maxLength - currentLength;
     
-    // You can add a character counter display here if needed
-    console.log(`${remaining} characters remaining`);
+    // Character counter (future enhancement)
 });
 </script>
 @endsection

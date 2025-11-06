@@ -5,19 +5,19 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <!-- Job Summary Card -->
-            <div class="card border-info mb-4">
-                <div class="card-header bg-info text-white">
+            <div class="card border-primary mb-4">
+                <div class="card-header bg-primary text-white">
                     <h5 class="mb-0">
                         @if(isset($editMode) && $editMode)
-                            Edit Application for Gig
+                            Edit Application for Job
                         @else
-                            Applying for Gig
+                            Applying for Job
                         @endif
                     </h5>
                 </div>
                 <div class="card-body">
                     <h4 class="text-dark">{{ $job->job_title }}</h4>
-                    <h6 class="text-info mb-2">{{ $job->classification }}</h6>
+                    <h6 class="text-primary mb-2">{{ $job->classification }}</h6>
                     <div class="row g-2">
                         <div class="col-md-6">
                             <small class="text-muted">
@@ -41,7 +41,7 @@
             <!-- Application Form -->
             <div class="card border-0 shadow">
                 <div class="card-header bg-light">
-                    <h5 class="mb-0 text-info">
+                    <h5 class="mb-0 text-primary">
                         @if(isset($editMode) && $editMode)
                             Edit Your Application
                         @else
@@ -50,9 +50,9 @@
                     </h5>
                     <small class="text-muted">
                         @if(isset($editMode) && $editMode)
-                            Update your details below to edit your gig application
+                            Update your details below to edit your job application
                         @else
-                            Fill out the details below to apply for this gig
+                            Fill out the details below to apply for this job
                         @endif
                     </small>
                 </div>
@@ -76,7 +76,7 @@
                         <!-- Cover Letter -->
                         <div class="mb-4">
                             <label for="cover_letter" class="form-label">
-                                Why are you interested in this gig? 
+                                Why are you interested in this job? 
                                 <span class="text-muted">(Optional)</span>
                             </label>
                             <textarea 
@@ -85,7 +85,7 @@
                                 name="cover_letter" 
                                 rows="4" 
                                 maxlength="2000"
-                                placeholder="Tell the employer why you're perfect for this gig...">{{ old('cover_letter', isset($application) ? $application->cover_letter : '') }}</textarea>
+                                placeholder="Tell the employer why you're perfect for this job...">{{ old('cover_letter', isset($application) ? $application->cover_letter : '') }}</textarea>
                             <div class="form-text">Maximum 2000 characters. <span id="cover_letter_count">0</span>/2000</div>
                             @error('cover_letter')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -168,7 +168,7 @@
 
                         <!-- Action Buttons -->
                         <div class="d-flex gap-3">
-                            <button type="submit" class="btn btn-warning flex-fill">
+                            <button type="submit" class="btn btn-primary flex-fill">
                                 @if(isset($editMode) && $editMode)
                                     Update Application
                                 @else

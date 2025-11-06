@@ -1,3 +1,9 @@
+{{-- 
+    View Applications Page
+    @var \App\Models\Jobs $job - The job posting with applications
+    @var \Illuminate\Database\Eloquent\Collection<\App\Models\JobApplication> $applications - Applications with eager loaded user relationships
+    @var \App\Models\User $user - Current authenticated employer
+--}}
 @extends('layouts.dashboard')
 
 @section('content')
@@ -100,28 +106,29 @@
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="text-primary fw-bold mb-0">Candidates</h5>
                 <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-sm btn-outline-primary active">All</button>
-                    <button type="button" class="btn btn-sm btn-outline-primary">Pending</button>
-                    <button type="button" class="btn btn-sm btn-outline-primary">Reviewed</button>
-                    <button type="button" class="btn btn-sm btn-outline-primary">Accepted</button>
+                    <button type="button" class="btn btn-sm btn-outline-primary active" data-filter="all">All</button>
+                    <button type="button" class="btn btn-sm btn-outline-primary" data-filter="pending">Pending</button>
+                    <button type="button" class="btn btn-sm btn-outline-primary" data-filter="under_review">Reviewed</button>
+                    <button type="button" class="btn btn-sm btn-outline-primary" data-filter="accepted">Accepted</button>
                 </div>
             </div>
 
             <!-- Applicants Grid -->
-            <div class="row">
-                @forelse($applications ?? [] as $application)
-                <div class="col-md-6 mb-3">
+            <div class="row" id="applicationsGrid">
+                @forelse($applications as $application)
+                @if($application)
+                <div class="col-md-6 mb-3 application-card" data-status="{{ $application->status ?? 'pending' }}">
                     <div class="card h-100 border-0 shadow-sm">
                         <div class="card-body">
                             <!-- Applicant Header -->
                             <div class="d-flex justify-content-between align-items-start mb-3">
                                 <div class="d-flex align-items-center">
                                     <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
-                                        {{ substr($application->user->name ?? 'J', 0, 1) }}
+                                        {{ $application->user ? substr($application->user->name, 0, 1) : 'J' }}
                                     </div>
                                     <div>
-                                        <h6 class="mb-0 fw-bold">{{ $application->user->name ?? 'Jane Smith' }}</h6>
-                                        <small class="text-muted">Applied {{ $application->applied_at ? $application->applied_at->diffForHumans() : '2 days ago' }}</small>
+                                        <h6 class="mb-0 fw-bold">{{ $application->user->name ?? 'Applicant' }}</h6>
+                                        <small class="text-muted">Applied {{ $application->applied_at ? $application->applied_at->diffForHumans() : 'recently' }}</small>
                                     </div>
                                 </div>
                                 <span class="badge bg-{{ $application->status == 'pending' ? 'warning' : ($application->status == 'accepted' ? 'success' : 'secondary') }}">
@@ -130,7 +137,7 @@
                             </div>
 
                             <!-- Cover Letter Preview -->
-                            @if($application->cover_letter ?? false)
+                            @if(!empty($application->cover_letter))
                             <div class="mb-3">
                                 <small class="text-muted fw-semibold d-block mb-1">Cover Letter:</small>
                                 <p class="small text-muted mb-0">
@@ -141,12 +148,12 @@
 
                             <!-- Application Details -->
                             <div class="mb-3">
-                                @if($application->resume_file_path ?? false)
+                                @if(!empty($application->resume_file_path))
                                 <small class="d-block mb-1">
                                     <a href="#" class="text-decoration-none">Resume attached</a>
                                 </small>
                                 @endif
-                                @if($application->additional_documents ?? false)
+                                @if(!empty($application->additional_documents))
                                 <small class="d-block mb-1">Additional documents</small>
                                 @endif
                             </div>
@@ -154,6 +161,11 @@
                             <!-- Action Buttons -->
                             <div class="d-flex gap-2">
                                 <a href="{{ route('employers.applications.view', $application->id) }}" class="btn btn-sm btn-outline-primary flex-fill">View</a>
+                                @if($application->user)
+                                <a href="{{ route('messages.show', $application->user_id) }}" class="btn btn-sm btn-primary flex-fill">
+                                    <i class="bi bi-chat-dots me-1"></i>Message
+                                </a>
+                                @endif
                                 @if(($application->status ?? 'pending') == 'pending')
                                 <form method="POST" action="{{ route('employers.applications.accept', $application->id) }}" class="flex-fill">
                                     @csrf
@@ -166,6 +178,7 @@
                         </div>
                     </div>
                 </div>
+                @endif
                 @empty
                 <!-- No Applications Message -->
                 <div class="col-12">
@@ -228,6 +241,65 @@ function showRejectModal(applicationId) {
     form.action = `/employers/applications/${applicationId}/reject`;
     new bootstrap.Modal(document.getElementById('rejectModal')).show();
 }
+
+// Filter Applications by Status
+document.addEventListener('DOMContentLoaded', function() {
+    const filterButtons = document.querySelectorAll('[data-filter]');
+    const applicationCards = document.querySelectorAll('.application-card');
+    
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const filterValue = this.getAttribute('data-filter');
+            
+            // Update active button
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Filter applications
+            let visibleCount = 0;
+            applicationCards.forEach(card => {
+                const cardStatus = card.getAttribute('data-status');
+                
+                if (filterValue === 'all' || cardStatus === filterValue) {
+                    card.style.display = '';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // Show/hide empty state
+            const emptyState = document.querySelector('.col-12 .text-center.py-5')?.parentElement;
+            if (emptyState) {
+                if (visibleCount === 0 && filterValue !== 'all') {
+                    // Create filtered empty state if it doesn't exist
+                    let filteredEmpty = document.getElementById('filteredEmptyState');
+                    if (!filteredEmpty) {
+                        filteredEmpty = document.createElement('div');
+                        filteredEmpty.id = 'filteredEmptyState';
+                        filteredEmpty.className = 'col-12';
+                        filteredEmpty.innerHTML = `
+                            <div class="text-center py-5">
+                                <div class="mb-4">
+                                    <div class="text-primary display-1" style="opacity: 0.3;">🔍</div>
+                                </div>
+                                <h5 class="text-muted">No ${filterValue} applications</h5>
+                                <p class="text-muted">There are no applications with this status yet.</p>
+                            </div>
+                        `;
+                        document.getElementById('applicationsGrid').appendChild(filteredEmpty);
+                    }
+                    filteredEmpty.style.display = '';
+                } else {
+                    const filteredEmpty = document.getElementById('filteredEmptyState');
+                    if (filteredEmpty) {
+                        filteredEmpty.style.display = 'none';
+                    }
+                }
+            }
+        });
+    });
+});
 </script>
 
 @endsection

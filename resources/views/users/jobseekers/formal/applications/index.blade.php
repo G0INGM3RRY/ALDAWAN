@@ -113,6 +113,9 @@
                         <a href="{{ route('jobseekers.applications.show', $application->id) }}" class="btn btn-sm btn-outline-secondary flex-fill">
                             Details
                         </a>
+                        <a href="{{ route('messages.show', $application->job->company_id) }}" class="btn btn-sm btn-primary flex-fill">
+                            <i class="bi bi-chat-dots me-1"></i>Message
+                        </a>
                         @if($application->status == 'pending')
                         <form method="POST" action="{{ route('jobseekers.applications.withdraw', $application->id) }}" class="flex-fill">
                             @csrf

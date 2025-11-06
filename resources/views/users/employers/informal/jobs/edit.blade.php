@@ -49,7 +49,8 @@
                                 <div class="mb-3">
                                     <label for="salary" class="form-label">Salary (PHP) <span class="text-danger">*</span></label>
                                     <input type="number" step="0.01" class="form-control w-75 @error('salary') is-invalid @enderror" 
-                                           id="salary" name="salary" value="{{ old('salary', $job->salary) }}" required>
+                                           id="salary" name="salary" value="{{ old('salary', $job->salary) }}" required min="0"
+                                           title="Enter salary amount" placeholder="e.g., 15000">
                                     @error('salary')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror

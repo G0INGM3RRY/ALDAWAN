@@ -47,12 +47,14 @@
 
                     <div class="mb-3">
                         <label for="verification_status" class="form-label">Verification Status</label>
-                        <select class="form-select" id="verification_status" name="verification_status">
-                            <option value="">No Change</option>
-                            <option value="pending" {{ old('verification_status', $user->verification_status) == 'pending' ? 'selected' : '' }}>Pending</option>
-                            <option value="verified" {{ old('verification_status', $user->verification_status) == 'verified' ? 'selected' : '' }}>Verified</option>
-                            <option value="rejected" {{ old('verification_status', $user->verification_status) == 'rejected' ? 'selected' : '' }}>Rejected</option>
+                        <select class="form-select" id="verification_status" name="verification_status" required>
+                            <option value="verified" {{ $user->email_verified_at ? 'selected' : '' }}>Verified (Approve Documents)</option>
+                            <option value="pending">Pending (Needs Review)</option>
+                            <option value="not_verified" {{ !$user->email_verified_at ? 'selected' : '' }}>Not Verified (Reject/Reset)</option>
                         </select>
+                        <small class="form-text text-muted">
+                            Verified = Approve email & documents | Pending = Mark documents for review | Not Verified = Reject/remove verification
+                        </small>
                     </div>
 
                     <div class="mb-3">

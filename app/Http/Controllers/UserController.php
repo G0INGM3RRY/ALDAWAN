@@ -29,11 +29,14 @@ class UserController extends Controller
         
         $profile = $user->jobseekerProfile;
         
+        // Load education levels for displaying education records
+        $educationLevels = \App\Models\EducationLevel::active()->orderBy('name')->get();
+        
         // Route to appropriate index view based on job seeker type
         if ($profile && $profile->job_seeker_type === 'informal') {
-            return view('users.jobseekers.informal.index');
+            return view('users.jobseekers.informal.index', compact('educationLevels'));
         } else {
-            return view('users.jobseekers.formal.index');
+            return view('users.jobseekers.formal.index', compact('educationLevels'));
         }
     }
 
@@ -54,7 +57,8 @@ class UserController extends Controller
                 // Get lookup data for informal complete form
                 $informalSkills = \App\Models\Skill::getLimitedSkillsForDisplay('informal', 20);
                 $disabilities = \App\Models\Disability::orderBy('name')->get();
-                return view('users.jobseekers.informal.complete', compact('user', 'profile', 'job_seeker_type', 'informalSkills', 'disabilities'));
+                $educationLevels = \App\Models\EducationLevel::active()->orderBy('name')->get();
+                return view('users.jobseekers.informal.complete', compact('user', 'profile', 'job_seeker_type', 'informalSkills', 'disabilities', 'educationLevels'));
             } else {
                 // Get lookup data for formal complete form  
                 $skills = \App\Models\Skill::getLimitedSkillsForDisplay('formal', 20);

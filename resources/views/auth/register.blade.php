@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="{{ asset('css/loading-animations.css') }}" rel="stylesheet">
     <title>Register User</title>
 </head>
 <body class="bg-light">
@@ -32,13 +34,23 @@
 
             <div class="mb-3">
               <label for="password" class="form-label">Password</label>
-              <input type="password" name="password" class="form-control" required autocomplete="new-password">
+              <div class="input-group">
+                <input type="password" name="password" id="password" class="form-control border-end-0" required autocomplete="new-password">
+                <button class="btn border-start-0" type="button" id="togglePassword" style="background-color: white; border-color: #dee2e6;">
+                  <i class="bi bi-eye" id="togglePasswordIcon" style="color: #6c757d; font-size: 0.9rem;"></i>
+                </button>
+              </div>
               @error('password')<div class="text-danger">{{ $message }}</div>@enderror
             </div>
 
             <div class="mb-3">
               <label for="password_confirmation" class="form-label">Confirm Password</label>
-              <input type="password" name="password_confirmation" class="form-control" required autocomplete="new-password">
+              <div class="input-group">
+                <input type="password" name="password_confirmation" id="password_confirmation" class="form-control border-end-0" required autocomplete="new-password">
+                <button class="btn border-start-0" type="button" id="togglePasswordConfirmation" style="background-color: white; border-color: #dee2e6;">
+                  <i class="bi bi-eye" id="togglePasswordConfirmationIcon" style="color: #6c757d; font-size: 0.9rem;"></i>
+                </button>
+              </div>
               @error('password_confirmation')<div class="text-danger">{{ $message }}</div>@enderror
             </div>
 
@@ -95,6 +107,38 @@
 </div>
 
 <script>
+  // Password visibility toggle for password field
+  document.getElementById('togglePassword').addEventListener('click', function() {
+    const passwordInput = document.getElementById('password');
+    const toggleIcon = document.getElementById('togglePasswordIcon');
+    
+    if (passwordInput.type === 'password') {
+      passwordInput.type = 'text';
+      toggleIcon.classList.remove('bi-eye');
+      toggleIcon.classList.add('bi-eye-slash');
+    } else {
+      passwordInput.type = 'password';
+      toggleIcon.classList.remove('bi-eye-slash');
+      toggleIcon.classList.add('bi-eye');
+    }
+  });
+
+  // Password visibility toggle for password confirmation field
+  document.getElementById('togglePasswordConfirmation').addEventListener('click', function() {
+    const passwordInput = document.getElementById('password_confirmation');
+    const toggleIcon = document.getElementById('togglePasswordConfirmationIcon');
+    
+    if (passwordInput.type === 'password') {
+      passwordInput.type = 'text';
+      toggleIcon.classList.remove('bi-eye');
+      toggleIcon.classList.add('bi-eye-slash');
+    } else {
+      passwordInput.type = 'password';
+      toggleIcon.classList.remove('bi-eye-slash');
+      toggleIcon.classList.add('bi-eye');
+    }
+  });
+
   // Show/hide type dropdowns based on role selection
   document.getElementById('role').addEventListener('change', function() {
     var jobSeekerTypeContainer = document.getElementById('jobSeekerTypeContainer');
@@ -118,6 +162,7 @@
     }
   });
 </script>
+<script src="{{ asset('js/loading-animations.js') }}"></script>
 
 </body>
 </html>

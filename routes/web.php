@@ -25,6 +25,11 @@ Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
+// Demo route for loading animations (REMOVE AFTER REVIEW)
+Route::get('/demo/loading-animations', function () {
+    return view('demo.loading-animations');
+})->name('demo.loading-animations');
+
 /*
 |--------------------------------------------------------------------------
 | Authentication Routes

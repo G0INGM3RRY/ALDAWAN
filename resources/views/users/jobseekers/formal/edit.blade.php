@@ -17,10 +17,22 @@
     @endif
     
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-10">
             <div class="card">
                 <div class="card-header">
                     <h3 class="mb-0 text-center">Manage your personal profile</h3>
+                    <!-- Progress Steps -->
+                    <div class="progress mt-3">
+                        <div class="progress-bar bg-primary" role="progressbar" style="width: 16.67%" id="progress-bar"></div>
+                    </div>
+                    <div class="step-indicators d-flex justify-content-between mt-2" style="font-size: 0.85rem;">
+                        <span class="step-indicator active" id="step-1">1. Personal</span>
+                        <span class="step-indicator" id="step-2">2. Employment</span>
+                        <span class="step-indicator" id="step-3">3. Job Prefs</span>
+                        <span class="step-indicator" id="step-4">4. Education</span>
+                        <span class="step-indicator" id="step-5">5. Experience</span>
+                        <span class="step-indicator" id="step-6">6. Skills</span>
+                    </div>
                 </div>
                 <div class="card-body">
                     <form action="{{ route('jobseekers.update') }}" method="POST" enctype="multipart/form-data">
@@ -162,7 +174,10 @@
                                 <div class="col-md-4">
                                     <div class="mb-3">
                                         <label for="contactnumber" class="form-label">Contact Number</label>
-                                        <input type="text" name="contactnumber" id="contactnumber" class="form-control" value="{{ old('contactnumber', $profile->contactnumber ?? '') }}">
+                                        <input type="tel" name="contactnumber" id="contactnumber" class="form-control" 
+                                               value="{{ old('contactnumber', $profile->contactnumber ?? '') }}"
+                                               pattern="[0-9]{10,11}" placeholder="09XXXXXXXXX" 
+                                               title="Enter 10 or 11 digit phone number">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -203,20 +218,24 @@
                                
                                 <div class="form-label">
                                     <small class="text-muted">Select all disabilities that apply to you for appropriate workplace accommodations.</small>
-                                </div><br>
+                                </div>
                                 @php
                                     $userDisabilities = $profile && $profile->disabilities ? $profile->disabilities->pluck('id')->toArray() : [];
                                 @endphp
-                                @foreach($disabilities as $disability)
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" name="disabilities[]" 
-                                               id="disability_{{ $disability->id }}" value="{{ $disability->id }}" 
-                                               {{ in_array($disability->id, $userDisabilities) ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="disability_{{ $disability->id }}">{{ $disability->name }}</label>
-                                    </div>
-                                @endforeach
-                                <div class="row">
-                                    <div class="col-md-8">
+                                <div class="row mt-2">
+                                    @foreach($disabilities as $disability)
+                                        <div class="col-md-3 mb-2">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="disabilities[]" 
+                                                       id="disability_{{ $disability->id }}" value="{{ $disability->id }}" 
+                                                       {{ in_array($disability->id, $userDisabilities) ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="disability_{{ $disability->id }}">{{ $disability->name }}</label>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-md-12">
                                         <div class="mb-3">
                                             <label for="other_disabilities" class="form-label">Other disabilities (not listed above):</label>
                                             <input type="text" name="other_disabilities" id="other_disabilities" class="form-control" placeholder="Type other disabilities here, separated by commas">
@@ -301,7 +320,8 @@
                                                         <label class="form-label">Min Salary (PHP)</label>
                                                         <input type="number" name="job_preferences[{{ $index }}][min_salary]" class="form-control" 
                                                                value="{{ old('job_preferences.'.$index.'.min_salary', $preference->min_salary) }}" 
-                                                               step="0.01" placeholder="15000">
+                                                               step="0.01" placeholder="15000" min="0"
+                                                               title="Enter minimum salary amount">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
@@ -309,7 +329,8 @@
                                                         <label class="form-label">Max Salary (PHP)</label>
                                                         <input type="number" name="job_preferences[{{ $index }}][max_salary]" class="form-control" 
                                                                value="{{ old('job_preferences.'.$index.'.max_salary', $preference->max_salary) }}" 
-                                                               step="0.01" placeholder="25000">
+                                                               step="0.01" placeholder="25000" min="0"
+                                                               title="Enter maximum salary amount">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
@@ -374,13 +395,13 @@
                                             <div class="col-md-4">
                                                 <div class="mb-3">
                                                     <label class="form-label">Min Salary (PHP)</label>
-                                                    <input type="number" name="job_preferences[0][min_salary]" class="form-control w-75" step="0.01" placeholder="15000">
+                                                    <input type="number" name="job_preferences[0][min_salary]" class="form-control w-75" step="0.01" placeholder="15000" min="0" title="Enter minimum salary amount">
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="mb-3">
                                                     <label class="form-label">Max Salary (PHP)</label>
-                                                    <input type="number" name="job_preferences[0][max_salary]" class="form-control w-75" step="0.01" placeholder="25000">
+                                                    <input type="number" name="job_preferences[0][max_salary]" class="form-control w-75" step="0.01" placeholder="25000" min="0" title="Enter maximum salary amount">
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
@@ -425,61 +446,100 @@
                         <!-- Educational background -->
                         <div id="section-educational-background" class="form-step">
                             <h3>Educational Background</h3>
-                            <p class="text-muted">Please select your highest education level and provide details.</p>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="education_level_id" class="form-label">Highest Education Level</label>
-                                        <select name="education_level_id" id="education_level_id" class="form-control">
-                                            <option value="">Select Education Level</option>
-                                            @foreach($educationLevels as $level)
-                                                <option value="{{ $level->id }}" 
-                                                        {{ old('education_level_id', $profile->education_level_id ?? '') == $level->id ? 'selected' : '' }}>
-                                                    {{ $level->name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
+                            <p class="text-muted">Add all your educational attainment from elementary to latest. You can add multiple entries.</p>
+                            
+                            <div id="education-container">
+                                @php
+                                    $educationRecords = old('education', $profile->education ?? []);
+                                    $educationRecords = is_array($educationRecords) && count($educationRecords) > 0 ? $educationRecords : [[]];
+                                @endphp
+                                
+                                @foreach($educationRecords as $index => $education)
+                                    <div class="education-item border p-3 mb-3 rounded bg-light">
+                                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-3">
+                                            <h6 class="mb-2 mb-sm-0">
+                                                <i class="fas fa-graduation-cap me-2"></i>
+                                                @if(!empty($education['level_id']))
+                                                    @php
+                                                        $levelName = $educationLevels->find($education['level_id'])->name ?? 'Education Record';
+                                                    @endphp
+                                                    {{ $levelName }}
+                                                @else
+                                                    Education Record
+                                                @endif
+                                            </h6>
+                                            @if($index > 0)
+                                                <button type="button" class="btn btn-sm btn-danger remove-education">
+                                                    <i class="fas fa-trash"></i><span class="d-none d-sm-inline ms-1">Remove</span>
+                                                </button>
+                                            @endif
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-12 col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Education Level</label>
+                                                    <select name="education[{{ $index }}][level_id]" class="form-control">
+                                                        <option value="">Select Level</option>
+                                                        @foreach($educationLevels as $level)
+                                                            <option value="{{ $level->id }}" 
+                                                                    data-level-name="{{ $level->name }}"
+                                                                    data-level-order="{{ $level->id }}"
+                                                                    {{ ($education['level_id'] ?? '') == $level->id ? 'selected' : '' }}>
+                                                                {{ $level->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">School/Institution Name</label>
+                                                    <input type="text" name="education[{{ $index }}][institution_name]" 
+                                                           class="form-control" 
+                                                           value="{{ $education['institution_name'] ?? '' }}" 
+                                                           placeholder="e.g., Sample Elementary School">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-12 col-md-4">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Year Graduated/Completed</label>
+                                                    <input type="number" name="education[{{ $index }}][graduation_year]" 
+                                                           class="form-control" 
+                                                           value="{{ $education['graduation_year'] ?? '' }}" 
+                                                           placeholder="e.g., 2020" min="1950" max="{{ date('Y') + 10 }}"
+                                                           title="Enter year between 1950 and {{ date('Y') + 10 }}">
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-md-4">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Degree/Field of Study</label>
+                                                    <input type="text" name="education[{{ $index }}][degree_field]" 
+                                                           class="form-control" 
+                                                           value="{{ $education['degree_field'] ?? '' }}" 
+                                                           placeholder="e.g., BS Computer Science">
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-md-4">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Honors/Awards</label>
+                                                    <input type="text" name="education[{{ $index }}][honors]" 
+                                                           class="form-control" 
+                                                           value="{{ $education['honors'] ?? '' }}" 
+                                                           placeholder="e.g., With Honors">
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="institution_name" class="form-label">Institution Name</label>
-                                        <input type="text" name="institution_name" id="institution_name" 
-                                               class="form-control" 
-                                               value="{{ old('institution_name', $profile->institution_name ?? '') }}" 
-                                               placeholder="Name of school/university">
-                                    </div>
-                                </div>
+                                @endforeach
                             </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="mb-3">
-                                        <label for="graduation_year" class="form-label">Graduation Year</label>
-                                        <input type="number" name="graduation_year" id="graduation_year" 
-                                               class="form-control" 
-                                               value="{{ old('graduation_year', $profile->graduation_year ?? '') }}" 
-                                               placeholder="e.g., 2020" min="1950" max="{{ date('Y') + 10 }}">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="mb-3">
-                                        <label for="gpa" class="form-label">GPA (Optional)</label>
-                                        <input type="number" name="gpa" id="gpa" 
-                                               class="form-control" step="0.01" min="1" max="4" 
-                                               value="{{ old('gpa', $profile->gpa ?? '') }}" 
-                                               placeholder="e.g., 3.75">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="mb-3">
-                                        <label for="degree_field" class="form-label">Field of Study</label>
-                                        <input type="text" name="degree_field" id="degree_field" 
-                                               class="form-control" 
-                                               value="{{ old('degree_field', $profile->degree_field ?? '') }}" 
-                                               placeholder="e.g., Computer Science">
-                                    </div>
-                                </div>
-                            </div>
+                            
+                            <button type="button" id="add-education" class="btn btn-success mb-3 w-100 w-sm-auto">
+                                <i class="fas fa-plus"></i> Add Another Education Entry
+                            </button>
                             
                             <div class="mt-4 d-flex justify-content-between">
                                 <button type="button" onclick="prevStep()" class="btn btn-secondary">Prev</button>
@@ -697,8 +757,7 @@
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label class="form-label">
-                                                <i class="fas fa-id-card me-1"></i>Government-issued ID 
-                                                <span class="text-danger">*</span>
+                                                <i class="fas fa-id-card me-1"></i>Government-issued ID
                                             </label>
                                             <input type="file" name="government_id" class="form-control" accept=".jpg,.jpeg,.png,.pdf">
                                             <div class="form-text">
@@ -714,8 +773,7 @@
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label class="form-label">
-                                                <i class="fas fa-graduation-cap me-1"></i>Educational Certificate/Diploma 
-                                                <span class="text-danger">*</span>
+                                                <i class="fas fa-graduation-cap me-1"></i>Educational Certificate/Diploma
                                             </label>
                                             <input type="file" name="educational_document" class="form-control" accept=".jpg,.jpeg,.png,.pdf">
                                             <div class="form-text">
@@ -734,8 +792,7 @@
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label class="form-label">
-                                                <i class="fas fa-shield-alt me-1"></i>NBI Clearance 
-                                                <span class="text-danger">*</span>
+                                                <i class="fas fa-shield-alt me-1"></i>NBI Clearance
                                             </label>
                                             <input type="file" name="nbi_clearance" class="form-control" accept=".jpg,.jpeg,.png,.pdf">
                                             <div class="form-text">
@@ -785,6 +842,15 @@
         }
         .form-step.active{
             display: block;
+        }
+        .step-indicators .step-indicator {
+            font-size: 0.9rem;
+            color: #6c757d;
+            font-weight: 500;
+        }
+        .step-indicators .step-indicator.active {
+            color: #0d6efd !important;
+            font-weight: 700;
         }
     </style>
 
@@ -970,6 +1036,8 @@
         //step by step 
         let currentStep = 0;
         const steps = document.querySelectorAll(".form-step");
+        const progressBar = document.getElementById("progress-bar");
+        const stepIndicators = document.querySelectorAll(".step-indicator");
 
         function showStep(step){
             steps.forEach((s, i)=> {
@@ -979,12 +1047,26 @@
                 }
 
             });
+            
+            // Update progress bar
+            const progress = ((step + 1) / steps.length) * 100;
+            progressBar.style.width = progress + "%";
+            
+            // Update step indicators
+            stepIndicators.forEach((indicator, i) => {
+                if (i <= step) {
+                    indicator.classList.add("active");
+                } else {
+                    indicator.classList.remove("active");
+                }
+            });
         }
 
         function prevStep(){
             if(currentStep > 0){
                 currentStep--;
                 showStep(currentStep);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         }
 
@@ -992,9 +1074,70 @@
             if(currentStep < steps.length-1){
                 currentStep++;
                 showStep(currentStep);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         }
         showStep(currentStep);
+
+        // Form submission validation
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const requiredFields = this.querySelectorAll('[required]');
+            const emptyFields = [];
+            const sectionNames = {
+                'section-personal-information': 'Section 1: Personal Information',
+                'section-employment': 'Section 2: Employment Status',
+                'section-job-preferences': 'Section 3: Job Preferences',
+                'section-education': 'Section 4: Education',
+                'section-work-experience': 'Section 5: Work Experience',
+                'section-skills': 'Section 6: Skills & Verification'
+            };
+
+            requiredFields.forEach(field => {
+                const isVisible = field.offsetParent !== null;
+                const isEmpty = !field.value || field.value.trim() === '';
+                
+                if (isVisible && isEmpty) {
+                    const section = field.closest('.form-step');
+                    const sectionId = section ? section.id : 'unknown';
+                    const sectionName = sectionNames[sectionId] || 'Unknown Section';
+                    const fieldLabel = field.closest('.mb-3')?.querySelector('label')?.textContent.replace('*', '').trim() || field.name;
+                    
+                    emptyFields.push({
+                        section: sectionName,
+                        field: fieldLabel,
+                        element: field
+                    });
+                }
+            });
+
+            if (emptyFields.length > 0) {
+                e.preventDefault();
+                
+                const groupedFields = {};
+                emptyFields.forEach(item => {
+                    if (!groupedFields[item.section]) {
+                        groupedFields[item.section] = [];
+                    }
+                    groupedFields[item.section].push(item.field);
+                });
+
+                let message = 'Please fill in the following required fields:\n\n';
+                Object.keys(groupedFields).forEach(section => {
+                    message += `${section}:\n`;
+                    groupedFields[section].forEach(field => {
+                        message += `  • ${field}\n`;
+                    });
+                    message += '\n';
+                });
+
+                alert(message);
+
+                if (emptyFields[0].element) {
+                    emptyFields[0].element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    emptyFields[0].element.focus();
+                }
+            }
+        });
 
         // Photo upload real-time preview
         document.getElementById('photo').addEventListener('change', function(e) {
@@ -1035,6 +1178,114 @@
                 }
             }
         });
+
+        // Education entries management
+        let educationCount = {{ count($profile->education ?? [[]]) }};
+        const educationLevels = @json($educationLevels);
+
+        document.getElementById('add-education').addEventListener('click', function() {
+            const container = document.getElementById('education-container');
+            const newEducation = createEducationItem(educationCount);
+            container.insertAdjacentHTML('beforeend', newEducation);
+            educationCount++;
+            updateEducationNumbers();
+        });
+
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('remove-education') || e.target.closest('.remove-education')) {
+                const button = e.target.classList.contains('remove-education') ? e.target : e.target.closest('.remove-education');
+                button.closest('.education-item').remove();
+                updateEducationNumbers();
+            }
+        });
+
+        function createEducationItem(index) {
+            let levelOptions = '<option value="">Select Level</option>';
+            educationLevels.forEach(level => {
+                levelOptions += `<option value="${level.id}" data-level-name="${level.name}" data-level-order="${level.id}">${level.name}</option>`;
+            });
+
+            return `
+                <div class="education-item border p-3 mb-3 rounded bg-light">
+                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-3">
+                        <h6 class="mb-2 mb-sm-0">
+                            <i class="fas fa-graduation-cap me-2"></i>
+                            <span class="education-title">Education Record</span>
+                        </h6>
+                        <button type="button" class="btn btn-sm btn-danger remove-education">
+                            <i class="fas fa-trash"></i><span class="d-none d-sm-inline ms-1">Remove</span>
+                        </button>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Education Level</label>
+                                <select name="education[${index}][level_id]" class="form-control education-level-select">
+                                    ${levelOptions}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">School/Institution Name</label>
+                                <input type="text" name="education[${index}][institution_name]" 
+                                       class="form-control" 
+                                       placeholder="e.g., Sample Elementary School">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-12 col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Year Graduated/Completed</label>
+                                <input type="number" name="education[${index}][graduation_year]" 
+                                       class="form-control" 
+                                       placeholder="e.g., 2020" min="1950" max="{{ date('Y') + 10 }}">
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Degree/Field of Study</label>
+                                <input type="text" name="education[${index}][degree_field]" 
+                                       class="form-control" 
+                                       placeholder="e.g., BS Computer Science">
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Honors/Awards</label>
+                                <input type="text" name="education[${index}][honors]" 
+                                       class="form-control" 
+                                       placeholder="e.g., With Honors">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Update education title when level is selected
+        document.addEventListener('change', function(e) {
+            if (e.target.classList.contains('education-level-select')) {
+                const selectedOption = e.target.options[e.target.selectedIndex];
+                const levelName = selectedOption.getAttribute('data-level-name');
+                if (levelName) {
+                    const educationItem = e.target.closest('.education-item');
+                    const titleSpan = educationItem.querySelector('.education-title');
+                    if (titleSpan) {
+                        titleSpan.textContent = levelName;
+                    }
+                }
+            }
+        });
+
+        function updateEducationNumbers() {
+            // No longer needed since we're using level names instead of numbers
+            // Keeping function for compatibility but leaving it empty
+        }
+
 
     </script>
 @endsection

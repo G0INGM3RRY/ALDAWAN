@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Notifications\CustomVerifyEmail;
 
 /**
  * @property int $id
@@ -14,20 +15,25 @@ use Illuminate\Notifications\Notifiable;
  * @property string $email
  * @property string $password
  * @property string $role
- * @property string $verification_status
- * @property \Illuminate\Support\Carbon|null $verification_submitted_at
- * @property \Illuminate\Support\Carbon|null $verified_at
- * @property int|null $verified_by
- * @property string|null $admin_level
- * @property string|null $assigned_region
- * @property string $account_status
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  */
 class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, SoftDeletes;
+    
+    /**
+     * Send the email verification notification.
+     *
+     * @return void
+     */
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new CustomVerifyEmail);
+    }
+    
     // Relationship: User has many Jobs (for employers posting jobs)
     public function jobs()
     {
@@ -64,63 +70,22 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(JobApplication::class);
     }
 
-    // Relationship: User has many verification requests
-    public function verificationRequests()
+    // Relationship: Formal jobseeker verification (if formal seeker)
+    public function formalVerification()
     {
-        return $this->hasMany(VerificationRequest::class);
+        return $this->hasOne(FormalJobseekerVerification::class);
     }
 
-    // Relationship: User who verified this user (admin)
-    public function verifiedByAdmin()
+    // Relationship: Informal jobseeker verification (if informal seeker)
+    public function informalVerification()
     {
-        return $this->belongsTo(User::class, 'verified_by');
-    }
-
-    // Relationship: Users verified by this admin
-    public function verifiedUsers()
-    {
-        return $this->hasMany(User::class, 'verified_by');
-    }
-
-    // Relationship: Admin activity logs
-    public function adminActivityLogs()
-    {
-        return $this->hasMany(AdminActivityLog::class, 'admin_user_id');
+        return $this->hasOne(InformalJobseekerVerification::class);
     }
 
     // Helper method: Check if user is admin
     public function isAdmin()
     {
-        return !is_null($this->admin_level);
-    }
-
-    // Helper method: Check if user is verified
-    public function isVerified()
-    {
-        return $this->verification_status === 'verified';
-    }
-
-    // Helper method: Check if verification is pending
-    public function hasVerificationPending()
-    {
-        return $this->verification_status === 'pending';
-    }
-
-    // Helper method: Get verification badge
-    public function getVerificationBadge()
-    {
-        return match($this->verification_status) {
-            'verified' => '<span class="badge bg-success">✓ Verified</span>',
-            'pending' => '<span class="badge bg-warning">⏳ Pending</span>',
-            'rejected' => '<span class="badge bg-danger">✗ Rejected</span>',
-            default => '<span class="badge bg-secondary">Unverified</span>'
-        };
-    }
-
-    // Helper method: Check if user can perform admin actions
-    public function canPerformAdminActions()
-    {
-        return $this->isAdmin() && $this->account_status === 'active';
+        return $this->role === 'admin';
     }
     
     // Legacy method name for backward compatibility
@@ -172,13 +137,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'password',
         'role',
-        'verification_status',
-        'verification_submitted_at',
-        'verified_at',
-        'verified_by',
-        'admin_level',
-        'assigned_region',
-        'account_status'
     ];
 
     /**
@@ -203,8 +161,6 @@ class User extends Authenticatable implements MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'verification_submitted_at' => 'datetime',
-            'verified_at' => 'datetime',
         ];
     }
 }

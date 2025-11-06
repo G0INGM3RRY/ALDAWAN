@@ -25,11 +25,19 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::put('/users/{user}', [AdminController::class, 'updateUser'])->name('users.update');
     Route::patch('/users/{user}/status', [AdminController::class, 'updateUserStatus'])->name('users.updateStatus');
     Route::delete('/users/{user}', [AdminController::class, 'deleteUser'])->name('users.destroy'); 
+    Route::post('/users/{id}/restore', [AdminController::class, 'restoreUser'])->name('users.restore');
+    
     
     // Company Verification Management
     Route::get('/verifications', [AdminController::class, 'verifications'])->name('verifications');
     Route::patch('/verifications/{verification}/approve', [AdminController::class, 'approveVerification'])->name('verifications.approve');
     Route::patch('/verifications/{verification}/reject', [AdminController::class, 'rejectVerification'])->name('verifications.reject');
+    
+    // Informal Employer Verification Management
+    Route::prefix('verifications/informal-employer')->name('verifications.informal-employer.')->group(function () {
+        Route::patch('/{verification}/approve', [AdminController::class, 'approveInformalEmployerVerification'])->name('approve');
+        Route::patch('/{verification}/reject', [AdminController::class, 'rejectInformalEmployerVerification'])->name('reject');
+    });
     
     // Formal Jobseeker Verification Management
     Route::prefix('verifications/formal')->name('verifications.formal.')->group(function () {
@@ -49,7 +57,13 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     
     // Job Management
     Route::get('/jobs', [AdminController::class, 'jobs'])->name('jobs');
+    Route::get('/jobs/create', [AdminController::class, 'createJob'])->name('jobs.create');
+    Route::post('/jobs', [AdminController::class, 'storeJob'])->name('jobs.store');
+    Route::get('/jobs/{job}', [AdminController::class, 'showJob'])->name('jobs.show');
+    Route::get('/jobs/{job}/edit', [AdminController::class, 'editJob'])->name('jobs.edit');
+    Route::patch('/jobs/{job}', [AdminController::class, 'updateJob'])->name('jobs.update');
     Route::patch('/jobs/{job}/status', [AdminController::class, 'updateJobStatus'])->name('jobs.updateStatus');
+    Route::delete('/jobs/{job}', [AdminController::class, 'deleteJob'])->name('jobs.destroy');
     
     // Reports
     Route::get('/reports', [AdminController::class, 'reports'])->name('reports');

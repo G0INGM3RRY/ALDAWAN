@@ -93,6 +93,16 @@ class Jobs extends Model
                     ->withTimestamps();
     }
     
+    /**
+     * Get the primary/first classification for this job (for backward compatibility)
+     * This is a custom accessor, not a real relationship
+     */
+    public function getJobClassificationAttribute()
+    {
+        // Return the first classification from the many-to-many relationship
+        return $this->classifications()->first();
+    }
+    
     // Get employer details through user relationship
     public function employerProfile(): HasOneThrough
     {

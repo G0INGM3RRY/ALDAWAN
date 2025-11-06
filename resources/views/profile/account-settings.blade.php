@@ -86,8 +86,13 @@
                         <div class="row">
                             <div class="col-md-4 mb-3">
                                 <label for="update_password_current_password" class="form-label">{{ __('Current Password') }}</label>
-                                <input id="update_password_current_password" name="current_password" type="password" 
-                                       class="form-control" autocomplete="current-password">
+                                <div class="input-group">
+                                    <input id="update_password_current_password" name="current_password" type="password" 
+                                           class="form-control border-end-0" autocomplete="current-password">
+                                    <button class="btn border-start-0" type="button" id="toggleCurrentPassword" style="background-color: white; border-color: #dee2e6;">
+                                        <i class="bi bi-eye" id="toggleCurrentPasswordIcon" style="color: #6c757d; font-size: 0.9rem;"></i>
+                                    </button>
+                                </div>
                                 @error('current_password', 'updatePassword')
                                     <div class="text-danger mt-1">{{ $message }}</div>
                                 @enderror
@@ -95,8 +100,13 @@
 
                             <div class="col-md-4 mb-3">
                                 <label for="update_password_password" class="form-label">{{ __('New Password') }}</label>
-                                <input id="update_password_password" name="password" type="password" 
-                                       class="form-control" autocomplete="new-password">
+                                <div class="input-group">
+                                    <input id="update_password_password" name="password" type="password" 
+                                           class="form-control border-end-0" autocomplete="new-password">
+                                    <button class="btn border-start-0" type="button" id="toggleNewPassword" style="background-color: white; border-color: #dee2e6;">
+                                        <i class="bi bi-eye" id="toggleNewPasswordIcon" style="color: #6c757d; font-size: 0.9rem;"></i>
+                                    </button>
+                                </div>
                                 @error('password', 'updatePassword')
                                     <div class="text-danger mt-1">{{ $message }}</div>
                                 @enderror
@@ -104,8 +114,13 @@
 
                             <div class="col-md-4 mb-3">
                                 <label for="update_password_password_confirmation" class="form-label">{{ __('Confirm Password') }}</label>
-                                <input id="update_password_password_confirmation" name="password_confirmation" type="password" 
-                                       class="form-control" autocomplete="new-password">
+                                <div class="input-group">
+                                    <input id="update_password_password_confirmation" name="password_confirmation" type="password" 
+                                           class="form-control border-end-0" autocomplete="new-password">
+                                    <button class="btn border-start-0" type="button" id="toggleConfirmPassword" style="background-color: white; border-color: #dee2e6;">
+                                        <i class="bi bi-eye" id="toggleConfirmPasswordIcon" style="color: #6c757d; font-size: 0.9rem;"></i>
+                                    </button>
+                                </div>
                                 @error('password_confirmation', 'updatePassword')
                                     <div class="text-danger mt-1">{{ $message }}</div>
                                 @enderror
@@ -167,8 +182,13 @@
 
                     <div class="mb-3">
                         <label for="password" class="form-label visually-hidden">{{ __('Password') }}</label>
-                        <input id="password" name="password" type="password" class="form-control" 
-                               placeholder="{{ __('Password') }}">
+                        <div class="input-group">
+                            <input id="password" name="password" type="password" class="form-control border-end-0" 
+                                   placeholder="{{ __('Password') }}">
+                            <button class="btn border-start-0" type="button" id="toggleDeletePassword" style="background-color: white; border-color: #dee2e6;">
+                                <i class="bi bi-eye" id="toggleDeletePasswordIcon" style="color: #6c757d; font-size: 0.9rem;"></i>
+                            </button>
+                        </div>
                         @error('password', 'userDeletion')
                             <div class="text-danger mt-1">{{ $message }}</div>
                         @enderror
@@ -187,8 +207,85 @@
 </div>
 
 <script>
-// Auto-hide success messages after 3 seconds
+// Password visibility toggles
 document.addEventListener('DOMContentLoaded', function() {
+    // Toggle Current Password
+    const toggleCurrentPassword = document.getElementById('toggleCurrentPassword');
+    if (toggleCurrentPassword) {
+        toggleCurrentPassword.addEventListener('click', function() {
+            const passwordInput = document.getElementById('update_password_current_password');
+            const toggleIcon = document.getElementById('toggleCurrentPasswordIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('bi-eye');
+                toggleIcon.classList.add('bi-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('bi-eye-slash');
+                toggleIcon.classList.add('bi-eye');
+            }
+        });
+    }
+
+    // Toggle New Password
+    const toggleNewPassword = document.getElementById('toggleNewPassword');
+    if (toggleNewPassword) {
+        toggleNewPassword.addEventListener('click', function() {
+            const passwordInput = document.getElementById('update_password_password');
+            const toggleIcon = document.getElementById('toggleNewPasswordIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('bi-eye');
+                toggleIcon.classList.add('bi-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('bi-eye-slash');
+                toggleIcon.classList.add('bi-eye');
+            }
+        });
+    }
+
+    // Toggle Confirm Password
+    const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+    if (toggleConfirmPassword) {
+        toggleConfirmPassword.addEventListener('click', function() {
+            const passwordInput = document.getElementById('update_password_password_confirmation');
+            const toggleIcon = document.getElementById('toggleConfirmPasswordIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('bi-eye');
+                toggleIcon.classList.add('bi-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('bi-eye-slash');
+                toggleIcon.classList.add('bi-eye');
+            }
+        });
+    }
+
+    // Toggle Delete Account Password
+    const toggleDeletePassword = document.getElementById('toggleDeletePassword');
+    if (toggleDeletePassword) {
+        toggleDeletePassword.addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('toggleDeletePasswordIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('bi-eye');
+                toggleIcon.classList.add('bi-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('bi-eye-slash');
+                toggleIcon.classList.add('bi-eye');
+            }
+        });
+    }
+
+    // Auto-hide success messages after 3 seconds
     const profileMessage = document.getElementById('profile-updated-message');
     const passwordMessage = document.getElementById('password-updated-message');
     

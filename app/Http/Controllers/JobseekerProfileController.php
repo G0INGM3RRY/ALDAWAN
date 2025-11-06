@@ -203,38 +203,59 @@ class JobseekerProfileController extends Controller
             $requiredType = 'formal'; // Default for existing update method
         }
 
-        $data = $request->validate([
-            'job_seeker_type' => 'required|string|in:' . $requiredType,
-            'first_name' => 'required|string',
-            'middle_name' => 'nullable|string',
-            'last_name' => 'required|string',
-            'suffix' => 'nullable|string',
-            'birthday' => 'nullable|date',
-            'sex' => 'nullable|string',
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'civilstatus' => 'nullable|string',
-            'street' => 'nullable|string',
-            'barangay' => 'nullable|string',
-            'municipality' => 'nullable|string',
-            'province' => 'nullable|string',
-            'religion' => 'nullable|string',
-            'contactnumber' => 'nullable|string',
-            // email should come from user table, not stored in profile
-            'disabilities' => 'nullable|array',
-            'disabilities.*' => 'exists:disabilities,id',
-            'is_4ps' => 'nullable',
-            'employmentstatus' => 'nullable|string',
-            'education' => 'nullable|array',
-            'work' => 'nullable|array',
-            'skills' => 'nullable|array',
-            'skills.*' => 'exists:skills,id',
-            'skills_other' => 'nullable|string',
-            // Verification documents for formal job seekers
-            'government_id' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:5120',
-            'educational_document' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:5120',
-            'nbi_clearance' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:5120',
-            'skills_certificate' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:5120',
-        ]);
+        try {
+            $data = $request->validate([
+                'job_seeker_type' => 'required|string|in:' . $requiredType,
+                'first_name' => 'required|string',
+                'middle_name' => 'nullable|string',
+                'last_name' => 'required|string',
+                'suffix' => 'nullable|string',
+                'birthday' => 'nullable|date',
+                'sex' => 'nullable|string',
+                'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'civilstatus' => 'nullable|string',
+                'street' => 'nullable|string',
+                'barangay' => 'nullable|string',
+                'municipality' => 'nullable|string',
+                'province' => 'nullable|string',
+                'religion' => 'nullable|string',
+                'contactnumber' => 'nullable|string',
+                // email should come from user table, not stored in profile
+                'disabilities' => 'nullable|array',
+                'disabilities.*' => 'exists:disabilities,id',
+                'is_4ps' => 'nullable',
+                'employmentstatus' => 'nullable|string',
+                'education' => 'nullable|array',
+                'education.*.level_id' => 'nullable|exists:education_levels,id',
+                'education.*.institution_name' => 'nullable|string',
+                'education.*.graduation_year' => 'nullable|integer|min:1950|max:' . (date('Y') + 10),
+                'education.*.degree_field' => 'nullable|string',
+                'education.*.honors' => 'nullable|string',
+                'work' => 'nullable|array',
+                'skills' => 'nullable|array',
+                'skills.*' => 'exists:skills,id',
+                'skills_other' => 'nullable|string',
+                // Job preferences
+                'job_preferences' => 'nullable|array',
+                'job_preferences.*.preferred_job_title' => 'nullable|string',
+                'job_preferences.*.preferred_classification' => 'nullable|string',
+                'job_preferences.*.min_salary' => 'nullable|numeric',
+                'job_preferences.*.max_salary' => 'nullable|numeric',
+                'job_preferences.*.preferred_location' => 'nullable|string',
+                'job_preferences.*.preferred_employment_type' => 'nullable|string',
+                // Verification documents for formal job seekers
+                'government_id' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:5120',
+                'educational_document' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:5120',
+                'nbi_clearance' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:5120',
+                'skills_certificate' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:5120',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \Log::error('Validation failed in JobseekerProfileController@update', [
+                'errors' => $e->errors(),
+                'user_id' => $user->id
+            ]);
+            return redirect()->back()->withErrors($e->errors())->withInput();
+        }
 
            //photo logic
         if ($request->hasFile('photo')) {
@@ -254,21 +275,34 @@ class JobseekerProfileController extends Controller
         DB::beginTransaction();
         
         try {
-            // Remove relationship fields and email from data array for profile fill, but keep education fields
-            $relationshipFields = ['disabilities', 'skills', 'work', 'email'];
+            // Remove relationship fields and email from data array for profile fill
+            $relationshipFields = ['disabilities', 'skills', 'work', 'email', 'government_id', 'educational_document', 'nbi_clearance', 'skills_certificate'];
             $profileData = collect($data)->except($relationshipFields)->toArray();
             
-            // Handle education fields explicitly
-            if ($request->filled('education_level_id')) {
-                $profileData['education_level_id'] = $request->input('education_level_id');
-            }
-            
-            // Handle other education fields
-            $educationFields = ['institution_name', 'graduation_year', 'gpa', 'degree_field'];
-            foreach ($educationFields as $field) {
-                if ($request->filled($field)) {
-                    $profileData[$field] = $request->input($field);
+            // Handle education JSON array for formal jobseekers
+            if ($profile->job_seeker_type === 'formal' && $request->has('education')) {
+                $educationData = [];
+                foreach ($request->input('education', []) as $edu) {
+                    // Only add if at least level_id or institution_name is filled
+                    if (!empty($edu['level_id']) || !empty($edu['institution_name'])) {
+                        // Get level name from education levels
+                        $level = null;
+                        if (!empty($edu['level_id'])) {
+                            $level = \App\Models\EducationLevel::find($edu['level_id']);
+                        }
+                        
+                        $educationData[] = [
+                            'level_id' => $edu['level_id'] ?? null,
+                            'level' => $level ? $level->name : null,
+                            'level_order' => $edu['level_id'] ?? 99,
+                            'institution_name' => $edu['institution_name'] ?? null,
+                            'graduation_year' => $edu['graduation_year'] ?? null,
+                            'degree_field' => $edu['degree_field'] ?? null,
+                            'honors' => $edu['honors'] ?? null,
+                        ];
+                    }
                 }
+                $profileData['education'] = !empty($educationData) ? $educationData : null;
             }
             
             $profile->fill($profileData);
@@ -381,7 +415,7 @@ class JobseekerProfileController extends Controller
     public function editInformal()
     {
         $user = auth()->user();
-        $profile = JobseekerProfile::with(['skills', 'disabilities'])->where('user_id', $user->id)->first(); // Eager load relationships
+        $profile = JobseekerProfile::with(['skills', 'disabilities', 'educationLevel'])->where('user_id', $user->id)->first(); // Eager load relationships
         
         // Security check: Only allow informal users to access this form
         if ($profile && $profile->job_seeker_type !== 'informal') {
@@ -391,8 +425,9 @@ class JobseekerProfileController extends Controller
         // Load required data for the form
         $disabilities = Disability::active()->orderBy('name')->get();
         $informalSkills = Skill::getLimitedSkillsForDisplay('informal', 20);
+        $educationLevels = EducationLevel::active()->orderBy('name')->get();
         
-        return view('users.jobseekers.informal.edit', compact('user', 'profile', 'disabilities', 'informalSkills'));
+        return view('users.jobseekers.informal.edit', compact('user', 'profile', 'disabilities', 'informalSkills', 'educationLevels'));
     }
 
     public function storeInformal(Request $request)
@@ -428,6 +463,10 @@ class JobseekerProfileController extends Controller
             // email should come from user table, not stored in profile
             'is_4ps' => 'nullable',
             'employmentstatus' => 'nullable|string',
+            'education_level_id' => 'required|exists:education_levels,id',
+            'institution_name' => 'required|string|max:255',
+            'graduation_year' => 'required|integer|min:1950|max:' . (date('Y') + 1),
+            'degree_field' => 'nullable|string|max:255',
             'skills' => 'nullable|array',
             'informal_skills' => 'nullable|array',
             'skills_other' => 'nullable|string',
@@ -536,6 +575,10 @@ class JobseekerProfileController extends Controller
             'disabilities.*' => 'exists:disabilities,id',
             'is_4ps' => 'nullable',
             'employmentstatus' => 'nullable|string',
+            'education_level_id' => 'required|exists:education_levels,id',
+            'institution_name' => 'required|string|max:255',
+            'graduation_year' => 'required|integer|min:1950|max:' . (date('Y') + 1),
+            'degree_field' => 'nullable|string|max:255',
             'informal_skills' => 'nullable|array',
             'informal_skills.*' => 'exists:skills,id',
             'skills_other' => 'nullable|string',

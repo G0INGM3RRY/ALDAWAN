@@ -41,7 +41,7 @@
                             <div class="mb-3">
                                 <label for="employer_type" class="form-label">Employer Type <span class="text-danger">*</span></label>
                                 <p class="text-muted">Informal Employer - Selected during registration</p>
-                                <input type="hidden" name="employer_type" value="informal">
+                                <input type="hidden" name="employer_type" value="{{ $employerType ?? session('employer_type', 'informal') }}">
                             </div>
                             
                             <div class="mb-3">
@@ -128,8 +128,9 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="contactnumber" class="form-label">Contact Number</label>
-                                        <input type="text" name="contactnumber" id="contactnumber" class="form-control" 
-                                               placeholder="+63 XXX XXX XXXX">
+                                        <input type="tel" name="contactnumber" id="contactnumber" class="form-control" 
+                                               placeholder="09XXXXXXXXX" pattern="[0-9]{10,11}"
+                                               title="Enter 10 or 11 digit phone number">
                                     </div>
                                 </div>
                                 <div class="col-md-6">

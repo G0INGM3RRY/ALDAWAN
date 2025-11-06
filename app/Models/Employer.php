@@ -69,6 +69,14 @@ class Employer extends Model
     }
 
     /**
+     * The informal employer (household) verification record
+     */
+    public function informalVerification(): HasOne
+    {
+        return $this->hasOne(InformalEmployerVerification::class);
+    }
+
+    /**
      * Get full address
      */
     public function getFullAddressAttribute(): string
