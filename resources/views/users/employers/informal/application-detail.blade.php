@@ -167,10 +167,7 @@
                                         </small>
                                     </div>
                                     <div class="d-flex gap-2">
-                                        <a href="{{ Storage::url($application->resume_file_path) }}" target="_blank" class="btn btn-primary btn-sm flex-fill">
-                                            <i class="bi bi-eye"></i> View
-                                        </a>
-                                        <a href="{{ Storage::url($application->resume_file_path) }}" download class="btn btn-outline-primary btn-sm flex-fill">
+                                        <a href="{{ route('employers.applications.download.resume', $application) }}" target="_blank" class="btn btn-primary btn-sm flex-fill">
                                             <i class="bi bi-download"></i> Download
                                         </a>
                                     </div>
@@ -197,10 +194,7 @@
                                                 </small>
                                             </div>
                                             <div class="d-flex gap-2">
-                                                <a href="{{ Storage::url($document) }}" target="_blank" class="btn btn-primary btn-sm flex-fill">
-                                                    <i class="bi bi-eye"></i> View
-                                                </a>
-                                                <a href="{{ Storage::url($document) }}" download class="btn btn-outline-primary btn-sm flex-fill">
+                                                <a href="{{ route('employers.applications.download.document', [$application, $loop->index]) }}" target="_blank" class="btn btn-primary btn-sm flex-fill">
                                                     <i class="bi bi-download"></i> Download
                                                 </a>
                                             </div>

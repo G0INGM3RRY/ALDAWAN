@@ -32,11 +32,13 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/verifications', [AdminController::class, 'verifications'])->name('verifications');
     Route::patch('/verifications/{verification}/approve', [AdminController::class, 'approveVerification'])->name('verifications.approve');
     Route::patch('/verifications/{verification}/reject', [AdminController::class, 'rejectVerification'])->name('verifications.reject');
+    Route::get('/verifications/{verification}/document', [AdminController::class, 'downloadCompanyDocument'])->name('verifications.download');
     
     // Informal Employer Verification Management
     Route::prefix('verifications/informal-employer')->name('verifications.informal-employer.')->group(function () {
         Route::patch('/{verification}/approve', [AdminController::class, 'approveInformalEmployerVerification'])->name('approve');
         Route::patch('/{verification}/reject', [AdminController::class, 'rejectInformalEmployerVerification'])->name('reject');
+        Route::get('/{verification}/document/{type}', [AdminController::class, 'downloadInformalEmployerDocument'])->name('download');
     });
     
     // Formal Jobseeker Verification Management
@@ -45,6 +47,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::get('/{verification}', [AdminController::class, 'showFormalVerification'])->name('show');
         Route::patch('/{verification}/approve', [AdminController::class, 'approveFormalVerification'])->name('approve');
         Route::patch('/{verification}/reject', [AdminController::class, 'rejectFormalVerification'])->name('reject');
+        Route::get('/{verification}/document/{type}', [AdminController::class, 'downloadFormalJobseekerDocument'])->name('download');
     });
     
     // Informal Jobseeker Verification Management
@@ -53,6 +56,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::get('/{verification}', [AdminController::class, 'showInformalVerification'])->name('show');
         Route::patch('/{verification}/approve', [AdminController::class, 'approveInformalVerification'])->name('approve');
         Route::patch('/{verification}/reject', [AdminController::class, 'rejectInformalVerification'])->name('reject');
+        Route::get('/{verification}/document/{type}', [AdminController::class, 'downloadInformalJobseekerDocument'])->name('download');
     });
     
     // Job Management

@@ -270,11 +270,11 @@
 
                                             <!-- View Document -->
                                             @if($verification->verification_document_path)
-                                                <a href="{{ Storage::url($verification->verification_document_path) }}" 
+                                                <a href="{{ route('admin.verifications.download', $verification) }}" 
                                                    target="_blank" 
                                                    class="btn btn-primary" 
-                                                   title="View Document">
-                                                    <i class="fas fa-file-pdf"></i>
+                                                   title="Download Document">
+                                                    <i class="fas fa-download"></i>
                                                 </a>
                                             @endif
                                         </div>
@@ -428,13 +428,13 @@
                                                 </button>
                                                 <ul class="dropdown-menu">
                                                     @if($verification->valid_id_path)
-                                                        <li><a class="dropdown-item" href="{{ Storage::url($verification->valid_id_path) }}" target="_blank"><i class="fas fa-id-card me-1"></i> Valid ID</a></li>
+                                                        <li><a class="dropdown-item" href="{{ route('admin.verifications.informal-employer.download', [$verification, 'valid_id']) }}" target="_blank"><i class="fas fa-id-card me-1"></i> Valid ID</a></li>
                                                     @endif
                                                     @if($verification->proof_of_address_path)
-                                                        <li><a class="dropdown-item" href="{{ Storage::url($verification->proof_of_address_path) }}" target="_blank"><i class="fas fa-home me-1"></i> Proof of Address</a></li>
+                                                        <li><a class="dropdown-item" href="{{ route('admin.verifications.informal-employer.download', [$verification, 'proof_of_address']) }}" target="_blank"><i class="fas fa-home me-1"></i> Proof of Address</a></li>
                                                     @endif
                                                     @if($verification->barangay_clearance_path)
-                                                        <li><a class="dropdown-item" href="{{ Storage::url($verification->barangay_clearance_path) }}" target="_blank"><i class="fas fa-certificate me-1"></i> Barangay Clearance</a></li>
+                                                        <li><a class="dropdown-item" href="{{ route('admin.verifications.informal-employer.download', [$verification, 'barangay_clearance']) }}" target="_blank"><i class="fas fa-certificate me-1"></i> Barangay Clearance</a></li>
                                                     @endif
                                                     @if(!$verification->valid_id_path && !$verification->proof_of_address_path && !$verification->barangay_clearance_path)
                                                         <li><span class="dropdown-item text-muted">No documents</span></li>
@@ -593,16 +593,16 @@
                                                 </button>
                                                 <ul class="dropdown-menu">
                                                     @if($verification->government_id_path)
-                                                        <li><a class="dropdown-item" href="{{ Storage::url($verification->government_id_path) }}" target="_blank"><i class="fas fa-id-card me-1"></i> Government ID</a></li>
+                                                        <li><a class="dropdown-item" href="{{ route('admin.verifications.formal.download', [$verification, 'government_id']) }}" target="_blank"><i class="fas fa-id-card me-1"></i> Government ID</a></li>
                                                     @endif
                                                     @if($verification->educational_document_path)
-                                                        <li><a class="dropdown-item" href="{{ Storage::url($verification->educational_document_path) }}" target="_blank"><i class="fas fa-graduation-cap me-1"></i> Educational Document</a></li>
+                                                        <li><a class="dropdown-item" href="{{ route('admin.verifications.formal.download', [$verification, 'educational_document']) }}" target="_blank"><i class="fas fa-graduation-cap me-1"></i> Educational Document</a></li>
                                                     @endif
                                                     @if($verification->skills_certificate_path)
-                                                        <li><a class="dropdown-item" href="{{ Storage::url($verification->skills_certificate_path) }}" target="_blank"><i class="fas fa-certificate me-1"></i> Skills Certificate</a></li>
+                                                        <li><a class="dropdown-item" href="{{ route('admin.verifications.formal.download', [$verification, 'skills_certificate']) }}" target="_blank"><i class="fas fa-certificate me-1"></i> Skills Certificate</a></li>
                                                     @endif
                                                     @if($verification->nbi_clearance_path)
-                                                        <li><a class="dropdown-item" href="{{ Storage::url($verification->nbi_clearance_path) }}" target="_blank"><i class="fas fa-shield-alt me-1"></i> NBI Clearance</a></li>
+                                                        <li><a class="dropdown-item" href="{{ route('admin.verifications.formal.download', [$verification, 'nbi_clearance']) }}" target="_blank"><i class="fas fa-shield-alt me-1"></i> NBI Clearance</a></li>
                                                     @endif
                                                     @if(!$verification->government_id_path && !$verification->educational_document_path && !$verification->skills_certificate_path && !$verification->nbi_clearance_path)
                                                         <li><span class="dropdown-item text-muted">No documents</span></li>
@@ -758,13 +758,13 @@
                                                 </button>
                                                 <ul class="dropdown-menu">
                                                     @if($verification->basic_id_path)
-                                                        <li><a class="dropdown-item" href="{{ Storage::url($verification->basic_id_path) }}" target="_blank"><i class="fas fa-id-card me-1"></i> Basic ID</a></li>
+                                                        <li><a class="dropdown-item" href="{{ route('admin.verifications.informal.download', [$verification, 'basic_id']) }}" target="_blank"><i class="fas fa-id-card me-1"></i> Basic ID</a></li>
                                                     @endif
                                                     @if($verification->barangay_clearance_path)
-                                                        <li><a class="dropdown-item" href="{{ Storage::url($verification->barangay_clearance_path) }}" target="_blank"><i class="fas fa-file-alt me-1"></i> Barangay Clearance</a></li>
+                                                        <li><a class="dropdown-item" href="{{ route('admin.verifications.informal.download', [$verification, 'barangay_clearance']) }}" target="_blank"><i class="fas fa-file-alt me-1"></i> Barangay Clearance</a></li>
                                                     @endif
                                                     @if($verification->health_certificate_path)
-                                                        <li><a class="dropdown-item" href="{{ Storage::url($verification->health_certificate_path) }}" target="_blank"><i class="fas fa-heartbeat me-1"></i> Health Certificate</a></li>
+                                                        <li><a class="dropdown-item" href="{{ route('admin.verifications.informal.download', [$verification, 'health_certificate']) }}" target="_blank"><i class="fas fa-heartbeat me-1"></i> Health Certificate</a></li>
                                                     @endif
                                                     @if(!$verification->basic_id_path && !$verification->barangay_clearance_path && !$verification->health_certificate_path)
                                                         <li><span class="dropdown-item text-muted">No documents</span></li>

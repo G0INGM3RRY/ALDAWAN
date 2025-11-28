@@ -39,7 +39,7 @@
         <div class="mb-4">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h2 class="mb-0">
-                    <i class="fas fa-star text-warning me-2"></i>Recommended for You
+                    Recommended for You
                 </h2>
                 <span class="badge bg-success">Based on your profile</span>
             </div>
@@ -140,7 +140,7 @@
                             @if($job->salary)
                                 <div class="mb-2">
                                     <small class="text-success fw-bold">
-                                        PHP{{ number_format($job->salary) }} minimum
+                                        ₱{{ number_format($job->salary) }} minimum
                                     </small>
                                 </div>
                             @endif

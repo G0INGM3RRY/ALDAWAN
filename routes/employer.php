@@ -46,5 +46,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/applications/{application}', [EmployerProfileController::class, 'viewApplication'])->name('employers.applications.view');
         Route::patch('/applications/{application}/accept', [EmployerProfileController::class, 'acceptApplication'])->name('employers.applications.accept');
         Route::patch('/applications/{application}/reject', [EmployerProfileController::class, 'rejectApplication'])->name('employers.applications.reject');
+        
+        // Document Download Routes
+        Route::get('/applications/{application}/download/resume', [EmployerProfileController::class, 'downloadResume'])->name('employers.applications.download.resume');
+        Route::get('/applications/{application}/download/document/{index}', [EmployerProfileController::class, 'downloadAdditionalDocument'])->name('employers.applications.download.document');
     });
 });

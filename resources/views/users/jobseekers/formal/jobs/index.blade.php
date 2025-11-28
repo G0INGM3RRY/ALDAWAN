@@ -167,7 +167,7 @@
                                                 <i class="fas fa-star me-1"></i>{{ number_format($job->match_score, 0) }}% Match
                                             </span>
                                         @elseif($job->match_score >= 60)
-                                            <span class="badge bg-info">
+                                            <span class="badge bg-success">
                                                 {{ number_format($job->match_score, 0) }}% Match
                                             </span>
                                         @else
@@ -213,7 +213,7 @@
                                     @if($job->salary)
                                         <div class="mb-2">
                                             <small class="text-success fw-bold">
-                                                ${{ number_format($job->salary) }} per year
+                                                ₱{{ number_format($job->salary) }} per year
                                             </small>
                                         </div>
                                     @endif

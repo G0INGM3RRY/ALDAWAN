@@ -165,7 +165,7 @@ class AdminController extends Controller
             
             // Approve document verifications based on user type
             if ($user->role === 'employer' && $user->employer) {
-                if ($user->employer->employer_type === 'formal') {
+                if (isset($user->employer->employer_type) && $user->employer->employer_type === 'formal') {
                     // Approve formal employer (company) verification
                     $verification = $user->employer->verification;
                     if ($verification && $verification->status !== 'approved') {
@@ -207,7 +207,7 @@ class AdminController extends Controller
         } elseif ($request->verification_status === 'pending') {
             // Set document verifications back to pending (requires resubmission/review)
             if ($user->role === 'employer' && $user->employer) {
-                if ($user->employer->employer_type === 'formal') {
+                if (isset($user->employer->employer_type) && $user->employer->employer_type === 'formal') {
                     $verification = $user->employer->verification;
                     if ($verification) {
                         $verification->update([
@@ -250,7 +250,7 @@ class AdminController extends Controller
             
             // Reject document verifications
             if ($user->role === 'employer' && $user->employer) {
-                if ($user->employer->employer_type === 'formal') {
+                if (isset($user->employer->employer_type) && $user->employer->employer_type === 'formal') {
                     $verification = $user->employer->verification;
                     if ($verification) {
                         $verification->update([
@@ -933,5 +933,111 @@ class AdminController extends Controller
         ];
 
         return view('admin.reports.index', compact('reports'));
+    }
+
+    /**
+     * Download company verification document with proper filename
+     */
+    public function downloadCompanyDocument(CompanyVerification $verification)
+    {
+        if (!$verification->verification_document_path) {
+            abort(404, 'Document not found');
+        }
+
+        $filePath = storage_path('app/public/' . $verification->verification_document_path);
+        
+        if (!file_exists($filePath)) {
+            abort(404, 'File does not exist');
+        }
+
+        // Generate readable filename: CompanyName_VerificationDocument.ext
+        $companyName = str_replace(' ', '_', $verification->employer->company_name);
+        $extension = pathinfo($filePath, PATHINFO_EXTENSION);
+        $filename = "{$companyName}_Verification_Document.{$extension}";
+
+        return response()->download($filePath, $filename);
+    }
+
+    /**
+     * Download informal employer verification document with proper filename
+     */
+    public function downloadInformalEmployerDocument(InformalEmployerVerification $verification, $type)
+    {
+        $pathColumn = $type . '_path'; // e.g., 'valid_id_path'
+        
+        if (!isset($verification->$pathColumn) || !$verification->$pathColumn) {
+            abort(404, 'Document not found');
+        }
+
+        $filePath = storage_path('app/public/' . $verification->$pathColumn);
+        
+        if (!file_exists($filePath)) {
+            abort(404, 'File does not exist');
+        }
+
+        // Generate readable filename: FirstName_LastName_DocumentType.ext
+        $user = $verification->employer->user;
+        $userName = str_replace(' ', '_', $user->name);
+        $docType = str_replace('_', ' ', ucwords($type));
+        $extension = pathinfo($filePath, PATHINFO_EXTENSION);
+        $filename = "{$userName}_{$docType}.{$extension}";
+
+        return response()->download($filePath, $filename);
+    }
+
+    /**
+     * Download formal jobseeker verification document with proper filename
+     */
+    public function downloadFormalJobseekerDocument(FormalJobseekerVerification $verification, $type)
+    {
+        $pathColumn = $type . '_path'; // e.g., 'government_id_path'
+        
+        if (!isset($verification->$pathColumn) || !$verification->$pathColumn) {
+            abort(404, 'Document not found');
+        }
+
+        $filePath = storage_path('app/public/' . $verification->$pathColumn);
+        
+        if (!file_exists($filePath)) {
+            abort(404, 'File does not exist');
+        }
+
+        // Generate readable filename: FirstName_MiddleName_LastName_DocumentType.ext
+        $profile = $verification->jobseekerProfile;
+        $fullName = trim("{$profile->first_name} {$profile->middle_name} {$profile->last_name}");
+        $fullName = str_replace(' ', '_', $fullName);
+        $docType = str_replace('_', ' ', ucwords($type));
+        $extension = pathinfo($filePath, PATHINFO_EXTENSION);
+        $filename = "{$fullName}_{$docType}.{$extension}";
+
+        return response()->download($filePath, $filename);
+    }
+
+    /**
+     * Download informal jobseeker verification document with proper filename
+     */
+    public function downloadInformalJobseekerDocument(InformalJobseekerVerification $verification, $type)
+    {
+        $pathColumn = $type . '_path'; // e.g., 'basic_id_path'
+        
+        if (!isset($verification->$pathColumn) || !$verification->$pathColumn) {
+            abort(404, 'Document not found');
+        }
+
+        $filePath = storage_path('app/public/' . $verification->$pathColumn);
+        
+        if (!file_exists($filePath)) {
+            abort(404, 'File does not exist');
+        }
+
+        // Generate readable filename: FirstName_MiddleName_LastName_DocumentType.ext
+        $profile = $verification->jobseekerProfile;
+        $fullName = trim("{$profile->first_name} {$profile->middle_name} {$profile->last_name}");
+        $fullName = str_replace(' ', '_', $fullName);
+        $docType = str_replace('_', ' ', ucwords($type));
+        $extension = pathinfo($filePath, PATHINFO_EXTENSION);
+        $filename = "{$fullName}_{$docType}.{$extension}";
+
+        return response()->download($filePath, $filename);
     }
 }

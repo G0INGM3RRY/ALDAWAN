@@ -474,4 +474,80 @@ class EmployerProfileController extends Controller
         
         return view($this->getViewPath('application-detail'), compact('application', 'user'));
     }
+
+    /**
+     * Download applicant's resume with proper filename
+     */
+    public function downloadResume(JobApplication $application)
+    {
+        $user = Auth::user();
+        
+        // Ensure the application belongs to the employer's job
+        if ($application->job->company_id !== $user->id) {
+            abort(403, 'Unauthorized access to application.');
+        }
+
+        if (!$application->resume_file_path) {
+            abort(404, 'Resume not found');
+        }
+
+        $filePath = storage_path('app/public/' . $application->resume_file_path);
+        
+        if (!file_exists($filePath)) {
+            abort(404, 'File does not exist');
+        }
+
+        // Generate readable filename: FirstName_LastName_Resume.ext
+        $profile = $application->user->jobseekerProfile;
+        if ($profile) {
+            $fullName = trim("{$profile->first_name} {$profile->middle_name} {$profile->last_name}");
+            $fullName = str_replace(' ', '_', $fullName);
+        } else {
+            $fullName = str_replace(' ', '_', $application->user->name);
+        }
+        
+        $extension = pathinfo($filePath, PATHINFO_EXTENSION);
+        $filename = "{$fullName}_Resume.{$extension}";
+
+        return response()->download($filePath, $filename);
+    }
+
+    /**
+     * Download applicant's additional document with proper filename
+     */
+    public function downloadAdditionalDocument(JobApplication $application, $index)
+    {
+        $user = Auth::user();
+        
+        // Ensure the application belongs to the employer's job
+        if ($application->job->company_id !== $user->id) {
+            abort(403, 'Unauthorized access to application.');
+        }
+
+        if (!$application->additional_documents || !isset($application->additional_documents[$index])) {
+            abort(404, 'Document not found');
+        }
+
+        $documentPath = $application->additional_documents[$index];
+        $filePath = storage_path('app/public/' . $documentPath);
+        
+        if (!file_exists($filePath)) {
+            abort(404, 'File does not exist');
+        }
+
+        // Generate readable filename: FirstName_LastName_Document_N.ext
+        $profile = $application->user->jobseekerProfile;
+        if ($profile) {
+            $fullName = trim("{$profile->first_name} {$profile->middle_name} {$profile->last_name}");
+            $fullName = str_replace(' ', '_', $fullName);
+        } else {
+            $fullName = str_replace(' ', '_', $application->user->name);
+        }
+        
+        $extension = pathinfo($filePath, PATHINFO_EXTENSION);
+        $documentNumber = $index + 1;
+        $filename = "{$fullName}_Document_{$documentNumber}.{$extension}";
+
+        return response()->download($filePath, $filename);
+    }
 }

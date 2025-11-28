@@ -43,6 +43,13 @@ Route::middleware('auth')->group(function () {
         ->middleware(['signed', 'throttle:6,1'])
         ->name('verification.verify');
 
+    // Add verification status check route
+    Route::get('verification/check', function () {
+        return response()->json([
+            'verified' => auth()->user()->hasVerifiedEmail()
+        ]);
+    })->name('verification.check');
+
     Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
         ->middleware('throttle:6,1')
         ->name('verification.send');
