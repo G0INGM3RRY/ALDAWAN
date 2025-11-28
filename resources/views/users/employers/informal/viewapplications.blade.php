@@ -19,36 +19,36 @@
 
     <div class="row mb-4">
         <div class="col-12">
-            <h1 class="h3 text-warning fw-bold">Gig Applications</h1>
-            <p class="text-muted">Review applications for your posted gigs</p>
+            <h1 class="h3 text-primary fw-bold">Job Applications</h1>
+            <p class="text-muted">Review applications for your posted jobs</p>
         </div>
     </div>
 
     <div class="row">
         <!-- Job Details - Left Side -->
         <div class="col-lg-4 mb-4">
-            <div class="card border-warning shadow-sm">
-                <div class="card-header bg-warning text-dark">
-                    <h5 class="card-title mb-0">Gig Details</h5>
+            <div class="card border-primary shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">Job Details</h5>
                 </div>
                 <div class="card-body">
                     <!-- Job Title and Status -->
                     <div class="d-flex justify-content-between align-items-start mb-3">
-                        <h5 class="fw-bold text-dark">{{ $job->job_title ?? 'Sample Gig Title' }}</h5>
-                        <span class="badge bg-success">{{ ucfirst($job->status ?? 'active') }}</span>
+                        <h5 class="fw-bold text-dark">{{ $job->job_title ?? 'Sample Job Title' }}</h5>
+                        <span class="badge bg-primary">{{ ucfirst($job->status ?? 'active') }}</span>
                     </div>
                     
                     <!-- Job Type Badge -->
                     <div class="mb-3">
-                        <span class="badge bg-success text-white">{{ ucfirst($job->job_type ?? 'informal') }} Gig</span>
+                        <span class="badge bg-primary text-white">{{ ucfirst($job->job_type ?? 'informal') }} Job</span>
                     </div>
                     
                     <!-- Job Classification -->
-                    <h6 class="text-success fw-semibold mb-2">{{ $job->jobClassification->name ?? 'General Labor' }}</h6>
+                    <h6 class="text-primary fw-semibold mb-2">{{ $job->jobClassification->name ?? 'General Labor' }}</h6>
                     
                     <!-- Description -->
                     <p class="card-text text-muted mb-3">
-                        {{ Str::limit($job->description ?? 'Sample job description for this gig posting.', 120) }}
+                        {{ Str::limit($job->description ?? 'Sample job description for this job posting.', 120) }}
                     </p>
                     
                     <!-- Job Details -->
@@ -79,7 +79,7 @@
                         </small>
                         
                         <div class="btn-group" role="group">
-                            <a href="#" class="btn btn-sm btn-outline-warning">Edit</a>
+                            <a href="#" class="btn btn-sm btn-outline-primary">Edit</a>
                             <button type="button" class="btn btn-sm btn-outline-danger" onclick="confirmDelete()">Delete</button>
                         </div>
                     </div>
@@ -87,7 +87,7 @@
                     <!-- Applications Count -->
                     <div class="mt-3 p-2 bg-light rounded">
                         <div class="text-center">
-                            <h4 class="text-warning mb-0">{{ $applications->count() ?? 0 }}</h4>
+                            <h4 class="text-primary mb-0">{{ $applications->count() ?? 0 }}</h4>
                             <small class="text-muted">Total Applications</small>
                         </div>
                     </div>
@@ -98,12 +98,12 @@
         <!-- Applicants - Right Side -->
         <div class="col-lg-8">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="text-warning fw-bold mb-0">Applicants</h5>
+                <h5 class="text-primary fw-bold mb-0">Applicants</h5>
                 <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-sm btn-outline-warning active" data-filter="all">All</button>
-                    <button type="button" class="btn btn-sm btn-outline-warning" data-filter="pending">Pending</button>
-                    <button type="button" class="btn btn-sm btn-outline-warning" data-filter="under_review">Reviewed</button>
-                    <button type="button" class="btn btn-sm btn-outline-warning" data-filter="accepted">Accepted</button>
+                    <button type="button" class="btn btn-sm btn-outline-primary active" data-filter="all">All</button>
+                    <button type="button" class="btn btn-sm btn-outline-primary" data-filter="pending">Pending</button>
+                    <button type="button" class="btn btn-sm btn-outline-primary" data-filter="under_review">Reviewed</button>
+                    <button type="button" class="btn btn-sm btn-outline-primary" data-filter="accepted">Accepted</button>
                 </div>
             </div>
 
@@ -117,7 +117,7 @@
                             <!-- Applicant Header -->
                             <div class="d-flex justify-content-between align-items-start mb-3">
                                 <div class="d-flex align-items-center">
-                                    <div class="bg-warning text-dark rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
                                         {{ $application->user ? substr($application->user->name, 0, 1) : 'J' }}
                                     </div>
                                     <div>
@@ -164,7 +164,7 @@
                                 <form method="POST" action="{{ route('employers.applications.accept', $application->id) }}" class="flex-fill">
                                     @csrf
                                     @method('PATCH')
-                                    <button type="submit" class="btn btn-sm btn-success w-100">Accept</button>
+                                    <button type="submit" class="btn btn-sm btn-primary w-100">Accept</button>
                                 </form>
                                 <button type="button" class="btn btn-sm btn-outline-danger flex-fill" onclick="showRejectModal({{ $application->id }})">Reject</button>
                                 @endif
@@ -178,11 +178,10 @@
                 <div class="col-12">
                     <div class="text-center py-5">
                         <div class="mb-4">
-                            <div class="text-warning display-1" style="opacity: 0.3;">📥</div>
+                            <div class="text-primary display-1" style="opacity: 0.3;">📥</div>
                         </div>
                         <h5 class="text-muted">No applications yet</h5>
-                        <p class="text-muted">Applications for this gig will appear here once workers start applying.</p>
-                        <a href="{{ route('jobs.show', $job->id ?? 1) }}" class="btn btn-outline-warning">Share Gig</a>
+                        <p class="text-muted">Applications for this job will appear here once workers start applying.</p>
                     </div>
                 </div>
                 @endforelse
@@ -225,7 +224,7 @@
 
 <script>
 function confirmDelete() {
-    if (confirm('Are you sure you want to delete this gig? This action cannot be undone.')) {
+    if (confirm('Are you sure you want to delete this job? This action cannot be undone.')) {
         document.getElementById('deleteForm').submit();
     }
 }
@@ -275,7 +274,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         filteredEmpty.innerHTML = `
                             <div class="text-center py-5">
                                 <div class="mb-4">
-                                    <div class="text-warning display-1" style="opacity: 0.3;">🔍</div>
+                                    <div class="text-primary display-1" style="opacity: 0.3;">🔍</div>
                                 </div>
                                 <h5 class="text-muted">No ${filterValue} applications</h5>
                                 <p class="text-muted">There are no applications with this status yet.</p>

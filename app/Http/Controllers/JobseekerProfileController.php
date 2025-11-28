@@ -60,7 +60,10 @@ class JobseekerProfileController extends Controller
          //photo logic
         if ($request->hasFile('photo')) {
          $file = $request->file('photo');
-         $filename = time() . '_' . $file->getClientOriginalName();
+         $firstName = $request->input('first_name', 'User');
+         $lastName = $request->input('last_name', 'Photo');
+         $extension = $file->getClientOriginalExtension();
+         $filename = str_replace(' ', '_', $firstName) . '_' . str_replace(' ', '_', $lastName) . '_Photo.' . $extension;
          $filePath = $file->storeAs('photos', $filename, 'public');
          $data['photo'] = $filePath;
         }
@@ -260,7 +263,10 @@ class JobseekerProfileController extends Controller
            //photo logic
         if ($request->hasFile('photo')) {
          $file = $request->file('photo');
-         $filename = time() . '_' . $file->getClientOriginalName();
+         $firstName = $request->input('first_name', 'User');
+         $lastName = $request->input('last_name', 'Photo');
+         $extension = $file->getClientOriginalExtension();
+         $filename = str_replace(' ', '_', $firstName) . '_' . str_replace(' ', '_', $lastName) . '_Photo.' . $extension;
          $filePath = $file->storeAs('photos', $filename, 'public');
          $data['photo'] = $filePath;
         }
@@ -479,7 +485,10 @@ class JobseekerProfileController extends Controller
         // Handle file upload
         if ($request->hasFile('photo')) {
             $file = $request->file('photo');
-            $filename = time() . '_' . $file->getClientOriginalName();
+            $firstName = $request->input('first_name', 'User');
+            $lastName = $request->input('last_name', 'Photo');
+            $extension = $file->getClientOriginalExtension();
+            $filename = str_replace(' ', '_', $firstName) . '_' . str_replace(' ', '_', $lastName) . '_Photo.' . $extension;
             $filePath = $file->storeAs('photos', $filename, 'public');
             $data['photo'] = $filePath;
         }
@@ -593,7 +602,10 @@ class JobseekerProfileController extends Controller
         // Handle file upload
         if ($request->hasFile('photo')) {
             $file = $request->file('photo');
-            $filename = time() . '_' . $file->getClientOriginalName();
+            $firstName = $request->input('first_name', 'User');
+            $lastName = $request->input('last_name', 'Photo');
+            $extension = $file->getClientOriginalExtension();
+            $filename = str_replace(' ', '_', $firstName) . '_' . str_replace(' ', '_', $lastName) . '_Photo.' . $extension;
             $filePath = $file->storeAs('photos', $filename, 'public');
             $data['photo'] = $filePath;
         }
@@ -698,7 +710,10 @@ class JobseekerProfileController extends Controller
         // Handle government ID upload
         if ($request->hasFile('government_id')) {
             $file = $request->file('government_id');
-            $filename = 'formal_gov_id_' . $profile->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $firstName = $profile->first_name ?? 'User';
+            $lastName = $profile->last_name ?? 'GovID';
+            $extension = $file->getClientOriginalExtension();
+            $filename = str_replace(' ', '_', $firstName) . '_' . str_replace(' ', '_', $lastName) . '_GovID.' . $extension;
             $path = $file->storeAs('verification_documents/formal', $filename, 'public');
             $verificationData['government_id_path'] = $path;
         }
@@ -706,7 +721,10 @@ class JobseekerProfileController extends Controller
         // Handle educational document upload
         if ($request->hasFile('educational_document')) {
             $file = $request->file('educational_document');
-            $filename = 'formal_edu_' . $profile->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $firstName = $profile->first_name ?? 'User';
+            $lastName = $profile->last_name ?? 'Diploma';
+            $extension = $file->getClientOriginalExtension();
+            $filename = str_replace(' ', '_', $firstName) . '_' . str_replace(' ', '_', $lastName) . '_Diploma.' . $extension;
             $path = $file->storeAs('verification_documents/formal', $filename, 'public');
             $verificationData['educational_document_path'] = $path;
         }
@@ -714,7 +732,10 @@ class JobseekerProfileController extends Controller
         // Handle NBI clearance upload
         if ($request->hasFile('nbi_clearance')) {
             $file = $request->file('nbi_clearance');
-            $filename = 'formal_nbi_' . $profile->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $firstName = $profile->first_name ?? 'User';
+            $lastName = $profile->last_name ?? 'NBI';
+            $extension = $file->getClientOriginalExtension();
+            $filename = str_replace(' ', '_', $firstName) . '_' . str_replace(' ', '_', $lastName) . '_NBI.' . $extension;
             $path = $file->storeAs('verification_documents/formal', $filename, 'public');
             $verificationData['nbi_clearance_path'] = $path;
         }
@@ -722,7 +743,10 @@ class JobseekerProfileController extends Controller
         // Handle skills certificate upload (optional)
         if ($request->hasFile('skills_certificate')) {
             $file = $request->file('skills_certificate');
-            $filename = 'formal_skills_' . $profile->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $firstName = $profile->first_name ?? 'User';
+            $lastName = $profile->last_name ?? 'Certificate';
+            $extension = $file->getClientOriginalExtension();
+            $filename = str_replace(' ', '_', $firstName) . '_' . str_replace(' ', '_', $lastName) . '_Certificate.' . $extension;
             $path = $file->storeAs('verification_documents/formal', $filename, 'public');
             $verificationData['skills_certificate_path'] = $path;
         }
@@ -743,7 +767,10 @@ class JobseekerProfileController extends Controller
         // Handle basic ID upload
         if ($request->hasFile('basic_id')) {
             $file = $request->file('basic_id');
-            $filename = 'informal_id_' . $profile->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $firstName = $profile->first_name ?? 'User';
+            $lastName = $profile->last_name ?? 'BasicID';
+            $extension = $file->getClientOriginalExtension();
+            $filename = str_replace(' ', '_', $firstName) . '_' . str_replace(' ', '_', $lastName) . '_BasicID.' . $extension;
             $path = $file->storeAs('verification_documents/informal', $filename, 'public');
             $verificationData['basic_id_path'] = $path;
         }
@@ -751,7 +778,10 @@ class JobseekerProfileController extends Controller
         // Handle barangay clearance upload
         if ($request->hasFile('barangay_clearance')) {
             $file = $request->file('barangay_clearance');
-            $filename = 'informal_brgy_' . $profile->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $firstName = $profile->first_name ?? 'User';
+            $lastName = $profile->last_name ?? 'BarangayClearance';
+            $extension = $file->getClientOriginalExtension();
+            $filename = str_replace(' ', '_', $firstName) . '_' . str_replace(' ', '_', $lastName) . '_BarangayClearance.' . $extension;
             $path = $file->storeAs('verification_documents/informal', $filename, 'public');
             $verificationData['barangay_clearance_path'] = $path;
         }
@@ -759,7 +789,10 @@ class JobseekerProfileController extends Controller
         // Handle health certificate upload (optional)
         if ($request->hasFile('health_certificate')) {
             $file = $request->file('health_certificate');
-            $filename = 'informal_health_' . $profile->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $firstName = $profile->first_name ?? 'User';
+            $lastName = $profile->last_name ?? 'HealthCert';
+            $extension = $file->getClientOriginalExtension();
+            $filename = str_replace(' ', '_', $firstName) . '_' . str_replace(' ', '_', $lastName) . '_HealthCert.' . $extension;
             $path = $file->storeAs('verification_documents/informal', $filename, 'public');
             $verificationData['health_certificate_path'] = $path;
         }

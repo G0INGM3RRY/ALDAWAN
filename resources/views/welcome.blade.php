@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" style="scroll-behavior: smooth;">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -23,9 +23,6 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#about" style="color: #ffffff !important; font-weight: 500;"><i class="fas fa-info-circle me-1"></i>About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#support" style="color: #ffffff !important; font-weight: 500;"><i class="fas fa-life-ring me-1"></i>Support</a>
                     </li>
                 </ul>
                 @if (Route::has('login'))
@@ -104,7 +101,7 @@
         </div>
     </section>
     <!-- Features Section -->
-    <section class="py-5">
+    <section id="about" class="py-5">
         <div class="container">
             <div class="row text-center mb-5">
                 <div class="col-12">

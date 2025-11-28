@@ -65,6 +65,18 @@
         </li>
         @endif
         
+        <!-- Notifications Link (All Users) -->
+        <li class="nav-item">
+          <a class="nav-link position-relative {{ request()->routeIs('notifications.*') ? 'active' : '' }}" href="{{ route('notifications.index') }}" style="color: #ffffff !important; font-weight: 500;">
+            <i class="fas fa-bell me-1"></i>Notifications
+            @if(Auth::user()->unreadNotificationsCount() > 0)
+              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                {{ Auth::user()->unreadNotificationsCount() }}
+              </span>
+            @endif
+          </a>
+        </li>
+
         <!-- Messages Link (All Users) -->
         <li class="nav-item">
           <a class="nav-link position-relative {{ request()->routeIs('messages.*') ? 'active' : '' }}" href="{{ route('messages.inbox') }}" style="color: #ffffff !important; font-weight: 500;">
@@ -109,6 +121,10 @@
 <div class="container">
     @yield('content')
 </div>
+
+<!-- Notification Toast Pop-ups -->
+@include('components.notification-toast')
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="{{ asset('js/loading-animations.js') }}"></script>
 </body>

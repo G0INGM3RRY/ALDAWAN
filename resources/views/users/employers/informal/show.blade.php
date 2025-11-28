@@ -17,7 +17,7 @@
 
     <!-- Employer Overview Card -->
     <div class="card mb-4">
-        <div class="card-header bg-success text-white">
+        <div class="card-header bg-primary text-white">
             <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Employer Information</h5>
         </div>
         <div class="card-body">
@@ -49,7 +49,7 @@
                             @endif
                             
                             <div class="mb-3">
-                                <span class="badge bg-success fs-6">
+                                <span class="badge bg-primary fs-6">
                                     <i class="fas fa-home me-1"></i>
                                     {{ $profile->employer_type ? ucfirst($profile->employer_type) : 'Not Set' }} Employer
                                 </span>
@@ -111,7 +111,7 @@
         <div class="col-md-4 mb-3">
             <div class="card bg-light">
                 <div class="card-body text-center">
-                    <h2 class="text-success">{{ $user->jobs()->where('status', 'open')->count() }}</h2>
+                    <h2 class="text-primary">{{ $user->jobs()->where('status', 'open')->count() }}</h2>
                     <p class="mb-0 text-muted">Active Service Listings</p>
                 </div>
             </div>
@@ -146,7 +146,7 @@
 
     <!-- Recent Service Requests -->
     <div class="card">
-        <div class="card-header bg-warning text-dark">
+        <div class="card-header bg-primary text-white">
             <h5 class="mb-0"><i class="fas fa-list me-2"></i>Recent Service Requests</h5>
         </div>
         <div class="card-body">

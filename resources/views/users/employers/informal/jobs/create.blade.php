@@ -11,7 +11,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card shadow">
-                <div class="card-header bg-success text-white">
+                <div class="card-header bg-primary text-white">
                     <h5 class="mb-0"><i class="fas fa-home me-2"></i>Household Service Request</h5>
                 </div>
                 <div class="card-body">
@@ -127,7 +127,7 @@
                             <a href="{{ route('employers.dashboard') }}" class="btn btn-secondary">
                                 <i class="fas fa-times me-1"></i>Cancel
                             </a>
-                            <button type="submit" class="btn btn-success">
+                            <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-save me-1"></i>Post Service Request
                             </button>
                         </div>

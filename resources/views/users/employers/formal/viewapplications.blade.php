@@ -188,7 +188,6 @@
                         </div>
                         <h5 class="text-muted">No applications yet</h5>
                         <p class="text-muted">Applications for this position will appear here once candidates start applying.</p>
-                        <a href="{{ route('jobs.show', $job->id ?? 1) }}" class="btn btn-outline-primary">Share Position</a>
                     </div>
                 </div>
                 @endforelse

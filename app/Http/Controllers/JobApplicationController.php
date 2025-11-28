@@ -88,13 +88,25 @@ class JobApplicationController extends Controller
             // Handle file uploads for detailed application
             $resumePath = null;
             if ($request->hasFile('resume')) {
-                $resumePath = $request->file('resume')->store('resumes', 'public');
+                $profile = Auth::user()->jobseekerProfile;
+                $firstName = $profile->first_name ?? 'Applicant';
+                $lastName = $profile->last_name ?? 'Resume';
+                $extension = $request->file('resume')->getClientOriginalExtension();
+                $filename = str_replace(' ', '_', $firstName) . '_' . str_replace(' ', '_', $lastName) . '_Resume.' . $extension;
+                $resumePath = $request->file('resume')->storeAs('resumes', $filename, 'public');
             }
             
             $additionalPaths = [];
             if ($request->hasFile('additional_documents')) {
+                $profile = Auth::user()->jobseekerProfile;
+                $firstName = $profile->first_name ?? 'Applicant';
+                $lastName = $profile->last_name ?? 'Document';
+                $counter = 1;
                 foreach ($request->file('additional_documents') as $file) {
-                    $additionalPaths[] = $file->store('documents', 'public');
+                    $extension = $file->getClientOriginalExtension();
+                    $filename = str_replace(' ', '_', $firstName) . '_' . str_replace(' ', '_', $lastName) . '_Doc' . $counter . '.' . $extension;
+                    $additionalPaths[] = $file->storeAs('documents', $filename, 'public');
+                    $counter++;
                 }
             }
             
@@ -247,7 +259,12 @@ class JobApplicationController extends Controller
                 if ($application->resume_file_path) {
                     Storage::disk('public')->delete($application->resume_file_path);
                 }
-                $updateData['resume_file_path'] = $request->file('resume')->store('resumes', 'public');
+                $profile = Auth::user()->jobseekerProfile;
+                $firstName = $profile->first_name ?? 'Applicant';
+                $lastName = $profile->last_name ?? 'Resume';
+                $extension = $request->file('resume')->getClientOriginalExtension();
+                $filename = str_replace(' ', '_', $firstName) . '_' . str_replace(' ', '_', $lastName) . '_Resume.' . $extension;
+                $updateData['resume_file_path'] = $request->file('resume')->storeAs('resumes', $filename, 'public');
             }
             
             // Handle additional documents
@@ -259,9 +276,16 @@ class JobApplicationController extends Controller
                     }
                 }
                 
+                $profile = Auth::user()->jobseekerProfile;
+                $firstName = $profile->first_name ?? 'Applicant';
+                $lastName = $profile->last_name ?? 'Document';
+                $counter = 1;
                 $additionalPaths = [];
                 foreach ($request->file('additional_documents') as $file) {
-                    $additionalPaths[] = $file->store('documents', 'public');
+                    $extension = $file->getClientOriginalExtension();
+                    $filename = str_replace(' ', '_', $firstName) . '_' . str_replace(' ', '_', $lastName) . '_Doc' . $counter . '.' . $extension;
+                    $additionalPaths[] = $file->storeAs('documents', $filename, 'public');
+                    $counter++;
                 }
                 $updateData['additional_documents'] = $additionalPaths;
             }

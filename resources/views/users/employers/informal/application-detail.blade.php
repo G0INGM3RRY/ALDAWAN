@@ -9,7 +9,7 @@
                 <div class="card-header bg-primary text-white border-0">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h5 class="mb-0">📝 Gig Application Review</h5>
+                            <h5 class="mb-0">📝 Job Application Review</h5>
                             <small class="text-white-50">Verify worker credentials and qualifications</small>
                         </div>
                         <div class="text-end">
@@ -107,7 +107,7 @@
                     <!-- Cover Message -->
                     @if($application->cover_letter)
                         <div class="mb-4">
-                            <strong class="text-muted">Why They Want This Gig:</strong>
+                            <strong class="text-muted">Why They Want This Job:</strong>
                             <div class="mt-2 p-3 bg-light rounded">
                                 <p class="mb-0 small">{{ $application->cover_letter }}</p>
                             </div>
@@ -236,7 +236,7 @@
                                 <form method="POST" action="{{ route('employers.applications.accept', $application->id) }}">
                                     @csrf
                                     @method('PATCH')
-                                    <button type="submit" class="btn btn-success w-100" onclick="return confirm('Hire this worker?')">
+                                    <button type="submit" class="btn btn-primary w-100" onclick="return confirm('Hire this worker?')">
                                         Hire Worker
                                     </button>
                                 </form>

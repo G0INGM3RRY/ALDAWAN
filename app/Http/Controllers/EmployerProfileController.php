@@ -158,7 +158,9 @@ class EmployerProfileController extends Controller
         // Handle file upload
         if ($request->hasFile('company_logo')) {
             $file = $request->file('company_logo');
-            $filename = time() . '_' . $file->getClientOriginalName();
+            $companyName = $request->input('company_name', 'Company');
+            $extension = $file->getClientOriginalExtension();
+            $filename = str_replace(' ', '_', $companyName) . '_Logo.' . $extension;
             $filePath = $file->storeAs('company_logos', $filename, 'public');
             $data['company_logo'] = $filePath;
         }
@@ -191,7 +193,9 @@ class EmployerProfileController extends Controller
                 // Handle verification document upload
                 if ($request->hasFile('verification_document')) {
                     $file = $request->file('verification_document');
-                    $filename = time() . '_verification_' . $file->getClientOriginalName();
+                    $companyName = $employer->company_name ?? 'Company';
+                    $extension = $file->getClientOriginalExtension();
+                    $filename = str_replace(' ', '_', $companyName) . '_Verification.' . $extension;
                     $filePath = $file->storeAs('company_verifications', $filename, 'public');
                     $verificationData['verification_document_path'] = $filePath;
                 }
@@ -213,7 +217,9 @@ class EmployerProfileController extends Controller
                 // Handle verification document upload - map to appropriate field
                 if ($request->hasFile('verification_document')) {
                     $file = $request->file('verification_document');
-                    $filename = time() . '_verification_' . $file->getClientOriginalName();
+                    $companyName = $employer->company_name ?? 'Employer';
+                    $extension = $file->getClientOriginalExtension();
+                    $filename = str_replace(' ', '_', $companyName) . '_ValidID.' . $extension;
                     $filePath = $file->storeAs('informal_employer_verifications', $filename, 'public');
                     // Use valid_id_path for informal employers
                     $verificationData['valid_id_path'] = $filePath;

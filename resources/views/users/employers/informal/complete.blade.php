@@ -20,7 +20,7 @@
                     <h3 class="mb-0 text-center">Complete your Profile</h3>
                     <!-- Progress Steps -->
                     <div class="progress mt-3">
-                        <div class="progress-bar bg-success" role="progressbar" style="width: 33%" id="progress-bar"></div>
+                        <div class="progress-bar bg-primary" role="progressbar" style="width: 33%" id="progress-bar"></div>
                     </div>
                     <div class="step-indicators d-flex justify-content-between mt-2">
                         <span class="step-indicator active" id="step-1">1. Basic Info</span>
@@ -81,7 +81,7 @@
                             </div>
 
                             <div class="mt-4 text-end">
-                                <button type="button" onclick="nextStep()" class="btn btn-success">Next</button>
+                                <button type="button" onclick="nextStep()" class="btn btn-primary">Next</button>
                             </div>
                         </div>
 
@@ -148,13 +148,13 @@
 
                             <div class="mt-4 d-flex justify-content-between">
                                 <button type="button" onclick="prevStep()" class="btn btn-secondary">Previous</button>
-                                <button type="button" onclick="nextStep()" class="btn btn-success">Next</button>
+                                <button type="button" onclick="nextStep()" class="btn btn-primary">Next</button>
                             </div>
                         </div>
 
                         <!-- Section 3: Document Verification (Optional) -->
                         <div id="section-document-verification" class="form-step">
-                            <h4 class="mb-4 text-success">
+                            <h4 class="mb-4 text-primary">
                                 <i class="fas fa-file-upload me-2"></i>Document Verification (Optional)
                             </h4>
                             <div class="alert alert-info">
@@ -166,7 +166,7 @@
                             <div class="mb-3">
                                 <label for="verification_document" class="form-label">
                                     <i class="fas fa-id-card me-1"></i>Valid ID
-                                    <span class="text-success">(Optional)</span>
+                                    <span class="text-primary">(Optional)</span>
                                 </label>
                                 <input type="file" name="verification_document" id="verification_document" class="form-control" accept=".jpg,.jpeg,.png,.pdf">
                                 <div class="form-text">
@@ -191,7 +191,7 @@
 
                             <div class="mt-4 d-flex justify-content-between">
                                 <button type="button" onclick="prevStep()" class="btn btn-secondary">Previous</button>
-                                <button type="submit" class="btn btn-success btn-lg">
+                                <button type="submit" class="btn btn-primary btn-lg">
                                     <i class="fas fa-check me-2"></i>Complete Profile
                                 </button>
                             </div>

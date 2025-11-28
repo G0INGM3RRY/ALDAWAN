@@ -2,13 +2,13 @@
 @section('content')
 
     <h1 class="mb-4">
-        <span class="badge bg-success me-2">Informal</span>Employer Dashboard
+        <span class="badge bg-primary me-2">Informal</span>Employer Dashboard
     </h1>
     
     <!-- Business Overview Card -->
     @if($user->employerProfile)
-    <div class="card mb-4 border-success">
-        <div class="card-header bg-success text-white">
+    <div class="card mb-4 border-primary">
+        <div class="card-header bg-primary text-white">
             <h5 class="mb-0">{{ $user->employerProfile->company_name ?? 'Business Profile' }}</h5>
         </div>
         <div class="card-body">
@@ -29,7 +29,7 @@
                 </div>
                 <div class="col-md-4">
                     <strong>Type:</strong><br>
-                    <span class="badge bg-success text-white">{{ ucfirst($user->employerProfile->employer_type) }} Employer</span>
+                    <span class="badge bg-primary text-white">{{ ucfirst($user->employerProfile->employer_type) }} Employer</span>
                 </div>
             </div>
         </div>
@@ -40,24 +40,24 @@
         <!-- Navigation Cards -->
         <div class="col-md-4 mb-4">
             <a href="{{ route('employers.jobs.index') }}" class="text-decoration-none">
-                <div class="card h-100 border-success">
+                <div class="card h-100 border-primary">
                     <div class="card-body text-center">
-                        <i class="fas fa-tools fa-2x text-success mb-3"></i>
-                        <h5 class="card-title text-success">Posted Jobs</h5>
+                        <i class="fas fa-tools fa-2x text-primary mb-3"></i>
+                        <h5 class="card-title text-primary">Posted Jobs</h5>
                         <p class="card-text text-muted">View and manage your job listings</p>
-                        <small class="text-success">Household services, contracts & short-term work</small>
+                        <small class="text-primary">Household services, contracts & short-term work</small>
                     </div>
                 </div>
             </a>
         </div>
         <div class="col-md-4 mb-4">
             <a href="{{ route('employers.jobs.create') }}" class="text-decoration-none">
-                <div class="card h-100 border-success">
+                <div class="card h-100 border-primary">
                     <div class="card-body text-center">
-                        <i class="fas fa-plus-circle fa-2x text-success mb-3"></i>
-                        <h5 class="card-title text-success">Post a job</h5>
+                        <i class="fas fa-plus-circle fa-2x text-primary mb-3"></i>
+                        <h5 class="card-title text-primary">Post a job</h5>
                         <p class="card-text text-muted">Create informal work opportunities</p>
-                        <small class="text-success">Flexible, contract-based positions</small>
+                        <small class="text-primary">Flexible, contract-based positions</small>
                     </div>
                 </div>
             </a>
@@ -81,7 +81,7 @@
         </div>
     </div>
 
-    <!-- Recent Gigs Stats -->
+    <!-- Recent Jobs Stats -->
     <div class="row">
         <div class="col-md-12">
             <div class="card">
@@ -91,7 +91,7 @@
                 <div class="card-body">
                     <div class="row text-center">
                         <div class="col-md-3">
-                            <h4 class="text-success">{{ $user->jobs->where('status', 'open')->count() }}</h4>
+                            <h4 class="text-primary">{{ $user->jobs->where('status', 'open')->count() }}</h4>
                             <small class="text-muted">Active Jobs</small>
                         </div>
                         <div class="col-md-3">
@@ -99,7 +99,7 @@
                             <small class="text-muted">Formal Work</small>
                         </div>
                         <div class="col-md-3">
-                            <h4 class="text-success">{{ $user->jobs->where('job_type', 'informal')->count() }}</h4>
+                            <h4 class="text-primary">{{ $user->jobs->where('job_type', 'informal')->count() }}</h4>
                             <small class="text-muted">Jobs</small>
                         </div>
                         <div class="col-md-3">

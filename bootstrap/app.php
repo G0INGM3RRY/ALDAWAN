@@ -21,6 +21,8 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->group(base_path('routes/jobseeker.php'));
             Route::middleware('web')
                 ->group(base_path('routes/jobs.php'));
+            Route::middleware('web')
+                ->group(base_path('routes/notifications.php'));
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {

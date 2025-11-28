@@ -128,6 +128,33 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Get user's notifications
+     */
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
+
+    /**
+     * Get unread notifications count
+     */
+    public function unreadNotificationsCount()
+    {
+        return $this->notifications()->whereNull('read_at')->count();
+    }
+
+    /**
+     * Get recent notifications
+     */
+    public function recentNotifications($limit = 10)
+    {
+        return $this->notifications()
+            ->orderBy('created_at', 'desc')
+            ->limit($limit)
+            ->get();
+    }
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var list<string>

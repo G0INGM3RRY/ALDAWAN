@@ -4,11 +4,11 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card border-success">
-                <div class="card-header bg-success text-white">
+            <div class="card border-primary">
+                <div class="card-header bg-primary text-white">
                     <h3 class="mb-0"><i class="fas fa-tools me-2"></i>Post a Job Opportunity</h3>
                     <div class="mt-2">
-                        <span class="badge bg-dark text-success">
+                        <span class="badge bg-dark text-primary">
                             <i class="me-1"></i>Informal Employer
                         </span>
                         <small class="text-dark ms-2">Create flexible work opportunities and contract-based jobs</small>
@@ -144,14 +144,14 @@
                             <div class="form-text">
                                 <small class="text-muted">
                                     <strong>Formal:</strong> Regular employment with benefits, contracts, and formal processes.<br>
-                                    <strong>Informal:</strong> Contract work, gig economy, freelance, or temporary positions.
+                                    <strong>Informal:</strong> Contract work, freelance, part-time, or temporary positions.
                                 </small>
                             </div>
                         </div>
 
                         <!-- Disability Restrictions Section -->
                         <div class="mb-4">
-                            <h5 class="text-success mb-3">
+                            <h5 class="text-primary mb-3">
                                 <i class="fas fa-universal-access me-2"></i>Accessibility & Disability Considerations
                             </h5>
                             

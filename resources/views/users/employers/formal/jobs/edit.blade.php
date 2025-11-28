@@ -93,16 +93,8 @@
                                     <select class="form-control w-75 @error('classification_id') is-invalid @enderror" 
                                             id="classification_id" name="classification_id" required>
                                         <option value="">Select Classification</option>
-                                        
-                                        @if(auth()->user()->employerProfile && auth()->user()->employerProfile->employer_type === 'informal')
-                                            @foreach($jobClassifications->where('type', 'informal') as $classification)
-                                                <option value="{{ $classification->id }}" 
-                                                        {{ old('classification_id', $job->classification_id) == $classification->id ? 'selected' : '' }}>
-                                                    {{ $classification->name }}
-                                                </option>
-                                            @endforeach
-                                        @else
-                                            @foreach($jobClassifications->where('type', 'formal') as $classification)
+                                        @if(isset($jobClassifications))
+                                            @foreach($jobClassifications as $classification)
                                                 <option value="{{ $classification->id }}" 
                                                         {{ old('classification_id', $job->classification_id) == $classification->id ? 'selected' : '' }}>
                                                     {{ $classification->name }}

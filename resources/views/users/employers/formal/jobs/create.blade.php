@@ -71,12 +71,14 @@
                                 <label for="classification" class="form-label">Job Classification</label>
                                 <select name="classification" id="classification" class="form-control">
                                     <option value="">Select Classification</option>
-                                    @foreach($jobClassifications as $classification)
-                                        <option value="{{ $classification->id }}" 
-                                                {{ old('classification') == $classification->id ? 'selected' : '' }}>
-                                            {{ $classification->name }}
-                                        </option>
-                                    @endforeach
+                                    @if(isset($jobClassifications))
+                                        @foreach($jobClassifications as $classification)
+                                            <option value="{{ $classification->id }}" 
+                                                    {{ old('classification') == $classification->id ? 'selected' : '' }}>
+                                                {{ $classification->name }}
+                                            </option>
+                                        @endforeach
+                                    @endif
                                 </select>
                                 @error('classification')<div class="text-danger">{{ $message }}</div>@enderror
                             </div>
